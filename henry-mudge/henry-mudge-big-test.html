@@ -1,0 +1,397 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Henry and Mudge Take the Big Test — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#2EC4B6;--blue-dark:#1a9d90;--blue-light:#e8faf8;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4fbf9;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#b2dfd7;
+    --radius:16px;--shadow:0 4px 20px rgba(42,157,143,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.2rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#0e5c56;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#a3e4de;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #a3e4de;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#c2f0ec}
+  .ko-toggle.open{background:#a3e4de;color:#0e5c56}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#a3e4de;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#155c50;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#a3e4de;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:768px){.word-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Henry &amp; Mudge #02</div>
+    <div class="header-title">Henry and Mudge <span>Take the Big Test</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Henry and Mudge Take the Big Test · Cynthia Rylant · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function ea(s){return s.replace(/'/g,"&#39;").replace(/"/g,"&quot;");}
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"front porch",ko:"현관 앞 공간, 베란다 (porch: 지붕이 있는 현관 앞)"},
+  {en:"Collie",ko:"콜리 (긴 털의 목양견 품종)"},
+  {en:"disappeared",ko:"사라졌다 (dis-: 아닌 + appear: 나타나다 + -ed)"},
+  {en:"heel",ko:"붙어! (개 훈련 명령어: 주인 옆에 붙어 걷기)"},
+  {en:"drool",ko:"침을 흘리다 (drooled: 흘렸다)"},
+  {en:"mowing",ko:"잔디를 깎는 중 (mow: 잔디를 깎다 + -ing)"},
+  {en:"frown",ko:"눈살을 찌푸리다 (frowned: 찌푸렸다)"},
+  {en:"treat",ko:"간식; 보상 (treats: 복수)"},
+  {en:"leash",ko:"목줄, 리드줄"},
+  {en:"collar",ko:"목걸이, 칼라 (개 목에 거는 것)"},
+  {en:"silver",ko:"은색의; 은 (↔ gold: 금)"},
+  {en:"liver treats",ko:"간 간식 (liver: 간 + treats: 간식)"},
+  {en:"nervous",ko:"긴장한, 불안한"},
+  {en:"flunk",ko:"낙제하다, 떨어지다"},
+  {en:"poodle",ko:"푸들 (곱슬거리는 털을 가진 개 품종)"},
+  {en:"mistake",ko:"실수 (mis-: 잘못 + take: 잡다)"},
+  {en:"paddle ball",ko:"패들볼 (라켓과 공으로 치는 놀이)"},
+  {en:"perfect",ko:"완벽한 (per-: 완전히 + fect: 만들다)"},
+  {en:"sniff",ko:"냄새를 맡다, 킁킁거리다"},
+  {en:"paw",ko:"발, 앞발 (개·고양이의 발)"},
+  {en:"whisper",ko:"속삭이다"},
+  {en:"beagle",ko:"비글 (사냥견 품종)"},
+  {en:"chow chow",ko:"차우차우 (중국 원산 개 품종)"},
+  {en:"certificate",ko:"수료증, 자격증 (certify: 증명하다 + -ate)"},
+  {en:"ribbon",ko:"리본"},
+  {en:"biscuit",ko:"비스킷 (dog biscuit: 개 간식 비스킷)"},
+  {en:"wagged",ko:"꼬리를 흔들었다 (wag: 흔들다)"},
+  {en:"snore",ko:"코를 골다"},
+  {en:"company",ko:"손님; 회사 (company comes: 손님이 오다)"},
+  {en:"showed up",ko:"나타났다 (show up: 나타나다)"},
+];
+
+const starWords=[
+  {en:"heel",ko:"붙어! (훈련 명령어)",hint:"Heel = walk right next to your owner. Not 'heel' as in your foot!"},
+  {en:"at least he's good at staying",ko:"적어도 기다리기는 잘 하잖아",hint:"at least = 적어도. Henry is trying to say something positive about Mudge!"},
+  {en:"flunk dog school",ko:"개 학교에서 낙제하다",hint:"flunk = fail. Henry was worried Mudge would FAIL the dog school test!"},
+  {en:"paddled like crazy",ko:"미친 듯이 패들볼을 쳤다",hint:"like crazy = 미친 듯이. Henry was SO nervous he played paddle ball very hard!"},
+  {en:"showed up",ko:"나타났다, 출석했다",hint:"show up = to appear / to arrive. Mudge always showed up = he always came to class!"},
+  {en:"passed the test",ko:"시험에 합격했다",hint:"pass a test = 시험을 통과하다 (↔ fail / flunk = 낙제하다)"},
+];
+
+const story=[
+  {scene:"The Smart Dog",lines:[
+    {en:"On a sunny day, Henry and Henry's mother and Henry's big dog Mudge were sitting on their front porch.",ko:"화창한 날, 헨리와 헨리 엄마와 헨리의 큰 개 머지는 현관 앞에 앉아 있었어요."},
+    {en:"A man with a Collie walked by. Suddenly the man stopped.",ko:"콜리를 데리고 온 남자가 지나갔어요. 갑자기 남자가 멈췄어요."},
+    {en:"Sit, said the man. The Collie sat.",ko:"앉아. 남자가 말했어요. 콜리가 앉았어요."},
+    {en:"Down, said the man. The Collie lay down.",ko:"엎드려. 남자가 말했어요. 콜리가 엎드렸어요."},
+    {en:"Henry looked at Mudge. Mudge looked at Henry. They both looked at the Collie.",ko:"헨리가 머지를 바라봤어요. 머지가 헨리를 바라봤어요. 둘 다 콜리를 바라봤어요."},
+    {en:"Stay, said the man. Then he walked a long way down the street. He didn't look back.",ko:"기다려. 남자가 말했어요. 그런 다음 거리를 한참 걸어 내려갔어요. 뒤를 돌아보지 않았어요."},
+    {en:"The Collie stayed.",ko:"콜리가 기다렸어요."},
+    {en:"The man turned down another street and disappeared. The Collie stayed.",ko:"남자는 다른 길로 꺾어 사라졌어요. 콜리가 기다렸어요."},
+    {en:"After a while, the man came back. Susie, heel, he said to the Collie, and they walked down the street together.",ko:"잠시 후, 남자가 돌아왔어요. 수지, 붙어! 그가 콜리에게 말했어요. 그들은 함께 길을 걸어갔어요."},
+    {en:"Wow, said Henry. Smart dog, said Henry's mother.",ko:"와. 헨리가 말했어요. 영리한 개구나. 헨리 엄마가 말했어요."},
+    {en:"Henry looked at Mudge. Mudge, said Henry, and he walked down the steps.",ko:"헨리가 머지를 바라봤어요. 머지. 헨리가 말하며 계단을 내려갔어요."},
+    {en:"Mudge rolled over and started to drool.",ko:"머지는 뒹굴더니 침을 흘리기 시작했어요."},
+    {en:"Well, at least he's good at staying, Henry said.",ko:"뭐, 적어도 기다리기는 잘 하잖아요. 헨리가 말했어요."},
+  ]},
+  {scene:"School Time",lines:[
+    {en:"Except when company comes, said Henry's mother.",ko:"손님이 올 때를 빼고요. 헨리 엄마가 말했어요."},
+    {en:"Right, Henry frowned. And when the cat next door wants to visit, said Henry's mother.",ko:"맞아요. 헨리가 눈살을 찌푸렸어요. 옆집 고양이가 놀러 오고 싶을 때도요. 헨리 엄마가 말했어요."},
+    {en:"Right, Henry frowned some more. And when your dad is mowing the grass, said Henry's mother.",ko:"맞아요. 헨리가 눈살을 더 찌푸렸어요. 아빠가 잔디를 깎을 때도요. 헨리 엄마가 말했어요."},
+    {en:"Right, Henry frowned even more.",ko:"맞아요. 헨리가 눈살을 더욱더 찌푸렸어요."},
+    {en:"Maybe Mudge needs to go to school, Henry said to his mother.",ko:"아마 머지는 학교에 가야 할 것 같아요. 헨리가 엄마에게 말했어요."},
+    {en:"Maybe Mudge needs a nice teacher like Mrs. Crocus, Henry said. Mrs. Crocus was Henry's second grade teacher.",ko:"아마 머지는 크로커스 선생님 같은 좋은 선생님이 필요할 것 같아요. 헨리가 말했어요. 크로커스 선생님은 헨리의 2학년 담임 선생님이었어요."},
+    {en:"Mudge, do you want to go to school? Mudge snored and drooled.",ko:"머지, 학교 가고 싶어? 머지는 코를 골며 침을 흘렸어요."},
+    {en:"I hope dog school has nap time, said Henry.",ko:"개 학교에 낮잠 시간이 있으면 좋겠어요. 헨리가 말했어요."},
+    {en:"And lots of paper towels, said Henry's mother, looking at her porch.",ko:"그리고 키친타월도 많이요. 헨리 엄마가 현관을 바라보며 말했어요."},
+  ]},
+  {scene:"Shopping Day",lines:[
+    {en:"Henry went shopping for Mudge's first day of school.",ko:"헨리는 머지의 첫 등교일을 위해 쇼핑을 하러 갔어요."},
+    {en:"He bought Mudge a new red leash. He bought Mudge a new silver collar. He bought Mudge a box of liver treats.",ko:"머지에게 새 빨간 목줄을 샀어요. 머지에게 새 은색 목걸이를 샀어요. 머지에게 간 간식 한 상자를 샀어요."},
+    {en:"And Henry bought himself a paddle ball, because he was nervous.",ko:"그리고 헨리는 자신을 위해 패들볼을 샀어요, 긴장했기 때문에."},
+    {en:"Henry liked to play paddle ball when he was nervous.",ko:"헨리는 긴장할 때 패들볼을 치는 것을 좋아했어요."},
+    {en:"And he was nervous because he thought Mudge might flunk dog school.",ko:"그리고 머지가 개 학교에서 낙제할 것 같아서 긴장했어요."},
+    {en:"He thought Mudge might drool on the teacher's foot, or sit on a poodle by mistake, or not even stay awake long enough to do anything.",ko:"머지가 선생님 발에 침을 흘리거나, 실수로 푸들 위에 앉거나, 무엇이든 할 만큼 깨어 있지도 못할 것 같았어요."},
+    {en:"Henry paddled like crazy.",ko:"헨리는 미친 듯이 패들볼을 쳤어요."},
+  ]},
+  {scene:"The First Day",lines:[
+    {en:"When the first day of school arrived, Henry and Henry's mother and Mudge drove to a long white building. Its sign read: PS Dog School.",ko:"학교 첫날이 되자, 헨리와 헨리 엄마와 머지는 긴 흰색 건물로 차를 몰았어요. 간판에는 PS 개 학교라고 적혀 있었어요."},
+    {en:"Inside was Jack Pap with a handful of dog treats. Mr. Pap is your teacher, Henry told Mudge.",ko:"안에는 개 간식을 한 움큼 들고 잭 팹이 있었어요. 팹 선생님이 네 선생님이야. 헨리가 머지에게 말했어요."},
+    {en:"Mudge wagged. He jumped up to lick Jack Pap's face.",ko:"머지가 꼬리를 흔들었어요. 잭 팹의 얼굴을 핥으러 뛰어올랐어요."},
+    {en:"Don't worry, said Jack Pap. I know what to do.",ko:"걱정 마세요. 잭 팹이 말했어요. 어떻게 하면 되는지 알아요."},
+    {en:"He held Mudge's front paws. He wouldn't let go. He danced Mudge up. He danced Mudge back. He danced Mudge all around.",ko:"머지의 앞발을 잡았어요. 놓지 않았어요. 머지를 앞으로 춤추게 했어요. 뒤로 춤추게 했어요. 여기저기 춤추게 했어요."},
+    {en:"Mudge didn't like dancing.",ko:"머지는 춤추는 것을 좋아하지 않았어요."},
+    {en:"When Jack Pap finally let go, Mudge didn't jump up again. He was afraid Jack might want to dance.",ko:"잭 팹이 마침내 손을 놓자, 머지는 다시는 뛰어오르지 않았어요. 잭이 다시 춤추려고 할까 봐 무서웠거든요."},
+    {en:"Pretty good teacher, Henry said to his mother. So far dog school was fun.",ko:"꽤 좋은 선생님이네요. 헨리가 엄마에게 말했어요. 지금까지 개 학교는 재미있었어요."},
+  ]},
+  {scene:"Mudge's Progress",lines:[
+    {en:"Mudge was not a perfect student. He liked to lie down too much. He liked to sniff the other students. He liked to think about other things.",ko:"머지는 완벽한 학생이 아니었어요. 너무 많이 눕는 것을 좋아했어요. 다른 학생들 냄새 맡는 것을 좋아했어요. 딴생각하는 것을 좋아했어요."},
+    {en:"But he always, always showed up. And he always wagged his tail. And he always gave his teacher a kiss.",ko:"하지만 항상, 항상 나타났어요. 그리고 항상 꼬리를 흔들었어요. 그리고 항상 선생님에게 뽀뽀를 했어요."},
+    {en:"At home, Henry practiced with Mudge. Henry had one pocket full of liver treats.",ko:"집에서 헨리는 머지와 연습했어요. 헨리는 주머니 하나 가득 간 간식을 갖고 있었어요."},
+    {en:"When Mudge did something right, he got a treat. When Mudge did something wrong, he got, Oh, Mudge.",ko:"머지가 맞게 하면 간식을 받았어요. 틀리게 하면 아, 머지 소리를 들었어요."},
+    {en:"After a few weeks, Henry needed two pockets full of liver treats, because Mudge was getting almost everything right.",ko:"몇 주 후, 헨리는 주머니 두 개 가득 간 간식이 필요했어요, 머지가 거의 다 맞히게 되었기 때문에."},
+    {en:"He sat when he heard sit. He walked when he heard heel. And he stayed when he heard stay — most of the time, anyway.",ko:"앉아가 들리면 앉았어요. 붙어가 들리면 걸었어요. 그리고 기다려가 들리면 기다렸어요 — 대부분의 경우에는요."},
+    {en:"He still didn't do too well when the cat next door came to visit.",ko:"옆집 고양이가 놀러 올 때는 여전히 잘 하지 못했어요."},
+  ]},
+  {scene:"The Big Test",lines:[
+    {en:"Henry and Mudge went to dog class for eight weeks. They worked very hard.",ko:"헨리와 머지는 8주 동안 개 수업에 갔어요. 아주 열심히 했어요."},
+    {en:"The last day of class was the big test. Jack Pap would decide which dogs passed the test.",ko:"수업 마지막 날은 큰 시험이었어요. 잭 팹이 어떤 개가 시험에 합격하는지 결정할 거였어요."},
+    {en:"Mudge would go after the beagle and before the chow chow.",ko:"머지는 비글 다음에, 차우차우 전에 나갈 거였어요."},
+    {en:"Good dog, Mudge, whispered Henry. We can do it.",ko:"잘 할 수 있어, 머지. 헨리가 속삭였어요. 우리 할 수 있어."},
+    {en:"Sit, said Henry. Mudge sat. Down, said Henry. Mudge lay down. Stay, said Henry. Mudge stayed.",ko:"앉아. 헨리가 말했어요. 머지가 앉았어요. 엎드려. 헨리가 말했어요. 머지가 엎드렸어요. 기다려. 헨리가 말했어요. 머지가 기다렸어요."},
+    {en:"Henry walked away. He didn't look back. He walked around the long white building, wishing he had his paddle ball.",ko:"헨리가 걸어갔어요. 뒤를 돌아보지 않았어요. 긴 흰색 건물을 돌면서, 패들볼이 있었으면 좋겠다고 바랐어요."},
+    {en:"Mudge did stay.",ko:"머지가 기다렸어요."},
+    {en:"When Henry came back, he saw Mudge lying in the same place, wagging his tail.",ko:"헨리가 돌아왔을 때, 머지가 같은 자리에 누워 꼬리를 흔들고 있는 것을 봤어요."},
+    {en:"He gave Mudge a big hug and a kiss and two liver treats.",ko:"머지를 크게 껴안고 뽀뽀하고 간 간식 두 개를 줬어요."},
+    {en:"Mudge had passed the test! He got a fancy certificate. He got a gold ribbon. He got a giant dog biscuit.",ko:"머지가 시험에 합격했어요! 멋진 수료증을 받았어요. 금색 리본을 받았어요. 거대한 개 비스킷을 받았어요."},
+    {en:"Wow, said Henry's father. Smart dog, said Henry's mother. Great dog, said Henry.",ko:"와. 헨리 아빠가 말했어요. 영리한 개구나. 헨리 엄마가 말했어요. 정말 대단한 개야. 헨리가 말했어요."},
+    {en:"Mudge wagged at them and barked and drooled one last time on his teacher's foot.",ko:"머지는 그들에게 꼬리를 흔들고 짖고, 마지막으로 한 번 선생님 발에 침을 흘렸어요."},
+  ]},
+];
+
+const questions=[
+  {q:"Where were Henry, his mother, and Mudge when they first saw the Collie?",sub:"헨리, 엄마, 머지가 처음 콜리를 봤을 때 어디에 있었나요?",opts:["In the backyard","On their front porch","At the park","On the sidewalk"],ans:1,hint:"On a sunny day, Henry and his mother and Mudge were sitting on their front porch."},
+  {q:"Which command made the Collie wait — even when its owner disappeared around a corner?",sub:"주인이 모퉁이를 돌아 사라져도 콜리가 기다리게 한 명령은?",opts:["Sit","Down","Stay","Heel"],ans:2,hint:"Stay said the man — then he walked away and disappeared, and the Collie stayed the whole time!"},
+  {q:"What did Mudge do when Henry walked down the steps toward him?",sub:"헨리가 계단을 내려가 다가갔을 때 머지는 어떻게 했나요?",opts:["He sat obediently","He rolled over and started to drool","He ran to Henry","He barked loudly"],ans:1,hint:"Mudge rolled over and started to drool — not quite the same as the smart Collie!"},
+  {q:"Why did Henry buy a paddle ball when shopping for school supplies?",sub:"헨리가 학교 준비물을 사러 갔을 때 패들볼을 산 이유는?",opts:["Mudge liked to chase it","The teacher asked for one","He was nervous and liked to play it when nervous","He wanted a new toy"],ans:2,hint:"Henry liked to play paddle ball when he was nervous — and he was nervous about Mudge flunking!"},
+  {q:"Which dog breed did Henry worry Mudge might accidentally sit on?",sub:"헨리가 머지가 실수로 위에 앉을까 봐 걱정한 개 품종은?",opts:["A Collie","A beagle","A chow chow","A poodle"],ans:3,hint:"He thought Mudge might sit on a poodle by mistake — oops!"},
+  {q:"How did Jack Pap stop Mudge from jumping up on people?",sub:"잭 팹은 머지가 사람에게 뛰어오르지 못하게 어떻게 했나요?",opts:["He said No firmly","He danced with Mudge until Mudge hated dancing","He gave Mudge a treat to distract him","He pushed Mudge away"],ans:1,hint:"Jack held Mudge's paws and danced him around — Mudge hated it and never jumped up again!"},
+  {q:"What did Mudge receive when he practiced correctly at home?",sub:"집에서 연습할 때 머지가 맞게 하면 무엇을 받았나요?",opts:["A liver treat","Praise only","A new toy","Extra playtime"],ans:0,hint:"When Mudge did something right, he got a treat — a liver treat!"},
+  {q:"How many weeks did Henry and Mudge attend dog class?",sub:"헨리와 머지는 몇 주 동안 개 수업에 다녔나요?",opts:["Four weeks","Six weeks","Eight weeks","Ten weeks"],ans:2,hint:"Henry and Mudge went to dog class for eight weeks. They worked very hard."},
+  {q:"In what order did Mudge take the test?",sub:"시험에서 머지는 어떤 순서로 나왔나요?",opts:["First, before all other dogs","After the beagle and before the chow chow","After the chow chow","Last of all"],ans:1,hint:"Mudge would go after the beagle and before the chow chow."},
+  {q:"What three things did Mudge earn by passing the test?",sub:"시험에 합격해서 머지가 받은 세 가지는?",opts:["A trophy, a ribbon, and a certificate","A treat, a ribbon, and a new collar","A certificate, a gold ribbon, and a giant dog biscuit","A certificate, a trophy, and a big hug"],ans:2,hint:"He got a fancy certificate, a gold ribbon, and a giant dog biscuit!"},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${ea(w.en)}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${ea(w.en)}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${ea(l.en)}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆','Perfect score! You totally mastered Henry and Mudge Take the Big Test!']:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>

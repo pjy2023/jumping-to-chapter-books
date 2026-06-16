@@ -1,0 +1,388 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur Tells a Story — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#FF8C42;--blue-dark:#c8601a;--blue-light:#fff3eb;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f7f4fd;--card:#fff;--text:#2c2c3e;--muted:#7f8c8d;--border:#e0d7f5;
+    --radius:16px;--shadow:0 4px 20px rgba(124,92,191,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.25rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#c8601a;font-weight:600}
+
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#fbd5b0;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #fbd5b0;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#ffe8d0}
+  .ko-toggle.open{background:#fbd5b0;color:#c8601a}
+
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#fbd5b0;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .opt.reveal{background:var(--green-light);border-color:#27ae60;color:#1a6b40;opacity:.65}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#c8601a;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#fbd5b0;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:768px){.word-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Arthur Starter #05</div>
+    <div class="header-title">Arthur <span>Tells a Story</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Arthur Tells a Story · Marc Brown · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"bored",ko:"지루한, 심심한 (bore: 지루하게 하다)"},
+  {en:"sighed",ko:"한숨을 쉬었다 (sigh: 한숨을 쉬다)"},
+  {en:"insisted",ko:"주장했다, 고집했다 (insist: 주장하다)"},
+  {en:"steep",ko:"가파른, 경사가 급한"},
+  {en:"sneakers",ko:"운동화, 스니커즈"},
+  {en:"dangerous",ko:"위험한 (danger: 위험 + -ous: ~한)"},
+  {en:"volcano",ko:"화산"},
+  {en:"erupt",ko:"분출하다, 폭발하다 (화산·감정이 터지다)"},
+  {en:"blown across",ko:"날려서 건너가다 (blow: 불다, 날리다 → blown: 날려진)"},
+  {en:"ocean",ko:"대양, 바다 (sea보다 훨씬 넓은 바다)"},
+  {en:"jungle",ko:"정글, 밀림"},
+  {en:"wild animals",ko:"야생동물 (wild: 야생의 / animal: 동물)"},
+  {en:"unicorn",ko:"유니콘 (uni-: 하나 + corn: 뿔)"},
+  {en:"escape",ko:"탈출하다, 도망치다"},
+  {en:"shore",ko:"해안, 물가 (바다·강의 가장자리 땅)"},
+  {en:"reporters",ko:"기자들 (report: 보도하다 + -er: ~하는 사람)"},
+  {en:"photographers",ko:"사진기자, 사진작가 (photo: 사진 + -grapher: 기록하는 사람)"},
+  {en:"trampled",ko:"짓밟다, 밟아 뭉개다 (trample의 과거형)"},
+  {en:"crowd",ko:"군중, 많은 사람들의 무리"},
+  {en:"explained",ko:"설명했다 (explain: 설명하다)"},
+  {en:"White House",ko:"백악관 (미국 대통령 관저)"},
+  {en:"president",ko:"대통령; 사장·회장 (나라·단체의 최고 책임자)"},
+  {en:"special list",ko:"특별 명단 (special: 특별한 / list: 목록)"},
+  {en:"helicopter",ko:"헬리콥터"},
+  {en:"hometown parade",ko:"고향 환영 행진 (hometown: 고향 / parade: 행진)"},
+  {en:"frowned",ko:"눈살을 찌푸렸다 (frown: 얼굴을 찌푸리다)"},
+  {en:"take ~ for a walk",ko:"~를 산책시키다, 산책에 데려가다"},
+  {en:"It doesn't matter",ko:"상관없다, 중요하지 않다 (matter: 중요하다, 문제가 되다)"},
+  {en:"lead the parade",ko:"행진의 선두에 서다 (lead: 이끌다)"},
+  {en:"the best ~ ever",ko:"지금까지 중 가장 좋은 ~ (ever: 지금까지, 여태껏)"},
+];
+const starWords=[
+  {en:"I'm too busy",ko:"나는 너무 바빠",hint:"Arthur's excuse — but DW could see right through it!"},
+  {en:"take Pal for a walk",ko:"팔을 산책시키다",hint:"take [pet] for a walk = [반려동물]을 산책시키다"},
+  {en:"blown across the ocean",ko:"바다를 건너 날아가다",hint:"If the volcano erupts → we fly across the whole ocean!"},
+  {en:"get trampled in the crowd",ko:"군중에 짓밟히다",hint:"trample = 밟아 뭉개다. Very dangerous at big events!"},
+  {en:"Wait till they see my new dress",ko:"두고 봐, 내 드레스 보면!",hint:"wait till ~ = 두고 봐, ~하면! 결과를 자신만만하게 예고할 때 쓰는 표현이에요."},
+  {en:"That was the best story ever!",ko:"그게 지금까지 중 가장 좋은 이야기였어!",hint:"the best ~ ever = 지금까지 중 가장 좋은 ~. DW는 아서가 핑계로 지어낸 이야기를 진짜 이야기로 즐겼어요!"},
+];
+const story=[
+  {scene:"DW is bored",lines:[
+    {en:"Arthur, I'm bored, said DW.",ko:"아서, 나 심심해. D.W.가 말했어요."},
+    {en:"Tell me a story.",ko:"이야기 해줘."},
+    {en:"Arthur sighed. Not now, DW.",ko:"아서는 한숨을 쉬었어요. 지금은 안 돼, D.W."},
+    {en:"Please, she said.",ko:"제발요. 그녀가 말했어요."},
+  ]},
+  {scene:"Arthur's excuse",lines:[
+    {en:"I can't, said Arthur. I'm too busy.",ko:"안 돼. 아서가 말했어요. 나 너무 바빠."},
+    {en:"You don't look busy to me, said DW.",ko:"나한테는 안 바빠 보이는데. D.W.가 말했어요."},
+    {en:"Well, I am, Arthur insisted. I have to take Pal for a walk.",ko:"아니, 바빠. 아서가 고집했어요. 팔을 산책시켜야 하거든."},
+    {en:"Can I go too? DW asked.",ko:"나도 가도 돼? D.W.가 물었어요."},
+  ]},
+  {scene:"The mountain",lines:[
+    {en:"You could, said Arthur, except Pal and I are climbing a mountain today. A really, really steep one.",ko:"갈 수도 있어, 아서가 말했어요. 팔이랑 나는 오늘 산을 오르는 것만 빼면. 정말, 정말 가파른 산이야."},
+    {en:"I love climbing! DW said. I'll get my sneakers.",ko:"나 등산 좋아해! D.W.가 말했어요. 운동화 가져올게."},
+    {en:"No, said Arthur. It's too dangerous.",ko:"안 돼. 아서가 말했어요. 너무 위험해."},
+  ]},
+  {scene:"The volcano",lines:[
+    {en:"There's a volcano at the top of the mountain.",ko:"산 꼭대기에 화산이 있어."},
+    {en:"If it erupts, we'll be blown across the ocean.",ko:"만약 폭발하면, 우리는 바다를 건너 날아갈 거야."},
+    {en:"Sounds like fun! said DW.",ko:"재미있겠다! D.W.가 말했어요."},
+    {en:"Not at all, Arthur told her.",ko:"전혀 그렇지 않아. 아서가 말했어요."},
+  ]},
+  {scene:"The jungle",lines:[
+    {en:"When we finally land, we'll be in the jungle.",ko:"마침내 착지하면, 우리는 정글 안에 있을 거야."},
+    {en:"There will be wild animals everywhere.",ko:"야생동물들이 사방에 있을 거야."},
+    {en:"Any unicorns? asked DW.",ko:"유니콘도 있어? D.W.가 물었어요."},
+    {en:"Arthur shook his head.",ko:"아서는 고개를 저었어요."},
+  ]},
+  {scene:"Swimming back",lines:[
+    {en:"Anyway, after we escape from the jungle, we'll have to swim back across the ocean.",ko:"어쨌든, 정글에서 탈출하고 나면 바다를 건너 수영해서 돌아와야 해."},
+    {en:"You can't swim.",ko:"넌 수영 못하잖아."},
+    {en:"That's okay, said DW. I'll take a boat.",ko:"괜찮아. D.W.가 말했어요. 나는 배를 탈게."},
+  ]},
+  {scene:"Reporters and the crowd",lines:[
+    {en:"But once we get on shore, there will be reporters and photographers everywhere, said Arthur.",ko:"하지만 일단 우리가 해안에 닿으면, 기자들과 사진기자들이 사방에 있을 거야, 아서가 말했어요."},
+    {en:"You might get trampled in the crowd.",ko:"군중에 짓밟힐 수도 있어."},
+    {en:"Or maybe I'll get to be on TV, DW said.",ko:"아니면 나는 TV에 나올 수도 있잖아. D.W.가 말했어요."},
+    {en:"Thank you, thank you, thank you everyone!",ko:"감사합니다, 감사해요, 여러분!"},
+  ]},
+  {scene:"The White House",lines:[
+    {en:"There won't be time, Arthur explained.",ko:"시간이 없을 거야. 아서가 설명했어요."},
+    {en:"We'll have to go right to the White House. The president will want to meet us.",ko:"백악관으로 바로 가야 할 거야. 대통령이 우리를 만나고 싶어 할 거거든."},
+    {en:"Ooh, the White House! cried DW.",ko:"오오, 백악관이요! D.W.가 소리쳤어요."},
+    {en:"Sorry, said Arthur. You have to be on a special list to get in, and you're not on it.",ko:"미안해. 아서가 말했어요. 들어가려면 특별 명단에 있어야 하는데, 넌 그 명단에 없거든."},
+    {en:"DW smiled. I'm sure they'll let me in. Wait till they see my new dress and party shoes.",ko:"D.W.가 미소 지었어요. 분명히 들여보내 줄 거야. 두고 봐, 내 새 드레스랑 파티 구두 보면!"},
+  ]},
+  {scene:"The helicopter",lines:[
+    {en:"It doesn't matter, said Arthur. We're taking a helicopter home, and there's only room for Pal and me.",ko:"상관없어. 아서가 말했어요. 우린 헬리콥터 타고 집에 갈 건데, 팔이랑 나만 탈 자리가 있거든."},
+    {en:"Besides, we'll be in a hurry. We have to get here in time to lead the big hometown parade.",ko:"게다가 우리는 서두를 거야. 큰 고향 행진을 이끌기 위해 제때 여기에 도착해야 하거든."},
+    {en:"Oh, said DW.",ko:"아. D.W.가 말했어요."},
+  ]},
+  {scene:"The best story ever!",lines:[
+    {en:"So now do you understand why I can't tell you a story? asked Arthur.",ko:"이제 왜 내가 이야기를 못 해주는지 알겠어? 아서가 물었어요."},
+    {en:"Yes, said DW. And thanks.",ko:"응. D.W.가 말했어요. 그리고 고마워."},
+    {en:"Thanks? Arthur frowned. Thanks for what?",ko:"고마워? 아서가 인상을 찡그렸어요. 뭐가 고맙다는 거야?"},
+    {en:"DW smiled. That was the best story ever!",ko:"D.W.가 미소 지었어요. 그게 지금까지 중 가장 좋은 이야기였어!"},
+  ]},
+];
+const questions=[
+  {q:"Why did DW want Arthur to tell her a story?",sub:"D.W.는 왜 아서에게 이야기를 해달라고 했나요?",opts:["She was scared","She was bored","She was hungry","She was sleepy"],ans:1,hint:"Clue: 'I'm bored,' said DW. She had nothing to do!"},
+  {q:"What excuse did Arthur first give for being too busy?",sub:"아서가 처음에 바쁘다고 한 이유는 무엇이었나요?",opts:["He had to clean his room","He had homework to do","He had to take Pal for a walk","He was watching TV"],ans:2,hint:"Clue: I have to take Pal for a walk. Pal is Arthur's dog!"},
+  {q:"What was special about the mountain Arthur and Pal were climbing?",sub:"아서와 팔이 오르는 산은 어땠나요?",opts:["It was covered in snow","It had a castle on top","It was really steep with a volcano at the top","It was very small and easy"],ans:2,hint:"Clue: A really, really steep one — with a volcano at the very top!"},
+  {q:"What did Arthur say would happen if the volcano erupted?",sub:"화산이 폭발하면 어떻게 된다고 했나요?",opts:["They would run away fast","They would fall into lava","They would be blown across the ocean","They would get very hot"],ans:2,hint:"Clue: If it erupts, we'll be blown across the ocean."},
+  {q:"What did DW ask about the wild animals in the jungle?",sub:"정글의 야생동물에 대해 D.W.가 뭐라고 했나요?",opts:["She said she was scared","She asked if there were unicorns","She said she would bring a net","She asked if they were friendly"],ans:1,hint:"Clue: 'Any unicorns?' asked DW — she was not scared at all!"},
+  {q:"How did DW plan to cross the ocean since Arthur said he had to swim?",sub:"아서가 수영해야 한다면 D.W.는 어떻게 바다를 건너겠다고 했나요?",opts:["She would swim too","She would fly in a plane","She would take a boat","She would wait on shore"],ans:2,hint:"Clue: 'That's okay,' said DW. 'I'll take a boat.'"},
+  {q:"What danger did Arthur warn about with all the reporters?",sub:"기자들이 몰려오면 어떤 위험이 있다고 경고했나요?",opts:["DW might get famous","DW might get lost","DW might get trampled in the crowd","DW might lose her bag"],ans:2,hint:"Clue: You might get trampled in the crowd."},
+  {q:"Why did Arthur say DW couldn't get into the White House?",sub:"아서는 왜 D.W.가 백악관에 들어갈 수 없다고 했나요?",opts:["She was too young","She did not have nice clothes","She was not on the special list","The president was busy"],ans:2,hint:"Clue: You have to be on a special list to get in, and you're not on it."},
+  {q:"How did Arthur say they would get home from Washington D.C.?",sub:"아서는 워싱턴 D.C.에서 어떻게 집에 간다고 했나요?",opts:["By train","By boat","By car","By helicopter"],ans:3,hint:"Clue: We're taking a helicopter home — with only room for Pal and Arthur!"},
+  {q:"What did DW say at the very end that surprised Arthur?",sub:"이야기 맨 마지막에 아서를 놀라게 한 D.W.의 말은 무엇이었나요?",opts:["She asked for another story","She said she was still bored","She said thanks — that was the best story ever","She ran outside to find Pal"],ans:2,hint:"Clue: DW said 'That was the best story ever!' — she loved the made-up adventure!"},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/'/g,"&#39;")}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆','Perfect score! You totally mastered Arthur Tells a Story!']:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>

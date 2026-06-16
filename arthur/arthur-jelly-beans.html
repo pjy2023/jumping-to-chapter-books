@@ -1,0 +1,415 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur's Jelly Beans — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#FF8C42;--blue-dark:#c8601a;--blue-light:#fff3eb;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4f8fd;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#dce8f5;
+    --radius:16px;--shadow:0 4px 20px rgba(52,152,219,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.25rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#1a5f8a;font-weight:600}
+
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#fbd5b0;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #fbd5b0;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#d6eaf8}
+  .ko-toggle.open{background:#fbd5b0;color:#1a4f72}
+
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#fbd5b0;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .opt.reveal{background:var(--green-light);border-color:#27ae60;color:#1a6b40;opacity:.65}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#1a5f8a;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#fbd5b0;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Arthur Starter #10</div>
+    <div class="header-title">Arthur's <span>Jelly Beans</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Arthur's Jelly Beans · Marc Brown · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"Spring Fling Party",ko:"봄 축제 파티 (fling: 신나게 즐기다)"},
+  {en:"announced",ko:"발표했어요, 알렸어요 (announce: 발표하다)"},
+  {en:"sighed",ko:"한숨을 쉬었다 (sigh: 한숨을 쉬다)"},
+  {en:"turtles",ko:"거북이들 (turtle: 거북이)"},
+  {en:"agreed",ko:"동의했다 (agree: 동의하다 + -d: 과거형)"},
+  {en:"blew her whistle",ko:"호루라기를 불었다 (blow: 불다 → blew: 과거형)"},
+  {en:"egg push",ko:"달걀 밀기 (게임 이름)"},
+  {en:"nudged",ko:"살짝 밀었다 (nudge: 살짝 밀다, 툭 치다)"},
+  {en:"basket",ko:"바구니"},
+  {en:"Bunny Hop",ko:"토끼 뛰기 (게임 이름; hop: 깡충 뛰다)"},
+  {en:"finish line",ko:"결승선 (finish: 끝 + line: 선)"},
+  {en:"refreshments",ko:"간식, 다과 (refresh: 새롭게 하다 + -ment: 명사화)"},
+  {en:"Jelly Bean hunt",ko:"젤리빈 찾기 (hunt: 사냥; 찾기)"},
+  {en:"grand prize",ko:"대상, 최고 상 (grand: 크고 훌륭한 + prize: 상)"},
+  {en:"solid chocolate",ko:"속이 꽉 찬 초콜릿 (solid: 단단한, 꽉 찬)"},
+  {en:"burst out laughing",ko:"갑자기 웃음을 터뜨렸다 (burst: 터지다 + out: 밖으로)"},
+  {en:"passed out",ko:"나누어 주었다 (pass out: 배포하다)"},
+  {en:"paper bags",ko:"종이 봉지들 (paper: 종이 + bag: 봉지)"},
+  {en:"hardly moved",ko:"거의 움직이지 않았다 (hardly: 거의 ~않게)"},
+  {en:"calculator",ko:"계산기 (calculate: 계산하다 + -or: ~하는 것)"},
+  {en:"compute",ko:"계산하다 (computer의 원래 뜻: 계산하는 것)"},
+  {en:"total",ko:"합계, 전체 (total: 총, 합계)"},
+  {en:"stopwatch",ko:"스톱워치, 초시계 (stop: 멈추다 + watch: 시계)"},
+  {en:"vacuum cleaner",ko:"진공청소기 (vacuum: 진공 + cleaner: 청소하는 것)"},
+  {en:"sucked up",ko:"빨아들였다 (suck: 빨다 + up: 위로, 완전히)"},
+  {en:"spare",ko:"여분의 것을 쓰다; 아끼다 (spare: 여분의)"},
+  {en:"dipping into",ko:"손을 넣어 꺼내 먹다 (dip: 담그다, 살짝 집다)"},
+  {en:"cotton candy",ko:"솜사탕 (cotton: 솜 + candy: 사탕)"},
+  {en:"root beer",ko:"루트비어 (미국식 탄산음료)"},
+  {en:"blushed",ko:"얼굴이 빨개졌다 (blush: 얼굴이 붉어지다)"},
+  {en:"lined up",ko:"줄을 섰다 (line up: 줄을 서다)"},
+  {en:"poured out",ko:"쏟아냈다 (pour: 붓다, 쏟다 + out: 밖으로)"},
+];
+const starWords=[
+  {en:"Arthur makes turtles look fast",ko:"아서 옆에서는 거북이도 빠르게 보인다",hint:"make ~ look ~: ~을 ~처럼 보이게 하다 — 아서가 느리다는 최고의 표현!"},
+  {en:"With a nose like yours, you should have been first",ko:"네 코 같은 코가 있으면, 일등 했어야 했는데",hint:"Arthur is an aardvark — his long nose is like a shovel! should have + 과거분사: ~했어야 했는데"},
+  {en:"I view my chances as excellent",ko:"내 승산이 아주 좋다고 봐",hint:"view A as B: A를 B로 본다 — The Brain talks in a very formal, smart way!"},
+  {en:"it couldn't hurt to eat just one",ko:"하나쯤 먹어도 괜찮겠지",hint:"couldn't hurt: 해가 되지 않겠지. 하지만 결국 다들 먹었죠!"},
+  {en:"Rules are rules",ko:"규칙은 규칙이야",hint:"같은 말을 반복해서 '규칙은 바꿀 수 없어!'라는 뜻을 강조함"},
+  {en:"After all, you know how slow I am",ko:"그래도, 내가 얼마나 느린지 알잖아",hint:"after all: 어쨌든, 그래도 — Arthur makes everyone laugh with this self-joke at the end!"},
+];
+const story=[
+  {scene:"Party Starts",lines:[
+    {en:"Welcome to my Spring Fling Party! Muffy announced.",ko:"내 봄 축제 파티에 온 걸 환영해요! 머피가 발표했어요."},
+    {en:"The first game we're going to play is—",ko:"첫 번째 게임은—"},
+    {en:"Wait, said Fern. Where's Arthur?",ko:"잠깐, 퍼언이 말했어요. 아서는 어디 있어?"},
+    {en:"There he is, said the Brain.",ko:"저기 있다. 브레인이 말했어요."},
+    {en:"Francine sighed. He's so slow.",ko:"프랜신이 한숨을 쉬었어요. 저 애는 정말 느려."},
+    {en:"Arthur makes turtles look fast, Buster agreed.",ko:"아서 옆에서는 거북이도 빠르게 보여. 버스터가 동의했어요."},
+    {en:"Hi, said Arthur. Am I late?",ko:"안녕. 아서가 말했어요. 나 늦었어?"},
+  ]},
+  {scene:"Egg Push",lines:[
+    {en:"Muffy blew her whistle. Let the games begin!",ko:"머피가 호루라기를 불었어요. 게임 시작!"},
+    {en:"First came the egg push.",ko:"첫 번째로 달걀 밀기가 시작됐어요."},
+    {en:"Eggs went rolling all over the place.",ko:"달걀들이 사방으로 굴러다녔어요."},
+    {en:"Binky nudged his into the basket first.",ko:"빙키가 자기 달걀을 가장 먼저 바구니 안으로 살짝 밀어 넣었어요."},
+    {en:"Arthur was last.",ko:"아서는 꼴찌였어요."},
+    {en:"With a nose like yours, you should have been first, said Francine.",ko:"네 코 같은 코가 있으면, 일등 했어야 했는데. 프랜신이 말했어요."},
+  ]},
+  {scene:"Bunny Hop",lines:[
+    {en:"Next came the Bunny Hop.",ko:"다음은 토끼 뛰기였어요."},
+    {en:"Ouch! My foot! cried Fern.",ko:"아야! 내 발! 퍼언이 소리쳤어요."},
+    {en:"Francine hopped across the finish line first.",ko:"프랜신이 결승선을 가장 먼저 깡충 뛰어 넘었어요."},
+    {en:"Arthur was last.",ko:"아서는 꼴찌였어요."},
+    {en:"Is it time for refreshments yet? Buster asked.",ko:"아직 간식 먹을 시간 안 됐어? 버스터가 물었어요."},
+    {en:"Almost, said Muffy. The final game is the Jelly Bean hunt.",ko:"거의 다 됐어. 머피가 말했어요. 마지막 게임은 젤리빈 찾기야."},
+    {en:"Whoever collects the most jelly beans wins the grand prize.",ko:"젤리빈을 제일 많이 모으는 사람이 대상을 받아."},
+  ]},
+  {scene:"Grand Prize",lines:[
+    {en:"What's the grand prize? asked Binky.",ko:"대상이 뭔데? 빙키가 물었어요."},
+    {en:"Muffy smiled. Ta-da! And it's solid chocolate.",ko:"머피가 웃었어요. 짜잔! 그리고 속이 꽉 찬 초콜릿이야."},
+    {en:"Wow! whispered the others.",ko:"와! 다른 아이들이 속삭였어요."},
+    {en:"I want that chocolate egg, Binky said.",ko:"저 초콜릿 달걀 갖고 싶어. 빙키가 말했어요."},
+    {en:"Who says you're going to win? said the Brain.",ko:"네가 이길 거라고 누가 그래? 브레인이 말했어요."},
+    {en:"I view my chances as excellent.",ko:"내 승산이 아주 좋다고 봐."},
+    {en:"Mine too, said Arthur.",ko:"나도. 아서가 말했어요."},
+    {en:"The other kids looked at each other, then they burst out laughing.",ko:"다른 아이들이 서로를 쳐다보더니 갑자기 웃음을 터뜨렸어요."},
+    {en:"What? What's so funny? asked Arthur.",ko:"뭐야? 뭐가 그렇게 웃겨? 아서가 물었어요."},
+    {en:"It's just that you're so slow, Francine said. Everyone chimed in.",ko:"그냥 네가 너무 느리잖아. 프랜신이 말했어요. 모두가 맞장구를 쳤어요."},
+  ]},
+  {scene:"Hunt Begins",lines:[
+    {en:"Muffy passed out paper bags.",ko:"머피가 종이 봉지를 나누어 주었어요."},
+    {en:"You have 15 minutes to collect the jelly beans. Ready? Set? Go!",ko:"젤리빈을 모을 시간은 15분이야. 준비? 시작!"},
+    {en:"Out of my way! shouted Buster.",ko:"비켜! 버스터가 소리쳤어요."},
+    {en:"Winner coming through! cried Francine.",ko:"우승자 지나갑니다! 프랜신이 외쳤어요."},
+    {en:"Everyone raced around the yard — everyone except Arthur.",ko:"모두가 마당을 뛰어다녔어요 — 아서를 빼고는요."},
+    {en:"He hardly moved at all.",ko:"아서는 거의 움직이지 않았어요."},
+    {en:"I've already got four, Fern yelled.",ko:"나 이미 네 개나 있어. 퍼언이 소리쳤어요."},
+    {en:"Try six, said the Brain.",ko:"여섯 개 봐봐. 브레인이 말했어요."},
+    {en:"One, said Arthur. I've got one.",ko:"하나. 아서가 말했어요. 나 한 개 있어."},
+  ]},
+  {scene:"Running Out of Time",lines:[
+    {en:"My bag is getting full, said Francine.",ko:"내 봉지가 가득 차가고 있어. 프랜신이 말했어요."},
+    {en:"I'm going to need a calculator to compute my total, the Brain said.",ko:"합계를 계산하려면 계산기가 필요할 것 같아. 브레인이 말했어요."},
+    {en:"Muffy checked her stopwatch. Six more minutes! she yelled.",ko:"머피가 스톱워치를 확인했어요. 6분 더 남았어! 머피가 소리쳤어요."},
+    {en:"Can't we just start counting? asked Buster. There can't be that many jelly beans left.",ko:"이제 그냥 세면 안 돼? 버스터가 물었어요. 남은 젤리빈이 그렇게 많지는 않을 텐데."},
+    {en:"Yeah, said Binky. I was like a vacuum cleaner. I sucked up all the jelly beans in my path.",ko:"맞아. 빙키가 말했어요. 나 진공청소기 같았어. 내 길에 있는 젤리빈을 다 빨아들였거든."},
+    {en:"No way, said Arthur. I'm still looking.",ko:"안 돼. 아서가 말했어요. 나 아직 찾는 중이야."},
+    {en:"Rules are rules, Muffy said. Five more minutes!",ko:"규칙은 규칙이야. 머피가 말했어요. 5분 더 남았어!"},
+  ]},
+  {scene:"Eating Jelly Beans",lines:[
+    {en:"Buster looked at his bag of jelly beans. I have so many, he thought. It couldn't hurt to eat just one.",ko:"버스터가 자기 젤리빈 봉지를 바라봤어요. 이렇게 많은데, 버스터가 생각했어요. 하나쯤 먹어도 괜찮겠지."},
+    {en:"Binky saw Buster eating a jelly bean. If Buster can spare one, so can I, he figured.",ko:"빙키가 버스터가 젤리빈을 먹는 걸 봤어요. 버스터가 하나 쓸 수 있으면, 나도 마찬가지지. 빙키가 생각했어요."},
+    {en:"Before long, Fern was dipping into her bag too. Then Francine, then the Brain.",ko:"곧 퍼언도 자기 봉지에 손을 넣기 시작했어요. 그다음 프랜신, 그다음 브레인."},
+    {en:"Are these blue ones cotton candy? asked Fern.",ko:"이 파란 것들이 솜사탕 맛이야? 퍼언이 물었어요."},
+    {en:"I think so. And the brown ones are root beer, said Binky.",ko:"그런 것 같아. 갈색은 루트비어야. 빙키가 말했어요."},
+    {en:"Why aren't there any pink ones? Francine asked.",ko:"왜 분홍색이 하나도 없어? 프랜신이 물었어요."},
+    {en:"Muffy blushed. I ate all the pink ones before the party.",ko:"머피의 얼굴이 빨개졌어요. 파티 전에 분홍색 다 먹어버렸어."},
+    {en:"Then she looked down at her stopwatch. Oops! Time's up! she called.",ko:"그러더니 스톱워치를 내려다봤어요. 앗! 시간 다 됐어! 머피가 외쳤어요."},
+  ]},
+  {scene:"Counting & Winner",lines:[
+    {en:"Everyone lined up and poured out their jelly beans.",ko:"모두가 줄을 서서 젤리빈을 쏟아냈어요."},
+    {en:"Muffy walked down the line counting.",ko:"머피가 줄을 따라 걸으며 세었어요."},
+    {en:"Fern — seven. The Brain — six. Three for you, Binky. And nine for Francine.",ko:"퍼언 — 일곱. 브레인 — 여섯. 빙키 너는 셋. 그리고 프랜신은 아홉."},
+    {en:"Then she came to Arthur.",ko:"그런 다음 머피가 아서에게 왔어요."},
+    {en:"1, 2, 3... Muffy began. She kept counting. 12, 13, 14... Arthur, you won!",ko:"1, 2, 3... 머피가 시작했어요. 계속 세었어요. 12, 13, 14... 아서, 네가 이겼어!"},
+    {en:"I did? said Arthur.",ko:"내가요? 아서가 말했어요."},
+    {en:"He did? said Francine.",ko:"걔가? 프랜신이 말했어요."},
+  ]},
+  {scene:"Ending",lines:[
+    {en:"Muffy handed Arthur the big chocolate egg.",ko:"머피가 아서에게 큰 초콜릿 달걀을 건네주었어요."},
+    {en:"I hope you'll all help me eat this, Arthur said.",ko:"다들 이거 먹는 거 도와줬으면 좋겠어. 아서가 말했어요."},
+    {en:"Really? said Buster.",ko:"정말? 버스터가 말했어요."},
+    {en:"Of course, said Arthur. I could never finish it.",ko:"물론이지. 아서가 말했어요. 나 혼자 다 못 먹어."},
+    {en:"After all, you know how slow I am.",ko:"그래도, 내가 얼마나 느린지 알잖아."},
+  ]},
+];
+const questions=[
+  {q:"Why did the other kids laugh when Arthur said 'Mine too' about winning?",sub:"아서가 '나도 이길 것 같아'고 했을 때 다들 왜 웃었나요?",opts:["Arthur was wearing funny clothes","Arthur was always last in every game — he is so slow","Arthur did not know what the prize was","Arthur forgot the rules of the game"],ans:1,hint:"Francine said: 'It's just that you're so slow.' Arthur was last in every game!"},
+  {q:"What was the grand prize for the Jelly Bean hunt?",sub:"젤리빈 찾기의 대상은 무엇이었나요?",opts:["A bag of candy","A gift card","A big solid chocolate egg","A jelly bean trophy"],ans:2,hint:"Muffy smiled and said 'Ta-da! And it's solid chocolate!'"},
+  {q:"What did Arthur do differently from everyone else during the hunt?",sub:"젤리빈 찾기 중 아서는 다른 아이들과 무엇이 달랐나요?",opts:["He cheated by hiding jelly beans in his pockets","He barely moved and collected only a few","He ran the fastest but tripped and dropped his bag","He asked Muffy for extra time"],ans:1,hint:"'Everyone raced around the yard — everyone except Arthur. He hardly moved at all.'"},
+  {q:"Why did Buster start eating jelly beans from his own bag?",sub:"버스터는 왜 자기 봉지에서 젤리빈을 꺼내 먹기 시작했나요?",opts:["He was too hungry to wait","He wanted to make room for more","He thought he had so many it couldn't hurt to eat just one","Binky told him to eat some"],ans:2,hint:"'I have so many,' he thought. 'It couldn't hurt to eat just one.'"},
+  {q:"What flavor were the brown jelly beans?",sub:"갈색 젤리빈은 무슨 맛이었나요?",opts:["Chocolate","Root beer","Cotton candy","Grape"],ans:1,hint:"'The brown ones are root beer,' said Binky."},
+  {q:"Why weren't there any pink jelly beans to find?",sub:"찾을 분홍색 젤리빈이 없었던 이유는 무엇인가요?",opts:["Arthur already found them all","They were hidden in a secret spot","Muffy ate all the pink ones before the party","The pink ones were never put out"],ans:2,hint:"Muffy blushed and admitted: 'I ate all the pink ones before the party.'"},
+  {q:"Who had the fewest jelly beans at the counting?",sub:"세는 시간에 젤리빈이 가장 적었던 사람은 누구인가요?",opts:["Fern","The Brain","Binky","Francine"],ans:2,hint:"Muffy counted: Fern 7, Brain 6, Binky 3, Francine 9. Binky had the fewest!"},
+  {q:"How many jelly beans did Arthur collect?",sub:"아서는 젤리빈을 몇 개 모았나요?",opts:["1","9","7","14"],ans:3,hint:"Muffy counted: '12, 13, 14... Arthur, you won!'"},
+  {q:"Why did Arthur win even though he barely moved?",sub:"아서는 거의 움직이지 않았는데 왜 이겼나요?",opts:["He found a secret stash of jelly beans","The others all ate from their bags, leaving him with the most","He cheated by taking others' jelly beans","Muffy made a mistake counting"],ans:1,hint:"Everyone ate jelly beans from their own bags — so their final count was much lower than Arthur's!"},
+  {q:"What did Arthur do with the chocolate egg after he won?",sub:"아서는 이긴 후 초콜릿 달걀을 어떻게 했나요?",opts:["He ate it all by himself","He gave it back to Muffy","He shared it with all his friends","He saved it to eat at home"],ans:2,hint:"'I hope you'll all help me eat this,' Arthur said. He shared it — and made a joke about being slow!"},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/'/g,"&#39;")}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆','Perfect score! You totally mastered Arthur\'s Jelly Beans!']:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>

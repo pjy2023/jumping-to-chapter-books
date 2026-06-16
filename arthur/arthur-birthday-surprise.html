@@ -1,0 +1,401 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur's Birthday Surprise — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --main:#FF8C42;--dark:#c8601a;--light:#fff3eb;--cborder:#fbd5b0;--ctext:#7d3a00;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#fdf8ff;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#e8dff0;
+    --radius:16px;--shadow:0 4px 20px rgba(155,89,182,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--dark);background:var(--light);padding:4px 12px;border-radius:99px;border:1.5px solid var(--cborder);flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.25rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--dark);border-color:var(--cborder);background:var(--light)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--dark);border-bottom-color:var(--dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--light);border:1.5px solid var(--cborder);border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:var(--ctext);font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:var(--cborder);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--dark);background:var(--light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--dark);background:var(--light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--light)}
+  .story-en.speaking{background:var(--light);color:var(--dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid var(--cborder);display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--dark);border-color:var(--dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--main);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--dark);background:var(--light);border:1.5px solid var(--cborder);border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{filter:brightness(.95)}
+  .ko-toggle.open{background:var(--cborder)}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--main),var(--dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:var(--cborder);background:var(--light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{filter:brightness(.9);transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--dark);border:2px solid var(--dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--dark);color:#fff}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:768px){.word-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Arthur Starter #07</div>
+    <div class="header-title">Arthur's Birthday <span>Surprise</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid var(--cborder);background:#fff;color:var(--dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Arthur's Birthday Surprise · Marc Brown · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"birthday party",ko:"생일 파티 (birthday: 생일 / party: 파티, 모임)"},
+  {en:"balloons",ko:"풍선 (공기나 가스를 불어 넣어 부풀리는 것)"},
+  {en:"streamers",ko:"긴 리본 장식, 색종이 테이프 (stream: 흐르다 → 길게 흘러내리는 것)"},
+  {en:"ordered",ko:"명령했다; 주문했다 (order: 명령하다; 주문하다)"},
+  {en:"your highness",ko:"전하 (높은 분을 부르는 말; high: 높은 + -ness: ~함)"},
+  {en:"demanded",ko:"강하게 요구했다 (demand: 강하게 요구하다)"},
+  {en:"reminded",ko:"상기시켰다 (remind: 다시 생각나게 하다; re-: 다시 + mind: 마음)"},
+  {en:"guests",ko:"손님들, 초대받은 사람들 (guest: 초대된 손님)"},
+  {en:"ding dong",ko:"딩동 (초인종 소리)"},
+  {en:"cake",ko:"케이크"},
+  {en:"ice cream",ko:"아이스크림 (ice: 얼음 + cream: 크림)"},
+  {en:"candles",ko:"양초 (candle: 양초)"},
+  {en:"blew out",ko:"불어서 껐다 (blow: 불다 → blew: 과거형 + out: 꺼지게)"},
+  {en:"present",ko:"선물; 현재; 출석한 (present는 뜻이 세 가지!)"},
+  {en:"kept looking out the window",ko:"계속 창밖을 바라봤다 (keep + -ing: 계속 ~하다)"},
+  {en:"surprise",ko:"놀라움, 깜짝 선물; 놀라게 하다 (surprise: 동사·명사 모두 가능)"},
+  {en:"a little late",ko:"좀 늦은 (a little: 조금 / late: 늦은)"},
+  {en:"stomach",ko:"위, 배 (소화기관; 배 부분)"},
+  {en:"sick to her stomach",ko:"속이 안 좋다, 배탈 (sick: 아픈 / stomach: 위, 배)"},
+  {en:"ruined",ko:"망쳤다, 망가뜨렸다 (ruin: 망치다, 폐허로 만들다)"},
+  {en:"pin the tail on the donkey",ko:"당나귀 꼬리 붙이기 게임 (pin: 핀으로 꽂다 / tail: 꼬리 / donkey: 당나귀)"},
+  {en:"muttered",ko:"중얼거렸다 (mutter: 작은 소리로 중얼거리다)"},
+  {en:"miraculous recovery",ko:"기적적인 회복 (miracle: 기적 + -ous: ~한 / recover: 회복하다)"},
+  {en:"squeaky voice",ko:"삐걱거리는 목소리 (squeak: 삐걱거리다 + -y: ~한)"},
+  {en:"entertain",ko:"즐겁게 해주다 (entertainment: 오락, 연예)"},
+  {en:"of course",ko:"물론이죠, 당연히 (course: 과정 → of course: 당연한 흐름으로)"},
+  {en:"utterly amazing",ko:"완전히 놀라운 (utter: 완전한 + -ly / amaze: 놀라게 하다)"},
+  {en:"magic show",ko:"마술 쇼 (magic: 마법, 마술)"},
+  {en:"pull a rabbit out of a hat",ko:"모자에서 토끼를 꺼내다 (마술사의 대표적인 묘기)"},
+  {en:"witness",ko:"목격하다; 증인 (목격한 사람 → 본 것을 증언하는 사람)"},
+  {en:"incredible",ko:"믿을 수 없는, 놀라운 (in-: 아닌 + credible: 믿을 수 있는)"},
+  {en:"Feats of Daring",ko:"용감한 묘기 (feat: 묘기, 위업 / daring: 용감한, 대담한)"},
+  {en:"coward",ko:"겁쟁이 (↔ brave: 용감한)"},
+  {en:"entitled to",ko:"~할 자격이 있다 (entitle: 자격을 주다; 제목을 붙이다)"},
+  {en:"wild and crazy",ko:"신나고 엉뚱한 (wild: 야생의, 거친 / crazy: 미친, 엉뚱한)"},
+  {en:"milkshakes",ko:"밀크셰이크; 메리무카의 흔들기 놀이 이름 (milk: 우유 + shake: 흔들다)"},
+  {en:"imitation",ko:"흉내, 모방 (imitate: 흉내내다)"},
+  {en:"the worst",ko:"최악의 (bad → worse → the worst: 나쁜의 최상급)"},
+  {en:"hug",ko:"포옹하다; 포옹"},
+  {en:"moaned",ko:"낮게 신음했다, 불평했다 (moan: 낮게 신음하다)"},
+  {en:"sighed",ko:"한숨을 쉬었다 (sigh: 한숨을 쉬다)"},
+  {en:"purple",ko:"보라색"},
+  {en:"in person",ko:"직접, 실제로 (person: 사람 → 사람이 직접)"},
+  {en:"awesome",ko:"굉장한, 놀라운 (awe: 경외감 + -some: ~한)"},
+  {en:"the best present",ko:"최고의 선물 (best: good의 최상급 / present: 선물)"},
+];
+
+const starWords=[
+  {en:"your highness",ko:"전하",hint:"DW is acting like a queen — ordering everyone around the party!"},
+  {en:"kept looking out the window",ko:"계속 창밖을 쳐다봤다",hint:"keep + -ing = 계속 ~하다. DW was watching for her big surprise!"},
+  {en:"sick to her stomach",ko:"속이 안 좋다, 배탈",hint:"Stomach = 배. Fun fact: cows have FOUR stomachs — Emily knew!"},
+  {en:"I made a miraculous recovery",ko:"기적적으로 나았어요",hint:"Mary Moo Cow mysteriously got better just in time for the party!"},
+  {en:"it was the best present I got all day",ko:"오늘 받은 선물 중 최고야",hint:"DW hugs Arthur — even though his Mary Moo Cow imitation was terrible!"},
+];
+
+const story=[
+  {scene:"Title",lines:[
+    {en:"Arthur's Birthday Surprise.",ko:"아서의 깜짝 생일 선물"},
+  ]},
+  {scene:"Party preparations",lines:[
+    {en:"It was DW's birthday. Her party was about to start.",ko:"DW의 생일이었어요. 파티가 곧 시작될 참이었어요."},
+    {en:"More balloons! DW ordered.",ko:"풍선 더! DW가 명령했어요."},
+    {en:"Yes, your highness, said Dad.",ko:"네, 전하. 아빠가 말했어요."},
+    {en:"More streamers! DW demanded.",ko:"색종이 테이프 더! DW가 요구했어요."},
+    {en:"More streamers, please, Mom reminded her.",ko:"색종이 테이프 더, 부탁해요. 엄마가 상기시켜줬어요."},
+  ]},
+  {scene:"Guests arrive",lines:[
+    {en:"Ding dong! My guests! cried DW. She ran to the front door.",ko:"딩동! 내 손님들이야! DW가 소리쳤어요. 현관문으로 달려갔어요."},
+    {en:"Happy birthday, DW! said Emily.",ko:"생일 축하해, DW! 에밀리가 말했어요."},
+    {en:"The Tibble Twins were right behind her.",ko:"티블 쌍둥이가 바로 뒤따라왔어요."},
+    {en:"Where's the cake? asked Tommy. Where's the ice cream? asked Timmy.",ko:"케이크는 어딨어? 토미가 물었어요. 아이스크림은 어딨어? 티미가 물었어요."},
+    {en:"When do we eat? they asked together.",ko:"언제 먹어요? 둘이 함께 물었어요."},
+  ]},
+  {scene:"Birthday song",lines:[
+    {en:"Happy birthday, dear DW! Happy birthday to you! Everyone sang.",ko:"생일 축하합니다, DW! 생일 축하합니다! 다들 노래 불렀어요."},
+    {en:"DW blew out her candles. She ate her cake. She opened her presents.",ko:"DW가 양초를 불어서 껐어요. 케이크를 먹었어요. 선물들을 열었어요."},
+    {en:"But the whole time, she kept looking out the window.",ko:"그런데 그 내내 창밖을 계속 쳐다봤어요."},
+    {en:"What are you waiting for? asked Tommy.",ko:"뭘 기다리는 거야? 토미가 물었어요."},
+    {en:"It's a surprise, DW said. A surprise? That's a little late.",ko:"깜짝 선물이야. DW가 말했어요. 깜짝 선물? 좀 늦지 않나."},
+  ]},
+  {scene:"Bad news",lines:[
+    {en:"Just then the phone rang. Hello? said Dad. Oh no. I see. Goodbye.",ko:"바로 그때 전화가 울렸어요. 여보세요? 아빠가 말했어요. 아, 이런. 알겠어요. 잘 있어요."},
+    {en:"What is it? asked DW. What's wrong?",ko:"뭐예요? DW가 물었어요. 무슨 일이에요?"},
+    {en:"I'm afraid Mary Moo Cow can't come, Dad said. She's feeling sick to her stomach.",ko:"안타깝게도 메리무카가 올 수 없대요, 아빠가 말했어요. 배가 아프대요."},
+    {en:"You mean stomachs, said Emily. Cows have four, you know.",ko:"위 말하는 거지. 에밀리가 말했어요. 소는 위가 네 개나 있거든."},
+    {en:"Wow, Mary Moo Cow would have been great, said Timmy.",ko:"와, 메리무카가 왔으면 정말 좋았을 텐데. 티미가 말했어요."},
+    {en:"I wonder if she looks as purple in person. Now we'll never know, sighed Tommy.",ko:"실제로도 그렇게 보라색일까 궁금한데. 이제 영영 모르겠네. 토미가 한숨을 쉬었어요."},
+    {en:"My party's ruined! moaned DW.",ko:"파티 망쳤잖아! DW가 투덜댔어요."},
+  ]},
+  {scene:"Games begin",lines:[
+    {en:"No it's not, said Dad. Let's play some games. How about pin the tail on the donkey?",ko:"그렇지 않아. 아빠가 말했어요. 게임 하자. 당나귀 꼬리 붙이기 어때?"},
+    {en:"I know that tail's in here somewhere, muttered Dad.",ko:"꼬리가 분명 여기 어딘가에 있을 텐데. 아빠가 중얼거렸어요."},
+  ]},
+  {scene:"Mary Moo Cow arrives!",lines:[
+    {en:"It's Mary Moo Cow! cried DW.",ko:"메리무카다! DW가 소리쳤어요."},
+    {en:"I thought you couldn't come! said DW.",ko:"못 올 줄 알았는데요! DW가 말했어요."},
+    {en:"I made a miraculous recovery, Mary Moo Cow answered in a squeaky voice.",ko:"저는 기적적으로 회복했어요. 메리무카가 삐걱거리는 목소리로 대답했어요."},
+    {en:"What are you going to do? DW asked.",ko:"뭘 할 거예요? DW가 물었어요."},
+    {en:"I'm going to entertain you, of course! said Mary Moo Cow.",ko:"당연히 여러분을 즐겁게 해드릴 거예요! 메리무카가 말했어요."},
+  ]},
+  {scene:"The performance",lines:[
+    {en:"First comes my utterly amazing magic show!",ko:"먼저 저의 정말 놀라운 마술 쇼입니다!"},
+    {en:"Watch as I pull a rabbit out of a hat.",ko:"제가 모자에서 토끼를 꺼내는 걸 보세요."},
+    {en:"Next, witness my incredible Feats of Daring.",ko:"다음은 저의 믿을 수 없는 용감한 묘기를 직접 목격하세요."},
+    {en:"I may be a cow, but I'm no coward!",ko:"저는 소일지 모르지만, 겁쟁이는 아니에요!"},
+    {en:"Last but not least, you are each entitled to one of my world-famous wild and crazy rides. I call them milkshakes!",ko:"마지막이지만 절대 빠질 수 없는, 여러분 각자 저의 세계적으로 유명한 신나고 엉뚱한 놀이를 하나씩 탈 자격이 있어요. 저는 밀크셰이크라고 불러요!"},
+  ]},
+  {scene:"The big reveal",lines:[
+    {en:"When it was time to leave, no one wanted to go.",ko:"떠날 시간이 됐지만 아무도 가고 싶지 않았어요."},
+    {en:"That was fun! said Emily. Awesome milkshakes! said Tommy.",ko:"정말 재밌었어! 에밀리가 말했어요. 밀크셰이크 굉장했어! 토미가 말했어요."},
+    {en:"Maybe Mary Moo Cow can come to our birthday party too! said Timmy.",ko:"어쩌면 메리무카가 우리 생일 파티에도 올 수 있을 거야! 티미가 말했어요."},
+    {en:"Arthur! said DW. That was the worst Mary Moo Cow imitation I've ever seen!",ko:"아서! DW가 말했어요. 내가 본 것 중 최악의 메리무카 흉내야!"},
+    {en:"It was, said Arthur.",ko:"그랬어. 아서가 말했어요."},
+    {en:"DW gave him a hug. But it was the best present I got all day.",ko:"DW가 아서를 안아줬어요. 하지만 그것은 오늘 하루 내가 받은 선물 중 최고였어요."},
+  ]},
+];
+
+const questions=[
+  {q:"What was DW ordering at her party?",sub:"DW는 파티에서 무엇을 달라고 명령했나요?",opts:["More cake","More streamers","More balloons","More ice cream"],ans:1,hint:"Clue: More streamers! DW demanded."},
+  {q:"What did the Tibble Twins ask about right away?",sub:"티블 쌍둥이는 도착하자마자 무엇을 물었나요?",opts:["Where are the games?","Where is Arthur?","Where's the cake and ice cream?","Where's the surprise?"],ans:2,hint:"Clue: Where's the cake? Where's the ice cream? When do we eat?"},
+  {q:"What was the surprise DW had been waiting for?",sub:"DW가 기다리던 깜짝 선물은 무엇이었나요?",opts:["A new toy","Mary Moo Cow","A big birthday cake","A puppy"],ans:1,hint:"Clue: DW kept looking out the window — she was waiting for Mary Moo Cow!"},
+  {q:"Why couldn't Mary Moo Cow come at first?",sub:"메리무카가 처음에 왜 올 수 없었나요?",opts:["She was too busy","She forgot the address","She was sick to her stomach","She was on TV"],ans:2,hint:"Clue: She's feeling sick to her stomach."},
+  {q:"How many stomachs do cows have?",sub:"소의 위는 몇 개인가요?",opts:["One","Two","Three","Four"],ans:3,hint:"Emily told everyone: Cows have four, you know!"},
+  {q:"What did DW say when she heard Mary Moo Cow wasn't coming?",sub:"메리무카가 못 온다는 소식을 듣고 DW는 뭐라고 했나요?",opts:["That's okay!","My party's ruined!","Let's play games!","I don't care!"],ans:1,hint:"Clue: My party's ruined! moaned DW."},
+  {q:"What was the FIRST thing Mary Moo Cow did at the party?",sub:"메리무카가 파티에서 첫 번째로 한 것은 무엇인가요?",opts:["A magic show","Milkshakes","Feats of Daring","A birthday song"],ans:0,hint:"Clue: First comes my utterly amazing magic show!"},
+  {q:"What did Mary Moo Cow call her wild and crazy rides?",sub:"메리무카는 자신의 신나는 놀이를 뭐라고 불렀나요?",opts:["Roller coasters","Moo rides","Milkshakes","Spin cycles"],ans:2,hint:"Clue: I call them milkshakes!"},
+  {q:"Who was really Mary Moo Cow?",sub:"메리무카의 정체는 누구였나요?",opts:["Dad","Mom","Arthur","Emily"],ans:2,hint:"Clue: DW said Arthur! — That was the worst Mary Moo Cow imitation I've ever seen."},
+  {q:"What did DW say about Arthur's surprise at the end?",sub:"마지막에 DW는 아서의 깜짝 선물에 대해 뭐라고 했나요?",opts:["It was perfect!","It was the best present I got all day","It was just okay","She did not say anything"],ans:1,hint:"DW hugged Arthur and said: it was the best present I got all day."},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/'/g,"&#39;")}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆',"Perfect score! You totally mastered Arthur's Birthday Surprise!"]:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>

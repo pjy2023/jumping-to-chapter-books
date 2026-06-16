@@ -1,0 +1,13 @@
+# Claude Code 설정
+.claude/
+
+# Node (혹시 모르니)
+node_modules/
+
+# OS 생성 파일
+.DS_Store
+Thumbs.db
+
+# 에디터
+.vscode/
+*.swp

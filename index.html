@@ -1,0 +1,467 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jumping to Chapter Books — 빛들을 위한 영어 학습</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fffdf7;
+    --card: #ffffff;
+    --text: #2c2c2c;
+    --muted: #888;
+    --border: #ede9df;
+    --accent: #FF8C42;
+    --accent-light: #fff3eb;
+    --green: #3aab6f;
+    --green-light: #edf9f2;
+    --blue: #2EC4B6;
+    --blue-light: #e8faf8;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,.06);
+    --shadow-md: 0 6px 24px rgba(0,0,0,.10);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.13);
+    --radius: 20px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #2c3e50 0%, #3d5a80 50%, #2c3e50 100%);
+    padding: 3.5rem 1.5rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(255,140,66,.20) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 30%, rgba(46,196,182,.15) 0%, transparent 60%);
+  }
+  .hero-inner { position: relative; max-width: 700px; margin: 0 auto; }
+
+  .hero-eyebrow {
+    display: inline-block;
+    font-family: 'Fredoka One', 'Noto Sans KR', sans-serif;
+    font-size: .85rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.6);
+    margin-bottom: .75rem;
+  }
+  .hero-title {
+    font-family: 'Fredoka One', 'Noto Sans KR', sans-serif;
+    font-size: clamp(1.9rem, 5.5vw, 2.9rem);
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: .5rem;
+  }
+  .hero-title span { color: #FF8C42; }
+  .hero-sub {
+    font-size: .95rem;
+    color: rgba(255,255,255,.65);
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+  }
+
+  .hero-stats {
+    display: inline-flex;
+    gap: 1.5rem;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 99px;
+    padding: .55rem 1.5rem;
+    font-size: .82rem;
+    color: rgba(255,255,255,.75);
+    font-weight: 700;
+  }
+  .hero-stats span { display: flex; align-items: center; gap: 5px; }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 5rem;
+  }
+
+  .section-label {
+    font-family: 'Fredoka One', 'Noto Sans KR', sans-serif;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── SERIES GRID ── */
+  .series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-bottom: 3rem;
+  }
+
+  /* ── SERIES CARD ── */
+  .series-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .18s, box-shadow .18s, border-color .18s;
+    position: relative;
+  }
+  .series-card.ready {
+    cursor: pointer;
+  }
+  .series-card.ready:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+  }
+  .series-card.orange-card { border-color: #fbd5b0; }
+  .series-card.orange-card:hover { border-color: var(--accent); }
+  .series-card.teal-card { border-color: #a3e4de; }
+  .series-card.teal-card:hover { border-color: var(--blue); }
+  .series-card.coming {
+    opacity: .6;
+    cursor: default;
+  }
+
+  .card-banner {
+    height: 10px;
+    width: 100%;
+  }
+
+  .card-body {
+    padding: 1.4rem 1.5rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .card-series-name {
+    font-family: 'Fredoka One', 'Noto Sans KR', sans-serif;
+    font-size: 1.45rem;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .card-author {
+    font-size: .82rem;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .card-desc {
+    font-size: .88rem;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .meta-tag {
+    font-size: .75rem;
+    font-weight: 700;
+    border-radius: 99px;
+    padding: 3px 10px;
+    border: 1px solid;
+  }
+  .meta-tag.orange {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-color: #f5c49a;
+  }
+  .meta-tag.blue {
+    background: var(--blue-light);
+    color: var(--blue);
+    border-color: #7ee8e2;
+  }
+  .meta-tag.green {
+    background: var(--green-light);
+    color: #1f7a4a;
+    border-color: #a3dbb8;
+  }
+  .meta-tag.gray {
+    background: #f2f2f0;
+    color: #aaa;
+    border-color: #e0e0dc;
+  }
+
+  .card-progress {
+    margin-top: 4px;
+  }
+  .prog-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .prog-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .prog-fill {
+    height: 6px;
+    border-radius: 99px;
+    transition: width .6s ease;
+  }
+  .prog-fill.orange { background: linear-gradient(90deg, var(--accent), #f5b97e); }
+  .prog-fill.blue   { background: linear-gradient(90deg, var(--blue), #7ee8e2); }
+
+  .card-cta {
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: .8rem;
+    font-weight: 800;
+    border-radius: 99px;
+    padding: 4px 12px;
+    border: 1px solid;
+  }
+  .cta-badge.ready {
+    background: var(--green-light);
+    color: #1f7a4a;
+    border-color: #a3dbb8;
+  }
+  .cta-badge.coming {
+    background: #f2f2f0;
+    color: #aaa;
+    border-color: #e0e0dc;
+  }
+  .cta-arrow {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    transition: background .15s, transform .15s;
+  }
+  .series-card.orange-card .cta-arrow {
+    background: var(--accent-light);
+    border: 1.5px solid #fbd5b0;
+    color: var(--accent);
+  }
+  .series-card.orange-card:hover .cta-arrow {
+    background: var(--accent);
+    color: #fff;
+    transform: translateX(2px);
+  }
+  .series-card.teal-card .cta-arrow {
+    background: var(--blue-light);
+    border: 1.5px solid #a3e4de;
+    color: var(--blue);
+  }
+  .series-card.teal-card:hover .cta-arrow {
+    background: var(--blue);
+    color: #fff;
+    transform: translateX(2px);
+  }
+
+  /* ── HOW TO USE ── */
+  .how-box {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+  }
+  .how-title {
+    font-family: 'Fredoka One', 'Noto Sans KR', sans-serif;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: .75rem;
+  }
+  .how-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .how-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: .88rem;
+    line-height: 1.5;
+    color: #555;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    border: 1.5px solid #f5c49a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .72rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin-top: 1px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: .75rem;
+    color: #ccc;
+  }
+
+  @media (max-width: 768px) {
+    .series-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .hero-stats { gap: .75rem; font-size: .72rem; flex-wrap: wrap; justify-content: center; }
+    .hero-title { font-size: 1.7rem; }
+    .card-cta { flex-wrap: wrap; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">빛들을 위한 영어 학습</div>
+    <h1 class="hero-title"><span>Jumping to</span> Chapter Books</h1>
+    <p class="hero-sub">챕터북으로 도약하는 빛들의 영어 리딩 여정!<br>시리즈를 골라 단어 · 해석 · 발음 · 퀴즈까지 한 번에 📚</p>
+    <div class="hero-stats">
+      <span>📚 시리즈 2종</span>
+      <span>✅ 완성 7권</span>
+      <span>📖 총 21권</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+  <div class="section-label">📚 리딩 시리즈 모음</div>
+
+  <div class="series-grid">
+
+    <!-- Arthur Series -->
+    <a class="series-card ready orange-card" href="arthur/index.html">
+      <div class="card-banner" style="background: linear-gradient(90deg, #FF8C42, #ffb07a);"></div>
+      <div class="card-body">
+        <div class="card-series-name">🐻 아서 시리즈</div>
+        <div class="card-author">Marc Brown · Arthur Adventure</div>
+        <div class="card-desc">
+          아서와 친구들의 유쾌한 일상 이야기! 초등 영어 필수 표현이 가득 담긴 리딩 시리즈예요.
+        </div>
+        <div class="card-meta">
+          <span class="meta-tag orange">📖 13권</span>
+          <span class="meta-tag green">✅ 5권 완성</span>
+          <span class="meta-tag orange">🔊 발음</span>
+          <span class="meta-tag orange">✏️ 퀴즈</span>
+        </div>
+        <div class="card-progress">
+          <div class="prog-label">
+            <span>학습 진행도</span>
+            <span>5 / 13권</span>
+          </div>
+          <div class="prog-track">
+            <div class="prog-fill orange" style="width: 38.5%;"></div>
+          </div>
+        </div>
+        <div class="card-cta">
+          <span class="cta-badge ready">✅ 학습 시작</span>
+          <div class="cta-arrow">→</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Henry & Mudge Series -->
+    <a class="series-card ready teal-card" href="henry-mudge/index.html">
+      <div class="card-banner" style="background: linear-gradient(90deg, #2EC4B6, #7ee8e2);"></div>
+      <div class="card-body">
+        <div class="card-series-name">🐕 헨리앤머지 시리즈</div>
+        <div class="card-author">Cynthia Rylant · Henry and Mudge</div>
+        <div class="card-desc">
+          헨리와 강아지 머지의 따뜻한 우정 이야기! 짧고 쉬운 문장으로 영어 읽기에 자신감을 키워요.
+        </div>
+        <div class="card-meta">
+          <span class="meta-tag blue">📖 8권</span>
+          <span class="meta-tag green">✅ 2권 완성</span>
+          <span class="meta-tag blue">🔊 발음</span>
+          <span class="meta-tag blue">✏️ 퀴즈</span>
+
+        </div>
+        <div class="card-progress">
+          <div class="prog-label">
+            <span>학습 진행도</span>
+            <span>2 / 8권</span>
+          </div>
+          <div class="prog-track">
+            <div class="prog-fill blue" style="width: 25%;"></div>
+          </div>
+        </div>
+        <div class="card-cta">
+          <span class="cta-badge ready">✅ 학습 시작</span>
+          <div class="cta-arrow">→</div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- HOW TO USE -->
+  <div class="how-box">
+    <div class="how-title">💡 이렇게 공부해요</div>
+    <div class="how-steps">
+      <div class="how-step">
+        <span class="step-num">1</span>
+        <span><b>📚 시리즈 선택</b> — 읽고 싶은 시리즈를 골라요.</span>
+      </div>
+      <div class="how-step">
+        <span class="step-num">2</span>
+        <span><b>📖 Words</b> — 단어 카드를 클릭하면 영어 발음이 나와요. 먼저 단어부터 익혀요!</span>
+      </div>
+      <div class="how-step">
+        <span class="step-num">3</span>
+        <span><b>📝 Story</b> — 영어 문장을 읽고, ▶ 버튼으로 발음을 들어요. 뜻은 <b>뜻 보기</b>로 확인!</span>
+      </div>
+      <div class="how-step">
+        <span class="step-num">4</span>
+        <span><b>✏️ Quiz</b> — 10문제에 도전! 몇 개나 맞출 수 있을까요? 🎯</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>Jumping to Chapter Books · 빛들을 위한 영어 학습 · 아서 · 헨리앤머지 시리즈 🌟</footer>
+
+</body>
+</html>

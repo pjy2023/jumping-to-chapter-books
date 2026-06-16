@@ -1,0 +1,476 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아서 시리즈 스타터 — 영어 학습</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fffdf7;
+    --card: #ffffff;
+    --text: #2c2c2c;
+    --muted: #888;
+    --border: #ede9df;
+    --accent: #FF8C42;
+    --accent-light: #fff3eb;
+    --green: #3aab6f;
+    --green-light: #edf9f2;
+    --blue: #3a86c8;
+    --blue-light: #eaf3fb;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,.06);
+    --shadow-md: 0 6px 24px rgba(0,0,0,.10);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.13);
+    --radius: 20px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #7d3a00 0%, #c8601a 50%, #FF8C42 100%);
+    padding: 3.5rem 1.5rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 60%, rgba(255,255,255,.10) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 20%, rgba(255,255,255,.07) 0%, transparent 50%);
+  }
+  .hero-inner { position: relative; max-width: 700px; margin: 0 auto; }
+
+  .hero-eyebrow {
+    display: inline-block;
+    font-family: 'Fredoka One', 'Noto Sans KR', sans-serif;
+    font-size: .85rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.6);
+    margin-bottom: .75rem;
+  }
+  .hero-title {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: clamp(1.9rem, 5.5vw, 2.9rem);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.2;
+    letter-spacing: -.02em;
+    margin-bottom: .5rem;
+  }
+  .hero-title span { color: #ffe4c4; }
+  .hero-sub {
+    font-size: .95rem;
+    color: rgba(255,255,255,.65);
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+  }
+
+  .hero-stats {
+    display: inline-flex;
+    gap: 1.5rem;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 99px;
+    padding: .55rem 1.5rem;
+    font-size: .82rem;
+    color: rgba(255,255,255,.75);
+    font-weight: 700;
+  }
+  .hero-stats span { display: flex; align-items: center; gap: 5px; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem .5rem;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .progress-track {
+    height: 7px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 7px;
+    background: linear-gradient(90deg, var(--accent), #ffb07a);
+    border-radius: 99px;
+    width: 0%;
+    transition: width .6s ease;
+  }
+
+  /* ── MAIN GRID ── */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 5rem;
+  }
+
+  .grid-label {
+    font-family: 'Fredoka One', 'Noto Sans KR', sans-serif;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 2.5rem;
+  }
+
+  /* ── BOOK CARD ── */
+  .book-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.1rem 1rem;
+    transition: transform .18s, box-shadow .18s, border-color .18s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .book-card.ready {
+    cursor: pointer;
+    border-color: #fbd5b0;
+  }
+  .book-card.ready:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent);
+  }
+  .book-card.coming {
+    opacity: .55;
+    cursor: default;
+  }
+
+  .card-num {
+    font-family: 'Fredoka One', 'Noto Sans KR', sans-serif;
+    font-size: .75rem;
+    color: var(--muted);
+    letter-spacing: .05em;
+  }
+
+  .card-spine {
+    width: 36px;
+    height: 5px;
+    border-radius: 99px;
+    margin-bottom: 2px;
+  }
+
+  .card-title {
+    font-size: .95rem;
+    font-weight: 800;
+    line-height: 1.4;
+    color: var(--text);
+  }
+
+  .card-title em {
+    font-style: normal;
+    display: block;
+    font-size: .82rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .card-badge {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: .75rem;
+    font-weight: 800;
+    border-radius: 99px;
+    padding: 3px 10px;
+    width: fit-content;
+  }
+  .badge-ready {
+    background: var(--green-light);
+    color: #1f7a4a;
+    border: 1px solid #a3dbb8;
+  }
+  .badge-coming {
+    background: #f2f2f0;
+    color: #aaa;
+    border: 1px solid #e0e0dc;
+  }
+
+  .card-features {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+  }
+  .feat-tag {
+    font-size: .68rem;
+    font-weight: 700;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 99px;
+    padding: 2px 7px;
+  }
+
+  /* ── ARROW ── */
+  .card-arrow {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    border: 1.5px solid #fbd5b0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .75rem;
+    color: var(--accent);
+    transition: background .15s, transform .15s;
+  }
+  .book-card.ready:hover .card-arrow {
+    background: var(--accent);
+    color: #fff;
+    transform: translateX(2px);
+  }
+
+  /* ── HOW TO USE ── */
+  .how-box {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-top: .5rem;
+  }
+  .how-title {
+    font-family: 'Fredoka One', 'Noto Sans KR', sans-serif;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: .75rem;
+  }
+  .how-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .how-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: .88rem;
+    line-height: 1.5;
+    color: #555;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    border: 1.5px solid #f5c49a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .72rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin-top: 1px;
+  }
+
+  /* ── BACK LINK ── */
+  .back-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1rem 1.25rem 0;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1.5px solid var(--border);
+    border-radius: 99px;
+    padding: 6px 14px;
+    min-height: 44px;
+    transition: all .15s;
+    background: var(--card);
+  }
+  .back-link:hover {
+    color: var(--accent);
+    border-color: #f5c49a;
+    background: var(--accent-light);
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: .75rem;
+    color: #ccc;
+  }
+
+  @media (max-width: 768px) {
+    .book-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .book-grid { grid-template-columns: 1fr 1fr; }
+    .hero-stats { gap: .75rem; font-size: .72rem; flex-wrap: wrap; justify-content: center; }
+    .hero-title { font-size: 1.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Marc Brown · Arthur Adventure</div>
+    <h1 class="hero-title">아서 시리즈 <span>스타터</span></h1>
+    <p class="hero-sub">단어 · 해석 · 발음 · 퀴즈까지 한 번에!<br>권을 클릭해서 공부를 시작해요 📚</p>
+    <div class="hero-stats">
+      <span id="stat-total"></span>
+      <span id="stat-ready"></span>
+      <span id="stat-coming"></span>
+    </div>
+  </div>
+</div>
+
+<!-- BACK -->
+<div class="back-wrap">
+  <a class="back-link" href="../index.html">← 시리즈 홈</a>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-section">
+  <div class="progress-label">
+    <span>학습 진행도</span>
+    <span id="prog-label"></span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+  <div class="grid-label">✅ 학습 가능한 권</div>
+  <div class="book-grid" id="ready-grid"></div>
+
+  <div class="grid-label">🔜 준비중인 권</div>
+  <div class="book-grid" id="coming-grid"></div>
+
+  <!-- HOW TO USE -->
+  <div class="how-box">
+    <div class="how-title">💡 이렇게 공부해요</div>
+    <div class="how-steps">
+      <div class="how-step">
+        <span class="step-num">1</span>
+        <span><b>📖 Words</b> — 단어 카드를 클릭하면 영어 발음이 나와요. 먼저 단어부터 익혀요!</span>
+      </div>
+      <div class="how-step">
+        <span class="step-num">2</span>
+        <span><b>📝 Story</b> — 영어 문장을 읽고, ▶ 버튼으로 발음을 들어요. 뜻은 <b>뜻 보기</b>로 확인!</span>
+      </div>
+      <div class="how-step">
+        <span class="step-num">3</span>
+        <span><b>✏️ Quiz</b> — 10문제에 도전! 몇 개나 맞출 수 있을까요? 🎯</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>Jumping to Chapter Books · 아서 시리즈 · Arthur Adventure 🌟</footer>
+
+<script>
+const books = [
+  { num:"01", title:"Arthur and the Big Snow",    ko:"아서와 폭설이 내리는 날",    file:"arthur-big-snow.html",    color:"#aed6f1", ready:true  },
+  { num:"02", title:"Arthur and the Dog Show",    ko:"아서와 반려견 경연 대회",     file:null,                      color:"#a9dfbf", ready:false },
+  { num:"03", title:"Arthur Helps Out",           ko:"아서 집안일을 도와주다",      file:"arthur-helps-out.html",   color:"#f9ca8b", ready:true  },
+  { num:"04", title:"Arthur Jumps into Fall",     ko:"아서 가을에 빠져들다",        file:null,                      color:"#f1948a", ready:false },
+  { num:"05", title:"Arthur Tells a Story",       ko:"아서 이야기를 들려주다",      file:"arthur-tells-a-story.html", color:"#d7bde2", ready:true  },
+  { num:"06", title:"Arthur to the Rescue",       ko:"아서 구조에 나서다",          file:null,                      color:"#a3e4d7", ready:false },
+  { num:"07", title:"Arthur's Birthday Surprise", ko:"아서의 깜짝 생일 선물",       file:"arthur-birthday-surprise.html", color:"#fadbd8", ready:true  },
+  { num:"08", title:"Arthur's Heart Mix-Up",      ko:"아서의 부서진 심장",          file:null,                      color:"#f5cba7", ready:false },
+  { num:"09", title:"Arthur's Homework",          ko:"아서의 숙제",                 file:null,                      color:"#abebc6", ready:false },
+  { num:"10", title:"Arthur's Jelly Beans",       ko:"아서의 젤리빈",               file:"arthur-jelly-beans.html", color:"#fad7a0", ready:true  },
+  { num:"11", title:"Arthur's Mystery Babysitter",ko:"아서의 수수께끼 베이비시터",   file:null,                      color:"#a9cce3", ready:false },
+  { num:"12", title:"Arthur's Off to School",     ko:"아서의 학교 가는 날",          file:null,                      color:"#d5dbdb", ready:false },
+  { num:"13", title:"Arthur's Tree House",        ko:"아서의 나무 위의 집",          file:null,                      color:"#a9dfbf", ready:false },
+];
+
+function renderBooks() {
+  const readyGrid  = document.getElementById('ready-grid');
+  const comingGrid = document.getElementById('coming-grid');
+
+  books.forEach(b => {
+    const card = document.createElement(b.ready ? 'a' : 'div');
+    if (b.ready && b.file) card.href = b.file;
+    card.className = 'book-card ' + (b.ready ? 'ready' : 'coming');
+
+    card.innerHTML = `
+      ${b.ready ? `<div class="card-arrow">→</div>` : ''}
+      <div class="card-num">#${b.num}</div>
+      <div class="card-spine" style="background:${b.color}"></div>
+      <div class="card-title">
+        ${b.title}
+        <em>${b.ko}</em>
+      </div>
+      ${b.ready ? `
+        <div class="card-features">
+          <span class="feat-tag">🔊 발음</span>
+          <span class="feat-tag">🇰🇷 해석</span>
+          <span class="feat-tag">✏️ 퀴즈</span>
+        </div>
+        <div class="card-badge badge-ready">✅ 학습 가능</div>
+      ` : `
+        <div class="card-badge badge-coming">🔜 준비중</div>
+      `}
+    `;
+
+    (b.ready ? readyGrid : comingGrid).appendChild(card);
+  });
+}
+
+function updateStats() {
+  const total = books.length;
+  const ready = books.filter(b => b.ready).length;
+  const coming = total - ready;
+  document.getElementById('stat-total').textContent = '📚 전체 ' + total + '권';
+  document.getElementById('stat-ready').textContent = '✅ 완성 ' + ready + '권';
+  document.getElementById('stat-coming').textContent = '🔜 준비중 ' + coming + '권';
+  document.getElementById('prog-label').textContent = ready + ' / ' + total + '권 완성';
+  document.getElementById('prog-fill').style.width = (ready / total * 100).toFixed(1) + '%';
+}
+
+renderBooks();
+updateStats();
+</script>
+</body>
+</html>

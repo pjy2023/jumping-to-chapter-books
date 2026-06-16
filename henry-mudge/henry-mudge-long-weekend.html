@@ -1,0 +1,420 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Henry and Mudge and the Long Weekend — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#2EC4B6;--blue-dark:#1a9d90;--blue-light:#e8faf8;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4fbf9;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#b2dfd7;
+    --radius:16px;--shadow:0 4px 20px rgba(42,157,143,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.2rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#0e5c56;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#a3e4de;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #a3e4de;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#c2f0ec}
+  .ko-toggle.open{background:#a3e4de;color:#0e5c56}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#a3e4de;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#155c50;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#a3e4de;background:var(--blue-light)}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:768px){.word-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Henry &amp; Mudge #01</div>
+    <div class="header-title">Henry and Mudge and the <span>Long Weekend</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Henry and Mudge and the Long Weekend · Cynthia Rylant · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function ea(s){return s.replace(/'/g,"&#39;").replace(/"/g,"&quot;");}
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"yuck",ko:"윽, 역겨워 (불쾌감을 나타내는 감탄사)"},
+  {en:"gray",ko:"회색의; 흐린"},
+  {en:"muddy",ko:"진흙투성이의 (mud: 진흙 + -dy: ~한)"},
+  {en:"leaned",ko:"기댔다 (lean: 기대다)"},
+  {en:"drooled",ko:"침을 흘렸다 (drool: 침을 흘리다)"},
+  {en:"grumbled",ko:"투덜거렸다 (grumble: 투덜대다)"},
+  {en:"growled",ko:"으르렁거렸다; 툴툴댔다 (growl: 으르렁거리다)"},
+  {en:"flattened",ko:"납작하게 눌렸다 (flatten: 납작하게 하다)"},
+  {en:"pancake",ko:"팬케이크 (납작한 것의 비유로 씀)"},
+  {en:"cartoons",ko:"만화 (cartoon: 만화)"},
+  {en:"boring",ko:"지루한 (bore: 지루하게 하다 + -ing)"},
+  {en:"chew",ko:"씹다"},
+  {en:"frowned",ko:"눈살을 찌푸렸다 (frown: 찌푸리다)"},
+  {en:"cranks",ko:"투덜이, 짜증쟁이 (crank: 변덕스럽고 짜증 많은 사람)"},
+  {en:"grumpies",ko:"심술 기분 (grumpy: 심술궂은 + -ies)"},
+  {en:"meanies",ko:"심술쟁이 기분 (mean: 못된 + -ies)"},
+  {en:"refrigerator",ko:"냉장고 (refrigerate: 냉각하다 + -or: ~하는 것)"},
+  {en:"basement",ko:"지하실 (base: 바닥 + -ment: 장소)"},
+  {en:"turrets",ko:"포탑, 작은 탑 (turret: 성의 작은 탑)"},
+  {en:"drawbridge",ko:"도개교, 들어 올리는 다리 (draw: 당기다 + bridge: 다리)"},
+  {en:"buttresses",ko:"버팀벽 (buttress: 성벽을 지지하는 구조물)"},
+  {en:"stapler",ko:"스테이플러, 호치키스 (staple: 철심 + -r: ~하는 것)"},
+  {en:"imagined",ko:"상상했다 (imagine: 상상하다)"},
+  {en:"fancy",ko:"화려한, 멋진"},
+  {en:"crawl",ko:"기어가다"},
+  {en:"sniffed",ko:"냄새를 맡았다, 킁킁거렸다 (sniff: 냄새를 맡다)"},
+  {en:"screwdrivers",ko:"드라이버 (screw: 나사 + driver: 돌리는 것)"},
+  {en:"admiring",ko:"감탄하며 바라보는 (admire: 감탄하다 + -ing)"},
+  {en:"knights",ko:"기사 (knight: 중세 기사)"},
+  {en:"thrilled",ko:"매우 신이 났다 (thrill: 흥분시키다 + -ed)"},
+  {en:"lowered",ko:"내렸다 (lower: 낮추다 + -ed)"},
+  {en:"lick",ko:"핥다; 핥기"},
+];
+
+const starWords=[
+  {en:"leaned all the way",ko:"완전히 기울어졌다",hint:"Mudge leaned SO hard he toppled over and squished Henry completely flat!"},
+  {en:"flattened like a pancake",ko:"팬케이크처럼 납작하게 눌렸다",hint:"Mudge is VERY heavy — he squished Henry flat as a pancake!"},
+  {en:"February cranks / winter grumpies / pre-spring meanies",ko:"2월 투덜이 / 겨울 심술 / 봄 전 심술쟁이 기분",hint:"Dad made up funny names for being bored and grumpy in winter!"},
+  {en:"not until the idea smelled like something",ko:"뭔가 냄새가 날 때까지는 아니었다",hint:"Mudge only cares about ideas if they SMELL like food — otherwise, he sleeps!"},
+  {en:"chewed his old boot like crazy",ko:"낡은 부츠를 미친 듯이 씹어댔다",hint:"like crazy = 미친 듯이. Mudge chewed SO much and SO hard!"},
+  {en:"you have to have someone to surprise",ko:"놀라게 해줄 사람이 있어야 하잖아",hint:"Mom stayed upstairs on purpose — so she could be surprised by the finished castle!"},
+];
+
+const story=[
+  {scene:"Wet Yuck",lines:[
+    {en:"Henry and Henry's big dog Mudge woke up one Saturday in February and looked outside.",ko:"헨리와 헨리의 큰 개 머지는 2월의 어느 토요일에 일어나서 밖을 내다봤어요."},
+    {en:"Yuck, said Henry.",ko:"윽. 헨리가 말했어요."},
+    {en:"It was gray. It was cold. It was muddy and wet.",ko:"흐렸어요. 추웠어요. 진흙투성이에 축축했어요."},
+    {en:"No sun, Henry said. No snow. Just yuck.",ko:"햇살도 없어. 헨리가 말했어요. 눈도 없어. 그냥 역겨워."},
+    {en:"Mudge leaned against Henry and drooled.",ko:"머지는 헨리에게 기대며 침을 흘렸어요."},
+    {en:"What are we going to do all weekend? Henry asked.",ko:"주말 내내 뭘 하지? 헨리가 물었어요."},
+    {en:"Mudge leaned harder.",ko:"머지가 더 세게 기댔어요."},
+    {en:"How will we have some fun? Henry grumbled.",ko:"어떻게 재미있게 보내지? 헨리가 투덜거렸어요."},
+    {en:"Mudge leaned harder still.",ko:"머지는 더더욱 세게 기댔어요."},
+    {en:"What a boring weekend! Henry growled.",ko:"정말 지루한 주말이잖아! 헨리가 툴툴댔어요."},
+    {en:"Mudge let go and leaned all the way.",ko:"머지가 놓아버리며 완전히 기울어졌어요."},
+    {en:"Whoa! yelled Henry.",ko:"워! 헨리가 소리쳤어요."},
+    {en:"Mudge flattened Henry like a pancake.",ko:"머지가 헨리를 팬케이크처럼 납작하게 눌렸어요."},
+    {en:"How are we going to get up? Henry wondered.",ko:"우리 어떻게 일어나지? 헨리가 중얼거렸어요."},
+  ]},
+  {scene:"So Bored",lines:[
+    {en:"Henry and Mudge had a boring breakfast.",ko:"헨리와 머지는 지루한 아침 식사를 했어요."},
+    {en:"They watched some boring cartoons.",ko:"지루한 만화도 봤어요."},
+    {en:"They listened to Henry's father tell some boring jokes.",ko:"헨리 아빠가 지루한 농담을 하는 것도 들었어요."},
+    {en:"Boy, is this boring, said Henry. What are we going to do?",ko:"아, 정말 지루하다. 헨리가 말했어요. 우리 뭘 하지?"},
+    {en:"Mudge knew what to do. Mudge always knew what to do.",ko:"머지는 뭘 해야 할지 알았어요. 머지는 항상 뭘 해야 할지 알았어요."},
+    {en:"If there was nothing interesting to eat, nothing interesting to smell, and nothing interesting to chew, he went to sleep.",ko:"먹을 만한 것도, 맡을 만한 것도, 씹을 만한 것도 없으면, 잠을 잤어요."},
+    {en:"No, Mudge, said Henry, giving him a push. Wake up.",ko:"안 돼, 머지. 헨리가 밀면서 말했어요. 일어나."},
+    {en:"Mudge sat up. He wanted to stay awake. He tried to stay awake.",ko:"머지가 일어나 앉았어요. 깨어 있으려고 했어요. 깨어 있으려고 노력했어요."},
+    {en:"But everything was so boring that he couldn't.",ko:"하지만 모든 게 너무 지루해서 그럴 수가 없었어요."},
+    {en:"His eyes kept closing. His head kept nodding. His mouth kept drooling.",ko:"눈이 자꾸 감겼어요. 고개가 자꾸 꾸벅였어요. 입에서 자꾸 침이 흘렸어요."},
+    {en:"Exciting dog you have there, said Henry's father.",ko:"신나는 개를 키우고 있구나. 헨리 아빠가 말했어요."},
+    {en:"He's bored, said Henry. Mudge is bored. I'm bored. Boy, is this boring.",ko:"지루한 거예요. 헨리가 말했어요. 머지도 지루해요. 저도 지루해요. 아, 정말 지루하다."},
+    {en:"Henry's father frowned. February cranks? he asked.",ko:"헨리 아빠가 눈살을 찌푸렸어요. 2월 투덜이 기분? 그가 물었어요."},
+    {en:"Henry nodded. Winter grumpies? Henry nodded again. Pre-spring meanies?",ko:"헨리가 고개를 끄덕였어요. 겨울 심술? 헨리가 또 끄덕였어요. 봄 전 심술쟁이 기분?"},
+    {en:"Okay, Dad, okay, Henry said.",ko:"알겠어요, 아빠, 알겠어요. 헨리가 말했어요."},
+    {en:"Boy, are you bored, said Henry's father.",ko:"아, 정말 지루하구나. 헨리 아빠가 말했어요."},
+    {en:"The three of them sat. Their eyes kept closing. Their heads kept nodding. And one of their mouths kept drooling.",ko:"셋이 앉았어요. 눈이 자꾸 감겼어요. 고개가 자꾸 꾸벅였어요. 그리고 그 중 하나의 입에서 자꾸 침이 흘렸어요."},
+    {en:"Henry's mother saw them. Goodness, she said. This is going to be a long weekend.",ko:"헨리 엄마가 그들을 봤어요. 어머나. 그녀가 말했어요. 긴 주말이 되겠구나."},
+    {en:"Then she had an idea.",ko:"그때 그녀는 좋은 생각이 떠올랐어요."},
+  ]},
+  {scene:"The Idea",lines:[
+    {en:"I have an idea, Henry's mother said.",ko:"좋은 생각이 있어요. 헨리 엄마가 말했어요."},
+    {en:"Henry opened his eyes. Henry's father sat up.",ko:"헨리가 눈을 떴어요. 헨리 아빠가 일어나 앉았어요."},
+    {en:"But Mudge kept on sleeping. He didn't care much about ideas — not until the idea smelled like something.",ko:"하지만 머지는 계속 자고 있었어요. 아이디어에는 별로 신경을 쓰지 않았거든요 — 그 아이디어에서 뭔가 냄새가 날 때까지는요."},
+    {en:"Let's make a castle, said Henry's mother.",ko:"성을 만들자. 헨리 엄마가 말했어요."},
+    {en:"A castle? said Henry and Henry's father.",ko:"성이요? 헨리와 헨리 아빠가 말했어요."},
+    {en:"We still have the box the new refrigerator came in. And the box the new stove came in.",ko:"새 냉장고 들어있던 상자가 아직 있잖아요. 새 가스레인지 들어있던 상자도 있고요."},
+    {en:"Henry was getting the idea.",ko:"헨리는 어떤 건지 감이 잡혀 왔어요."},
+    {en:"And that paint set Uncle Arthur gave me, said Henry. Let's do it!",ko:"아서 삼촌이 준 물감 세트도 있잖아요. 헨리가 말했어요. 해보자!"},
+    {en:"They headed for the basement.",ko:"그들은 지하실로 향했어요."},
+    {en:"But when Mudge heard voices in the basement, he woke up fast.",ko:"하지만 머지는 지하실에서 목소리가 들리자 금방 깨어났어요."},
+    {en:"Mudge loved the basement. It had millions of new smells. It had lots of places to hide. And some of his old dog toys were down there.",ko:"머지는 지하실을 좋아했어요. 새로운 냄새가 가득했어요. 숨을 곳도 많았어요. 그리고 오래된 장난감들이 있었거든요."},
+  ]},
+  {scene:"Building the Castle",lines:[
+    {en:"It has to have turrets, Henry's father said. And a drawbridge. And buttresses. And flags.",ko:"포탑이 있어야 해. 헨리 아빠가 말했어요. 도개교도요. 버팀벽도요. 깃발도요."},
+    {en:"Dad, said Henry. It's just a refrigerator box.",ko:"아빠. 헨리가 말했어요. 그냥 냉장고 상자잖아요."},
+    {en:"Not for long, said Henry's father.",ko:"곧 아니게 될 거야. 헨리 아빠가 말했어요."},
+    {en:"Henry ran upstairs for his castle book. Henry's mother ran upstairs for pencils. Henry's father ran upstairs for a stapler. And Mudge ran upstairs for a quick snack.",ko:"헨리는 성 책을 가지러 위층으로 달려갔어요. 헨리 엄마는 연필을 가지러 달려갔어요. 헨리 아빠는 스테이플러를 가지러 달려갔어요. 그리고 머지는 간식을 먹으러 달려갔어요."},
+    {en:"They all looked at each other in the kitchen. How'd we all get up here again? asked Henry's father.",ko:"다들 부엌에서 서로를 바라봤어요. 우리 어떻게 다 여기 올라온 거지? 헨리 아빠가 물었어요."},
+    {en:"One of them drew. One of them cut. One of them stapled. And one of them went looking for an old boot he used to chew.",ko:"한 명은 그렸어요. 한 명은 잘랐어요. 한 명은 스테이플러로 찍었어요. 그리고 한 명은 예전에 씹던 낡은 부츠를 찾으러 갔어요."},
+    {en:"They all worked a long time until somebody said, Is anyone hungry?",ko:"다들 오랫동안 작업을 했어요, 누군가 배고프지 않아요? 라고 할 때까지."},
+    {en:"Order a pizza, said Henry's father. We can't stop now.",ko:"피자 시켜요. 헨리 아빠가 말했어요. 지금 멈출 수 없어요."},
+    {en:"They stopped and ate pizza while they stared at the castle they were building.",ko:"멈추고 만들고 있는 성을 바라보면서 피자를 먹었어요."},
+    {en:"They each imagined how it would look when it was done.",ko:"다들 완성되면 어떻게 보일지 상상했어요."},
+    {en:"For the rest of the afternoon, they cut out fancy windows and fancy doors. They cut out turrets and buttresses and flags.",ko:"오후 내내 화려한 창문과 화려한 문을 잘랐어요. 포탑과 버팀벽과 깃발도 잘랐어요."},
+    {en:"Mudge chewed his old boot like crazy.",ko:"머지는 낡은 부츠를 미친 듯이 씹어댔어요."},
+    {en:"When evening came and Henry finally had to crawl into bed, he could hardly wait to finish the castle.",ko:"저녁이 되어 헨리가 마침내 침대로 기어들어갔을 때, 성을 빨리 완성하고 싶어서 견딜 수가 없었어요."},
+    {en:"He could hardly wait for more of the long weekend.",ko:"긴 주말이 더 이어지는 게 기대되어 참을 수가 없었어요."},
+  ]},
+  {scene:"Next Morning",lines:[
+    {en:"Henry woke up. He looked outside. Wet yuck, he said. But he didn't care.",ko:"헨리가 일어났어요. 밖을 내다봤어요. 윽, 축축해. 헨리가 말했어요. 하지만 신경 쓰이지 않았어요."},
+    {en:"We have a castle to finish! he told Mudge.",ko:"우리 성을 완성해야 해! 헨리가 머지에게 말했어요."},
+    {en:"Henry and Henry's father ate some cold cereal and ran to the basement.",ko:"헨리와 헨리 아빠는 차가운 시리얼을 먹고 지하실로 달려갔어요."},
+    {en:"Henry's mother stayed in the kitchen to read the morning paper.",ko:"헨리 엄마는 아침 신문을 읽으러 부엌에 남았어요."},
+    {en:"You have to have someone to surprise, she said.",ko:"놀라게 해줄 사람이 있어야 하잖아요. 그녀가 말했어요."},
+    {en:"Henry and Henry's father painted the castle all morning.",ko:"헨리와 헨리 아빠는 오전 내내 성을 색칠했어요."},
+    {en:"While they worked, Mudge sniffed screwdrivers and paint cans and dirty rags and beach balls and Christmas decorations and a stuffed turkey.",ko:"그들이 작업하는 동안 머지는 드라이버, 페인트 통, 더러운 걸레, 비치볼, 크리스마스 장식, 박제 칠면조 냄새를 맡았어요."},
+    {en:"He also tried to eat a spider, but he missed.",ko:"거미를 먹으려고도 했지만 놓쳤어요."},
+    {en:"Henry and Henry's father were very quiet. They wanted to pay attention. They wanted to do a good job.",ko:"헨리와 헨리 아빠는 아주 조용했어요. 집중하고 싶었어요. 잘 해내고 싶었어요."},
+  ]},
+  {scene:"The Big Reveal",lines:[
+    {en:"Finally, close to lunchtime, Henry looked at his father. His father looked at him.",ko:"마침내, 점심때 즈음에, 헨리가 아빠를 바라봤어요. 아빠가 헨리를 바라봤어요."},
+    {en:"Wow, they both said.",ko:"와. 둘 다 말했어요."},
+    {en:"Come look! Come look! they called up the stairs.",ko:"와서 봐요! 와서 봐요! 그들이 계단 위로 불렀어요."},
+    {en:"Henry's mother went to the top of the stairs. Not yet! Not yet! they called. She waited.",ko:"헨리 엄마가 계단 꼭대기로 갔어요. 아직 안 돼요! 아직! 그들이 외쳤어요. 그녀가 기다렸어요."},
+    {en:"Okay! Okay! they called. She went down the stairs.",ko:"이제 돼요! 이제! 그들이 외쳤어요. 그녀가 계단을 내려갔어요."},
+    {en:"And there she saw the most beautiful castle and the most beautiful knights and the most beautiful king she'd ever seen.",ko:"그리고 거기서 그녀는 지금껏 본 것 중 가장 아름다운 성과 가장 아름다운 기사들과 가장 아름다운 왕을 봤어요."},
+    {en:"They all spent a long time admiring the castle. They took turns sitting in it. They stuck their heads through its windows. They opened and closed its door. They lowered its drawbridge over and over.",ko:"다들 오랫동안 성을 감탄하며 바라봤어요. 번갈아 가며 그 안에 앉았어요. 창문으로 머리를 들이밀었어요. 문을 열었다 닫았다 했어요. 도개교를 몇 번이고 올렸다 내렸다 했어요."},
+    {en:"Henry was thrilled. He gave his parents a big hug. He gave Mudge a big hug.",ko:"헨리는 매우 신이 났어요. 부모님을 꽉 껴안았어요. 머지도 꽉 껴안았어요."},
+    {en:"What a weekend! said Henry.",ko:"정말 대단한 주말이었어! 헨리가 말했어요."},
+    {en:"The king gave him a big lick. And what a great king.",ko:"왕이 헨리를 크게 핥았어요. 정말 훌륭한 왕이었어요."},
+  ]},
+];
+
+const questions=[
+  {q:"What day and month did Henry and Mudge wake up in the story?",sub:"이야기에서 헨리와 머지는 언제 일어났나요?",opts:["Sunday in January","Saturday in February","Monday in March","Friday in February"],ans:1,hint:"Henry and Mudge woke up one Saturday in February..."},
+  {q:"Why did Henry say 'yuck' when he looked outside?",sub:"헨리가 밖을 보고 '윽'이라고 한 이유는?",opts:["It was snowing too hard","It was sunny but too hot","It was gray, cold, muddy, and wet","There was nothing to eat outside"],ans:2,hint:"It was gray. It was cold. It was muddy and wet. No sun. No snow. Just yuck."},
+  {q:"What did Mudge do when there was nothing interesting to eat, smell, or chew?",sub:"먹고 맡고 씹을 것이 없을 때 머지는 어떻게 했나요?",opts:["He barked until Henry played with him","He went to sleep","He ran around the house","He chewed the furniture"],ans:1,hint:"If nothing interesting to eat, smell, or chew — Mudge always went to sleep!"},
+  {q:"Which name did Henry's father NOT use to describe their winter boredom?",sub:"헨리 아빠가 쓰지 않은 표현은?",opts:["February cranks","Winter grumpies","Pre-spring meanies","Cold weather blues"],ans:3,hint:"Dad said: February cranks? Winter grumpies? Pre-spring meanies? Cold weather blues was never mentioned!"},
+  {q:"What was Henry's mother's idea to beat the boredom?",sub:"헨리 엄마가 지루함을 탈출하려고 제안한 것은?",opts:["Watch a movie together","Go to the library","Make a castle","Bake cookies"],ans:2,hint:"Let's make a castle, said Henry's mother."},
+  {q:"Why did Mudge rush down to the basement?",sub:"머지가 지하실로 달려간 이유는?",opts:["He wanted to help build","The basement had smells, hiding spots, and old toys","Henry called him","He was scared of a noise upstairs"],ans:1,hint:"Mudge loved the basement — millions of smells, lots of places to hide, and old dog toys!"},
+  {q:"What did ONE of them do while the others drew, cut, and stapled?",sub:"다른 사람들이 그리고 자르고 찍는 동안 한 명은 무엇을 했나요?",opts:["He painted the walls","He went looking for an old boot to chew","He looked for string for the flags","He read the castle book"],ans:1,hint:"One of them drew. One cut. One stapled. And one went looking for an old boot he used to chew!"},
+  {q:"What did the family eat while taking a break from building?",sub:"만들다 쉬는 동안 가족은 무엇을 먹었나요?",opts:["Sandwiches","Hot chocolate","Pizza","Cold cereal"],ans:2,hint:"They stopped and ate pizza while they stared at the castle they were building."},
+  {q:"Why did Henry's mother stay in the kitchen the next morning?",sub:"다음 날 아침 헨리 엄마가 부엌에 남은 이유는?",opts:["She was tired of building","She wanted someone to surprise","She didn't know how to paint","She was making breakfast"],ans:1,hint:"You have to have someone to surprise, she said — she stayed upstairs to be surprised by the castle!"},
+  {q:"Who is 'the king' who gives Henry a big lick at the very end?",sub:"마지막에 헨리를 크게 핥아준 '왕'은 누구인가요?",opts:["Henry's father dressed as a king","Uncle Arthur","Mudge","Henry himself"],ans:2,hint:"Mudge played the king in the castle! The king gave him a big lick. And what a great king."},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${ea(w.en)}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${ea(w.en)}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${ea(l.en)}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆','Perfect score! You totally mastered Henry and Mudge and the Long Weekend!']:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>

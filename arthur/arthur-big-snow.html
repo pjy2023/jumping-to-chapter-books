@@ -1,0 +1,408 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur and the Big Snow — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#FF8C42;--blue-dark:#c8601a;--blue-light:#fff3eb;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4f8fd;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#dce8f5;
+    --radius:16px;--shadow:0 4px 20px rgba(52,152,219,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.25rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#1a5f8a;font-weight:600}
+
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#fbd5b0;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #fbd5b0;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#d6eaf8}
+  .ko-toggle.open{background:#fbd5b0;color:#1a4f72}
+
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#fbd5b0;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .opt.reveal{background:var(--green-light);border-color:#27ae60;color:#1a6b40;opacity:.65}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#1a5f8a;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#fbd5b0;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Arthur Starter #01</div>
+    <div class="header-title">Arthur and the <span>Big Snow</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Arthur and the Big Snow · Marc Brown · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"big snow",ko:"폭설, 큰 눈"},
+  {en:"Look at all that snow",ko:"저 눈 좀 봐!"},
+  {en:"no school today",ko:"오늘 학교 없다"},
+  {en:"big hill",ko:"큰 언덕"},
+  {en:"shook his head",ko:"고개를 저었다 (shake: 흔들다 → shook: 과거형)"},
+  {en:"too small to walk",ko:"걷기엔 너무 어리다 (too ~ to ~: 너무 ~해서 ~할 수 없다)"},
+  {en:"deep snow",ko:"깊이 쌓인 눈 (deep: 깊은)"},
+  {en:"have to wait",ko:"기다려야 한다 (have to: ~해야 한다)"},
+  {en:"plow",ko:"제설차; 쟁기 (눈·땅을 밀어내는 것)"},
+  {en:"too far",ko:"너무 멀다 (far: 먼)"},
+  {en:"sighed",ko:"한숨을 쉬었다 (sigh: 한숨을 쉬다)"},
+  {en:"I guess",ko:"그런가 봐, 그렇겠지 (guess: 추측하다)"},
+  {en:"go outside",ko:"밖에 나가다 (outside: 바깥)"},
+  {en:"get dressed",ko:"옷을 입다 (dress: 옷을 입히다)"},
+  {en:"snowsuit",ko:"눈놀이용 방한복 (snow: 눈 + suit: 한 벌 옷)"},
+  {en:"pull",ko:"당기다 (↔ push: 밀다)"},
+  {en:"push",ko:"밀다 (↔ pull: 당기다)"},
+  {en:"started to make a snowman",ko:"눈사람을 만들기 시작했다 (start to: ~하기 시작하다)"},
+  {en:"just stood there",ko:"그냥 그 자리에 서 있었다 (just: 그냥, 단지)"},
+  {en:"I cannot move",ko:"움직일 수가 없어 (move: 움직이다)"},
+  {en:"go back in",ko:"안으로 들어가다 (back: 뒤로, 다시)"},
+  {en:"we just got out here",ko:"우리 방금 여기 나왔잖아 (just: 방금, 막)"},
+  {en:"Tower of Cows",ko:"타워 오브 카우스 (보드게임 이름)"},
+  {en:"just one game",ko:"딱 한 게임만 (just: 딱, 오직)"},
+  {en:"let you go first",ko:"먼저 하게 해주다 (let: ~하게 해주다)"},
+  {en:"when the game was over",ko:"게임이 끝났을 때 (over: 끝난)"},
+  {en:"stood up to go",ko:"가려고 일어섰다 (stand up: 일어서다)"},
+  {en:"do not go yet",ko:"아직 가지 마 (yet: 아직)"},
+  {en:"read to me",ko:"나한테 읽어줘"},
+  {en:"just one story",ko:"딱 한 이야기만"},
+  {en:"any one you want",ko:"네가 원하는 것 아무거나 (any: 어떤 것이든)"},
+  {en:"finally",ko:"마침내, 드디어 (final: 마지막의 + -ly: ~하게)"},
+  {en:"roared by",ko:"굉음을 내며 지나갔다 (roar: 으르렁거리다, 굉음을 내다)"},
+  {en:"now we can go",ko:"이제 우리 갈 수 있어"},
+  {en:"the phone rang",ko:"전화가 울렸다 (ring: 울리다 → rang: 과거형)"},
+  {en:"sledding",ko:"썰매 타기 (sled: 썰매)"},
+  {en:"you should have been there",ko:"거기 있었어야 했는데 (should have + 과거분사: ~했어야 했는데)"},
+  {en:"hot chocolate",ko:"핫 초콜릿"},
+  {en:"it is too late",ko:"너무 늦었어 (late: 늦은)"},
+  {en:"I missed everything",ko:"나는 모든 것을 놓쳤다 (miss: 놓치다; 그리워하다)"},
+  {en:"that is too bad",ko:"그것 참 안됐네 (too bad: 안됐다, 유감이다)"},
+  {en:"try out",ko:"시험 삼아 해보다 (try: 시도하다 + out: 완전히)"},
+  {en:"new sled",ko:"새 썰매 (sled: 썰매)"},
+  {en:"really fast",ko:"정말 빠른 (fast: 빠른; 단단히)"},
+  {en:"to ourselves",ko:"우리끼리만, 우리만을 위한 (ourselves: 우리 자신)"},
+  {en:"good things are worth waiting for",ko:"좋은 것은 기다릴 가치가 있다 (worth: ~할 가치가 있는)"},
+];
+const starWords=[
+  {en:"shook his head",ko:"고개를 저었다",hint:"Shaking your head means NO — Dad did not agree!"},
+  {en:"too small to walk",ko:"너무 어려서 걸을 수 없다",hint:"too ~ to ~ = 너무 ~해서 ~할 수 없다"},
+  {en:"you should have been there",ko:"거기 있었어야 했는데",hint:"Francine wished Arthur had come sledding!"},
+  {en:"roared by",ko:"굉음을 내며 지나갔다",hint:"The plow made a LOUD roaring noise as it passed!"},
+  {en:"good things are worth waiting for",ko:"좋은 것은 기다릴 만한 가치가 있다",hint:"Mom's lesson at the end of the story 💬"},
+  {en:"I missed everything",ko:"나는 다 놓쳤어",hint:"miss = 놓치다. Arthur missed the sledding AND the hot chocolate!"},
+];
+const story=[
+  {scene:"Title",lines:[
+    {en:"Arthur and the Big Snow.",ko:"아서와 폭설"},
+  ]},
+  {scene:"Snowy morning",lines:[
+    {en:"Look at all that snow! said Arthur.",ko:"저 눈 좀 봐! 아서가 말했어요."},
+    {en:"No school today! Everyone is going to meet at the big hill, said Arthur.",ko:"오늘 학교 없다! 다들 큰 언덕에서 만날 거야. 아서가 말했어요."},
+    {en:"Dad shook his head.",ko:"아빠가 고개를 저었어요."},
+    {en:"D.W. is too small to walk in this deep snow. We have to wait for them to plow.",ko:"D.W.는 이렇게 깊이 쌓인 눈에서 걷기엔 너무 작아. 제설차가 올 때까지 기다려야 해."},
+  ]},
+  {scene:"Arthur sighs",lines:[
+    {en:"Dad says we have to wait for the plow, said Arthur.",ko:"아빠 말로는 제설차 올 때까지 기다려야 한대. 아서가 말했어요."},
+    {en:"We do, said Mom. The big hill is too far for D.W. to walk.",ko:"맞아. 엄마가 말했어요. 큰 언덕은 D.W.가 걷기엔 너무 멀어."},
+    {en:"Arthur sighed.",ko:"아서는 한숨을 쉬었어요."},
+    {en:"Well then, I guess I will go outside and play in the snow.",ko:"그럼, 밖에 나가서 눈에서 놀아야겠다."},
+    {en:"Me too! said D.W.",ko:"나도요! D.W.가 말했어요."},
+  ]},
+  {scene:"Getting dressed",lines:[
+    {en:"Help me get dressed.",ko:"옷 입는 거 도와줘."},
+    {en:"Arthur helped D.W. put on her snowsuit.",ko:"아서는 D.W.가 방한복을 입는 것을 도와줬어요."},
+    {en:"Pull, said D.W. Arthur pulled.",ko:"당겨. D.W.가 말했어요. 아서가 당겼어요."},
+    {en:"Push, said D.W. Arthur pushed.",ko:"밀어. D.W.가 말했어요. 아서가 밀었어요."},
+  ]},
+  {scene:"Outside",lines:[
+    {en:"Outside, Arthur started to make a snowman.",ko:"밖에 나와서 아서는 눈사람을 만들기 시작했어요."},
+    {en:"D.W. just stood there.",ko:"D.W.는 그냥 그 자리에 서 있었어요."},
+    {en:"I cannot move in all this snow, she said. I want to go back in.",ko:"이 눈 속에서는 움직일 수가 없어. D.W.가 말했어요. 다시 들어가고 싶어."},
+    {en:"But we just got out here! said Arthur.",ko:"우리 방금 나왔잖아! 아서가 말했어요."},
+    {en:"Now, said D.W.",ko:"지금 당장. D.W.가 말했어요."},
+  ]},
+  {scene:"Inside games",lines:[
+    {en:"Let us play Tower of Cows, said D.W.",ko:"타워 오브 카우스 하자. D.W.가 말했어요."},
+    {en:"But I want to go back outside, said Arthur.",ko:"난 다시 밖에 나가고 싶은데. 아서가 말했어요."},
+    {en:"Just one game, said D.W. I will even let you go first.",ko:"딱 한 게임만. D.W.가 말했어요. 먼저 해도 되게 해줄게."},
+  ]},
+  {scene:"Story time",lines:[
+    {en:"When the game was over, Arthur stood up to go back outside.",ko:"게임이 끝나자 아서는 다시 밖에 나가려고 일어섰어요."},
+    {en:"Do not go yet, said D.W. Read to me.",ko:"아직 가지 마. D.W.가 말했어요. 나한테 읽어줘."},
+    {en:"But the snow, said Arthur.",ko:"그런데 눈이. 아서가 말했어요."},
+    {en:"Just one story, said D.W. Any one you want.",ko:"딱 한 이야기만. D.W.가 말했어요. 네가 원하는 거 아무거나."},
+    {en:"Arthur sighed. Okay. But just one.",ko:"아서는 한숨을 쉬었어요. 알겠어. 하지만 딱 하나만."},
+  ]},
+  {scene:"The plow arrives",lines:[
+    {en:"Finally, the plow roared by.",ko:"마침내 제설차가 굉음을 내며 지나갔어요."},
+    {en:"Yeah! Arthur shouted. Now we can go!",ko:"야호! 아서가 소리쳤어요. 이제 우리 갈 수 있어!"},
+    {en:"Then the phone rang.",ko:"그때 전화가 울렸어요."},
+  ]},
+  {scene:"Francine's call",lines:[
+    {en:"Hi Arthur! The sledding was great. You should have been there.",ko:"안녕 아서! 썰매 타기 정말 좋았어. 거기 있었어야 했는데."},
+    {en:"Oops, I have to go. The hot chocolate is ready. Bye!",ko:"앗, 이만 가야겠어. 핫 초콜릿 준비됐어. 안녕!"},
+  ]},
+  {scene:"Too late",lines:[
+    {en:"Are you ready? Arthur asked Dad.",ko:"준비됐어요? 아서가 아빠에게 물었어요."},
+    {en:"It is too late, he said.",ko:"너무 늦었어. 아빠가 말했어요."},
+    {en:"I missed the sledding. I missed the hot chocolate. I missed everything.",ko:"썰매 타기도 놓쳤어. 핫 초콜릿도 놓쳤어. 다 놓쳤어."},
+    {en:"Oh, that is too bad, said Dad.",ko:"아, 안됐다. 아빠가 말했어요."},
+  ]},
+  {scene:"The new sled",lines:[
+    {en:"I thought you might like to try out this new sled.",ko:"이 새 썰매 타보고 싶을 것 같았어."},
+    {en:"Wow! shouted Arthur. Let us go!",ko:"와! 아서가 소리쳤어요. 가자!"},
+    {en:"The new sled was really fast.",ko:"새 썰매는 정말 빨랐어요."},
+    {en:"We have the whole hill to ourselves! said Arthur.",ko:"언덕 전체가 우리 거야! 아서가 말했어요."},
+    {en:"Sometimes, said Mom, good things are worth waiting for.",ko:"가끔은, 엄마가 말했어요, 좋은 것은 기다릴 만한 가치가 있단다."},
+  ]},
+];
+const questions=[
+  {q:"Why couldn't Arthur go to the big hill right away?",sub:"아서는 왜 바로 큰 언덕에 갈 수 없었나요?",opts:["The hill was closed","D.W. was sick","D.W. was too small to walk in the deep snow","It was still snowing too hard"],ans:2,hint:"Clue: D.W. was too small to walk in the deep snow — they had to wait for the plow."},
+  {q:"What does it mean when Dad shook his head?",sub:'"고개를 저었다"는 무슨 뜻인가요?',opts:["He agreed with Arthur","He said NO","He was confused","He was looking around"],ans:1,hint:"Shaking your head = NO. Dad did not agree with Arthur's plan."},
+  {q:"What happened when Arthur and D.W. went outside?",sub:"밖에 나갔을 때 무슨 일이 생겼나요?",opts:["They built a big snowman together","Arthur went sledding","D.W. could not move and wanted to go back inside","They had a snowball fight"],ans:2,hint:"Clue: D.W. said she could not move in all the snow and wanted to go back in."},
+  {q:"What did D.W. ask Arthur to do inside?",sub:"집 안에서 D.W.는 아서에게 무엇을 해달라고 했나요?",opts:["Draw a picture","Play Tower of Cows and read a story","Watch TV together","Help her bake cookies"],ans:1,hint:"D.W. asked Arthur to play Tower of Cows — and then to read her a story!"},
+  {q:"How did D.W. convince Arthur to play one game?",sub:"D.W.는 어떻게 아서를 설득했나요?",opts:["She promised to go outside after","She started to cry","She let Arthur go first","She said Mom told them to play"],ans:2,hint:"Clue: Just one game. I will even let you go first."},
+  {q:"What happened just as Arthur was finally ready to go out?",sub:"아서가 드디어 나가려고 할 때 무슨 일이 생겼나요?",opts:["It started snowing again","The phone rang — it was Francine","D.W. wanted to play again","Dad said it was dinnertime"],ans:1,hint:"The plow came — but then the phone rang! It was Francine calling."},
+  {q:"What did Francine say about the sledding?",sub:"프랜신은 썰매 타기에 대해 뭐라고 했나요?",opts:["It was boring","It was great and Arthur should have been there","She hurt herself sledding","She did not go either"],ans:1,hint:"Clue: The sledding was great. You should have been there."},
+  {q:'What does "I missed everything" mean?',sub:'"I missed everything"의 뜻은 무엇인가요?',opts:["Arthur lost something","Arthur did not understand anything","Arthur was not there for any of the fun","Arthur forgot about the hill"],ans:2,hint:"miss = 놓치다. Arthur missed the sledding AND the hot chocolate!"},
+  {q:"What surprise did Dad have for Arthur?",sub:"아빠는 아서에게 어떤 깜짝 선물을 주었나요?",opts:["A hot chocolate","Movie tickets","A brand new sled","A snowman kit"],ans:2,hint:"Clue: Dad thought Arthur might like to try out a new sled."},
+  {q:"What lesson does Mom share at the end of the story?",sub:"이야기 마지막에 엄마가 전하는 교훈은 무엇인가요?",opts:["Always go outside right away","Good things are worth waiting for","Never listen to your little sister","Sledding is more fun with friends"],ans:1,hint:"Clue: Sometimes, good things are worth waiting for."},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/'/g,"&#39;")}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆','Perfect score! You totally mastered Arthur and the Big Snow!']:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>
