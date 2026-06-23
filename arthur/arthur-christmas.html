@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur's Christmas — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#FF8C42;--blue-dark:#c8601a;--blue-light:#fff3eb;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4f8fd;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#dce8f5;
+    --radius:16px;--shadow:0 4px 20px rgba(52,152,219,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.25rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#1a5f8a;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#fbd5b0;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #fbd5b0;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#d6eaf8}
+  .ko-toggle.open{background:#fbd5b0;color:#1a4f72}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#fbd5b0;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#1a5f8a;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#fbd5b0;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Arthur Starter #14</div>
+    <div class="header-title">Arthur's <span>Christmas</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Arthur's Christmas · Marc Brown · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"almost",ko:"거의 (almost there: 거의 다 왔어)"},
+  {en:"presents",ko:"선물들 (present: 선물; 현재)"},
+  {en:"around here",ko:"이 근처 어딘가에 (around: 주변에 + here: 여기)"},
+  {en:"snooping",ko:"몰래 찾아다니기, 염탐 (snoop: 몰래 엿보다)"},
+  {en:"found",ko:"발견했다 (find: 찾다 → found: 과거형)"},
+  {en:"aha",ko:"아하! (뭔가 발견했을 때 내는 감탄사)"},
+  {en:"fruitcake",ko:"과일 케이크 (fruit: 과일 + cake: 케이크)"},
+  {en:"Grandma Thora",ko:"소라 할머니 (Arthur의 할머니 이름)"},
+  {en:"kept on",ko:"계속했다 (keep on: 계속 ~하다)"},
+  {en:"basement",ko:"지하실 (base: 기초 + -ment: 장소)"},
+  {en:"hard at work",ko:"열심히 일하는 중 (hard: 열심히 + at work: 일하는 중)"},
+  {en:"ladder",ko:"사다리"},
+  {en:"treehouse",ko:"나무 위의 집 (tree: 나무 + house: 집)"},
+  {en:"surprise",ko:"깜짝 선물; 놀라움 (surprise: 놀라게 하다)"},
+  {en:"promise",ko:"약속하다; 약속 (keep a promise: 약속을 지키다)"},
+  {en:"gave up",ko:"포기했다 (give up: 포기하다 → gave up: 과거형)"},
+  {en:"hiding",ko:"숨기고 있는 (hide: 숨기다 + -ing: 진행형)"},
+  {en:"giant",ko:"거대한 (giant: 거인; 거대한)"},
+  {en:"bone",ko:"뼈 (bone: 뼈)"},
+  {en:"dig up",ko:"파내다 (dig: 파다 + up: 위로 꺼내다)"},
+  {en:"frosting",ko:"설탕 아이싱 (frost: 서리; 아이싱처럼 덮다)"},
+  {en:"wondered out loud",ko:"소리 내어 생각했다 (wonder: 궁금해하다 + out loud: 소리 내어)"},
+  {en:"told herself",ko:"혼자 속으로 말했다 (tell: 말하다 → told: 과거형)"},
+  {en:"popsicle sticks",ko:"아이스크림 막대 (popsicle: 막대 아이스크림 + sticks: 막대들)"},
+  {en:"rubber ball",ko:"고무공 (rubber: 고무 + ball: 공)"},
+  {en:"empty jar",ko:"빈 병 (empty: 빈 + jar: 유리병)"},
+  {en:"nickels",ko:"5센트 동전들 (nickel: 5센트짜리 동전)"},
+  {en:"candy cane",ko:"지팡이 사탕 (candy: 사탕 + cane: 지팡이)"},
+  {en:"lint",ko:"먼지, 보풀 (옷이나 주머니 속의 솜털)"},
+  {en:"up to",ko:"~을 꾸미고 있는, ~을 하고 있는 (What are you up to?: 뭐 하고 있어?)"},
+  {en:"admitted",ko:"인정했다 (admit: 인정하다 → admitted: 과거형)"},
+  {en:"in a way",ko:"어떤 면에서는, 그런 셈이다 (완전히 yes도 no도 아닐 때)"},
+  {en:"happy holidays",ko:"즐거운 명절 보내세요 (holiday: 휴일, 명절)"},
+];
+const starWords=[
+  {en:"I'm going to find them",ko:"찾아내고 말겠어",hint:"be going to = ~할 것이다. DW is determined to find her presents!"},
+  {en:"kept on snooping",ko:"계속 몰래 찾아다녔다",hint:"keep on + -ing = 계속 ~하다. She didn't stop!"},
+  {en:"hard at work",ko:"열심히 일하는 중",hint:"hard = 열심히. Mom was working very hard in the basement."},
+  {en:"wondered out loud",ko:"소리 내어 생각했다",hint:"out loud = 소리 내어. DW said her thoughts without realizing it!"},
+  {en:"I still have time",ko:"아직 시간이 있어",hint:"still = 아직도. DW tells herself not to give up — she can still make gifts!"},
+  {en:"in a way",ko:"어떤 면에서는",hint:"DW says 'in a way' because she WAS looking — but now for things to GIVE, not receive! 🎁"},
+];
+const story=[
+  {scene:"Title",lines:[
+    {en:"Arthur's Christmas.",ko:"아서의 크리스마스"},
+  ]},
+  {scene:"DW on the hunt",lines:[
+    {en:"It's almost Christmas, said D.W.",ko:"이제 거의 크리스마스야. D.W.가 말했어요."},
+    {en:"I know there are more presents for me around here somewhere, and I'm going to find them.",ko:"내 선물이 이 근처 어딘가에 더 있다는 걸 알아. 찾아내고 말겠어."},
+    {en:"D.W. started snooping around the house looking for her gifts.",ko:"D.W.는 자기 선물을 찾아 집 안을 몰래 뒤지기 시작했어요."},
+  ]},
+  {scene:"Dad in the kitchen",lines:[
+    {en:"She found Dad in the kitchen.",ko:"그녀는 부엌에서 아빠를 발견했어요."},
+    {en:"Aha! D.W. shouted. Is that for me?",ko:"아하! D.W.가 소리쳤어요. 그거 나한테 주는 거예요?"},
+    {en:"No, said Dad. It's for Grandma Thora. She loves my fruitcake.",ko:"아니. 아빠가 말했어요. 소라 할머니 드리려고. 할머니는 내 과일 케이크를 좋아하시거든."},
+  ]},
+  {scene:"Mom in the basement",lines:[
+    {en:"D.W. kept on snooping.",ko:"D.W.는 계속 몰래 찾아다녔어요."},
+    {en:"She found Mom hard at work in the basement.",ko:"지하실에서 열심히 일하고 있는 엄마를 발견했어요."},
+    {en:"Aha! D.W. shouted. Is that for me?",ko:"아하! D.W.가 소리쳤어요. 그거 나한테 주는 거예요?"},
+    {en:"No, said Mom. It's a ladder for Arthur's treehouse.",ko:"아니. 엄마가 말했어요. 아서의 나무 위 집 사다리야."},
+    {en:"But it's a surprise. Promise not to tell him.",ko:"그런데 깜짝 선물이야. 아서한테 말하지 않겠다고 약속해."},
+    {en:"Promise, said D.W.",ko:"약속. D.W.가 말했어요."},
+  ]},
+  {scene:"Arthur in the backyard",lines:[
+    {en:"D.W. didn't give up.",ko:"D.W.는 포기하지 않았어요."},
+    {en:"She found Arthur hiding something in the backyard.",ko:"뒷마당에서 무언가를 숨기고 있는 아서를 발견했어요."},
+    {en:"Aha! D.W. shouted. Is that for me?",ko:"아하! D.W.가 소리쳤어요. 그거 나한테 주는 거야?"},
+    {en:"No, said Arthur. It's a giant bone for Pal.",ko:"아니. 아서가 말했어요. 팔한테 줄 거대한 뼈야."},
+    {en:"He loves to find them and dig them up.",ko:"팔은 뼈를 찾아서 파내는 걸 좋아하거든."},
+  ]},
+  {scene:"DW has a realization",lines:[
+    {en:"Wow, thought D.W. That's really nice.",ko:"와. D.W.가 생각했어요. 정말 멋지다."},
+    {en:"Pal loves bones.",ko:"팔은 뼈를 좋아하지."},
+    {en:"Arthur will love his ladder too.",ko:"아서도 사다리를 좋아할 거야."},
+    {en:"And Grandma Thora will love her fruitcake, even if it doesn't have any frosting.",ko:"그리고 소라 할머니도 아이싱이 없어도 과일 케이크를 좋아하실 거야."},
+    {en:"Wait a minute, D.W. wondered out loud.",ko:"잠깐만. D.W.가 소리 내어 생각했어요."},
+    {en:"What will everyone love getting from me?",ko:"다들 나한테서 받은 걸 뭘 좋아할까?"},
+    {en:"She hadn't thought about that before.",ko:"그 생각을 이전에는 한 번도 해본 적이 없었어요."},
+  ]},
+  {scene:"DW's new plan",lines:[
+    {en:"It's not too late, she told herself. I still have time.",ko:"아직 늦지 않았어. 그녀는 혼자 말했어요. 아직 시간이 있어."},
+    {en:"D.W. started snooping again.",ko:"D.W.는 다시 찾아다니기 시작했어요."},
+    {en:"She found all kinds of good things.",ko:"그녀는 온갖 좋은 것들을 발견했어요."},
+    {en:"Popsicle sticks, an old photo, a rubber ball, an empty jar, three nickels, and a candy cane with hardly any lint on it.",ko:"아이스크림 막대, 오래된 사진, 고무공, 빈 병, 5센트 동전 세 개, 그리고 보풀이 거의 없는 지팡이 사탕."},
+  ]},
+  {scene:"Everyone wonders",lines:[
+    {en:"Has anyone seen D.W.? asked Dad.",ko:"D.W. 못 봤어요? 아빠가 물었어요."},
+    {en:"She's busy with something, said Mom.",ko:"뭔가로 바쁜가봐요. 엄마가 말했어요."},
+    {en:"I wonder what she's up to, said Arthur.",ko:"무슨 꿍꿍인지 궁금하네. 아서가 말했어요."},
+  ]},
+  {scene:"DW's reveal",lines:[
+    {en:"D.W., are you in there? Arthur asked.",ko:"D.W., 거기 있어? 아서가 물었어요."},
+    {en:"Yes, D.W. called out. But you can't come in.",ko:"응. D.W.가 소리쳤어요. 하지만 들어오면 안 돼."},
+    {en:"Are you still looking for presents? asked Arthur.",ko:"아직도 선물 찾고 있어? 아서가 물었어요."},
+    {en:"In a way, D.W. admitted. Just not for me.",ko:"어떤 면에서는. D.W.가 인정했어요. 나를 위한 건 아니지만."},
+    {en:"Happy holidays!",ko:"즐거운 명절 보내세요!"},
+  ]},
+];
+const questions=[
+  {q:"Why was D.W. snooping around the house?",sub:"D.W.는 왜 집 안을 몰래 뒤지고 있었나요?",opts:["She was playing hide-and-seek","She was looking for her Christmas presents","She was helping Mom clean up","She was trying to find Pal"],ans:1,hint:"Clue: I know there are more presents for me around here somewhere, and I'm going to find them."},
+  {q:"What was Dad making in the kitchen?",sub:"아빠는 부엌에서 무엇을 만들고 있었나요?",opts:["A birthday cake for D.W.","Hot chocolate for Arthur","Fruitcake for Grandma Thora","Cookies for the whole family"],ans:2,hint:"Clue: It's for Grandma Thora. She loves my fruitcake."},
+  {q:"What was Mom making in the basement?",sub:"엄마는 지하실에서 무엇을 만들고 있었나요?",opts:["A dollhouse for D.W.","A ladder for Arthur's treehouse","A sled for the whole family","A birdhouse for the yard"],ans:1,hint:"Clue: It's a ladder for Arthur's treehouse."},
+  {q:"Why did Mom ask D.W. to keep a secret?",sub:"엄마는 왜 D.W.에게 비밀을 지키라고 했나요?",opts:["Because D.W. can't keep secrets","Because the ladder was a surprise for Arthur","Because it wasn't finished yet","Because Dad didn't know about it"],ans:1,hint:"Clue: It's a surprise. Promise not to tell him."},
+  {q:"What was Arthur hiding in the backyard?",sub:"아서는 뒷마당에서 무엇을 숨기고 있었나요?",opts:["A toy car for D.W.","Christmas decorations","A giant bone for Pal","A surprise gift for Mom"],ans:2,hint:"Clue: It's a giant bone for Pal. He loves to find them and dig them up."},
+  {q:"What did D.W. realize after seeing everyone's gifts?",sub:"다들의 선물을 본 후 D.W.는 무엇을 깨달았나요?",opts:["She had too many presents already","She hadn't thought about giving gifts to others","She needed more money to buy gifts","She forgot to write her wish list"],ans:1,hint:"Clue: What will everyone love getting from me? She hadn't thought about that before."},
+  {q:"Which of these did D.W. NOT collect to make gifts?",sub:"D.W.가 선물을 만들기 위해 모으지 않은 것은?",opts:["Popsicle sticks","A rubber ball","A candy cane","A new crayon set"],ans:3,hint:"Clue: She found popsicle sticks, an old photo, a rubber ball, an empty jar, three nickels, and a candy cane."},
+  {q:"When Arthur asked if D.W. was still looking for presents, what did she say?",sub:"아서가 선물 찾고 있냐고 물었을 때 D.W.는 뭐라고 했나요?",opts:["Yes, for all of us!","No, I already found mine.","In a way, just not for me.","I gave up looking."],ans:2,hint:"Clue: In a way, D.W. admitted. Just not for me."},
+  {q:"What does 'in a way' mean in D.W.'s answer?",sub:'"in a way"는 어떤 뜻인가요?',opts:["Absolutely yes","Absolutely no","Sort of — yes and no","She wasn't sure what she meant"],ans:2,hint:"D.W. WAS still snooping — but now to find things to GIVE, not to receive. So it's a 'sort of yes'!"},
+  {q:"What was the big lesson D.W. learned in this story?",sub:"이 이야기에서 D.W.가 배운 큰 교훈은 무엇인가요?",opts:["Always ask before opening presents","Christmas is only about getting gifts","Thinking about giving to others is just as important as receiving","You should always keep secrets"],ans:2,hint:"D.W. stopped looking for her own presents and started making gifts for everyone else. 🎁"},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/'/g,"&#39;")}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆',"Perfect score! You totally mastered Arthur's Christmas!"]:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>
