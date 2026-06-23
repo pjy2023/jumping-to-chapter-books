@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur and the Dog Show — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#FF8C42;--blue-dark:#c8601a;--blue-light:#fff3eb;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4f8fd;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#dce8f5;
+    --radius:16px;--shadow:0 4px 20px rgba(52,152,219,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.25rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#1a5f8a;font-weight:600}
+
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#fbd5b0;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #fbd5b0;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#d6eaf8}
+  .ko-toggle.open{background:#fbd5b0;color:#1a4f72}
+
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#fbd5b0;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .opt.reveal{background:var(--green-light);border-color:#27ae60;color:#1a6b40;opacity:.65}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#1a5f8a;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#fbd5b0;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Arthur Starter #02</div>
+    <div class="header-title">Arthur and the <span>Dog Show</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Arthur and the Dog Show · Marc Brown · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"dog show",ko:"개 경연 대회 (show: 전시회, 쇼)"},
+  {en:"enter",ko:"참가하다; 들어가다 (enter a contest: 대회에 참가하다)"},
+  {en:"prize",ko:"상, 상품 (win a prize: 상을 타다)"},
+  {en:"backyard",ko:"뒷마당 (back: 뒤 + yard: 마당)"},
+  {en:"practice",ko:"연습하다; 연습 (practice makes perfect: 연습이 완성을 만든다)"},
+  {en:"roll over",ko:"뒤집다, 구르다 (roll: 굴리다 + over: 넘어서)"},
+  {en:"wagged his tail",ko:"꼬리를 흔들었다 (wag: 흔들다 → wagged: 과거형)"},
+  {en:"harder",ko:"더 어려운; 더 열심히 (hard: 어려운, 열심히 + -er: 비교급)"},
+  {en:"start with",ko:"~부터 시작하다 (start: 시작하다 + with: ~로)"},
+  {en:"sit",ko:"앉다 (↔ stand: 서다)"},
+  {en:"dig a hole",ko:"구멍을 파다 (dig: 파다 → dug: 과거형)"},
+  {en:"ran around in circles",ko:"원을 그리며 뛰어다녔다 (circle: 원, 동그라미)"},
+  {en:"harder than I thought",ko:"내가 생각했던 것보다 더 어려운 (than: ~보다)"},
+  {en:"got up early",ko:"일찍 일어났다 (get up: 일어나다 → got up: 과거형)"},
+  {en:"bath",ko:"목욕 (give a bath: 목욕시키다)"},
+  {en:"brushing",ko:"빗질 (brush: 빗다 + -ing: 명사형)"},
+  {en:"look your best",ko:"가장 좋은 모습으로 보이다 (look: 보이다 + best: 가장 좋은)"},
+  {en:"Winner's Circle",ko:"우승자 자리 (winner: 우승자 + circle: 원)"},
+  {en:"explained",ko:"설명했다 (explain: 설명하다 → explained: 과거형)"},
+  {en:"all dressed up",ko:"잘 차려입은 (dress up: 차려입다 + all: 완전히)"},
+  {en:"led into the ring",ko:"링 안으로 이끌었다 (lead → led: 이끌다 과거형; ring: 경기장)"},
+  {en:"ordered",ko:"명령했다 (order: 명령하다 → ordered: 과거형)"},
+  {en:"back legs",ko:"뒷다리 (back: 뒤 + legs: 다리들)"},
+  {en:"pleased",ko:"기뻐하는, 만족하는 (please: 기쁘게 하다 + -d: 형용사형)"},
+  {en:"score",ko:"점수 (get a score: 점수를 받다)"},
+  {en:"sniffed",ko:"냄새를 맡았다 (sniff: 코로 냄새를 맡다 → sniffed: 과거형)"},
+  {en:"licking",ko:"핥기 (lick: 핥다 + -ing: 진행형)"},
+  {en:"tickles",ko:"간지럽히다 (tickle: 간지럽히다)"},
+  {en:"declared",ko:"선언했다, 발표했다 (declare: 선언하다 → declared: 과거형)"},
+  {en:"winner",ko:"우승자 (win: 이기다 + -er: ~하는 사람)"},
+];
+const starWords=[
+  {en:"we should enter",ko:"우리 참가해야겠어",hint:"should = ~해야겠다. Arthur decides to join the dog show!"},
+  {en:"harder than I thought",ko:"내가 생각한 것보다 더 어려워",hint:"than I thought = 내가 생각했던 것보다. Pal is tough to train!"},
+  {en:"look your best",ko:"가장 좋은 모습으로 보여야 해",hint:"look your best = 최고의 모습을 보여라. Arthur wants Pal to shine!"},
+  {en:"it can't be good",ko:"좋을 리가 없어",hint:"can't = cannot. Arthur is sure his score is bad."},
+  {en:"it's not the end of the world",ko:"세상이 끝난 건 아니야",hint:"Losing isn't the worst thing — Pal cheers Arthur up! 🐶"},
+  {en:"declared Pal a winner",ko:"팔을 우승자로 선언했다",hint:"declare = 공식적으로 발표하다. Surprise! The judges loved Pal anyway!"},
+];
+const story=[
+  {scene:"Title",lines:[
+    {en:"Arthur and the Dog Show.",ko:"아서와 반려견 경연 대회"},
+  ]},
+  {scene:"Arthur's big idea",lines:[
+    {en:"Look, Pal, said Arthur.",ko:"봐봐, 팔. 아서가 말했어요."},
+    {en:"There's going to be a dog show on Saturday.",ko:"토요일에 개 경연 대회가 열릴 거야."},
+    {en:"We should enter.",ko:"우리 참가해야겠어."},
+    {en:"Maybe we'll win a prize.",ko:"상을 탈 수도 있을 거야."},
+  ]},
+  {scene:"Practice begins",lines:[
+    {en:"Arthur took Pal out to the backyard.",ko:"아서는 팔을 뒷마당으로 데리고 나갔어요."},
+    {en:"If we want to do well, we have to practice.",ko:"잘 하려면 연습을 해야 해."},
+    {en:"So roll over, Pal.",ko:"자, 뒤집어, 팔."},
+    {en:"Pal wagged his tail.",ko:"팔은 꼬리를 흔들었어요."},
+    {en:"Roll over, Arthur said again.",ko:"뒤집어. 아서가 다시 말했어요."},
+    {en:"Pal wagged his tail.",ko:"팔은 꼬리를 흔들었어요."},
+  ]},
+  {scene:"Trying something easier",lines:[
+    {en:"Harder, huh? Maybe we should start with something easier, said Arthur.",ko:"더 어렵구나? 더 쉬운 것부터 시작해야겠어. 아서가 말했어요."},
+    {en:"Sit, Pal.",ko:"앉아, 팔."},
+    {en:"Pal began digging a hole.",ko:"팔은 구멍을 파기 시작했어요."},
+    {en:"No, oh no, said Arthur. Like this.",ko:"안 돼, 이런. 아서가 말했어요. 이렇게."},
+    {en:"Pal ran around him in circles.",ko:"팔은 아서 주위를 원을 그리며 뛰어다녔어요."},
+    {en:"This will be harder than I thought, Arthur said.",ko:"이건 내가 생각했던 것보다 더 어려울 거야. 아서가 말했어요."},
+    {en:"We need to practice every day.",ko:"매일 연습해야 해."},
+  ]},
+  {scene:"Day of the show",lines:[
+    {en:"They practiced and practiced and practiced.",ko:"그들은 연습하고 또 연습하고 또 연습했어요."},
+    {en:"On the day of the show, Arthur got up early.",ko:"대회 날, 아서는 일찍 일어났어요."},
+    {en:"He gave Pal a bath and a good brushing.",ko:"그는 팔을 목욕시키고 빗질을 잘 해주었어요."},
+    {en:"You need to look your best in the Winner's Circle, he explained.",ko:"우승자 자리에서는 가장 좋은 모습으로 보여야 해. 그가 설명했어요."},
+  ]},
+  {scene:"At the dog show",lines:[
+    {en:"There were lots of dogs at the dog show.",ko:"개 경연 대회에는 개들이 많이 있었어요."},
+    {en:"Some of them were all dressed up.",ko:"그들 중 몇몇은 잘 차려입고 있었어요."},
+    {en:"Don't worry, Pal, said Arthur. We'll show them.",ko:"걱정 마, 팔. 아서가 말했어요. 우리가 보여줄게."},
+  ]},
+  {scene:"Arthur's turn",lines:[
+    {en:"When it was Arthur's turn, he led Pal into the ring.",ko:"아서의 차례가 되자, 그는 팔을 링 안으로 이끌었어요."},
+    {en:"Sit, Pal, he said.",ko:"앉아, 팔. 그가 말했어요."},
+    {en:"Pal rolled over.",ko:"팔은 구르기를 했어요."},
+    {en:"Wag your tail, Pal, Arthur ordered.",ko:"꼬리를 흔들어, 팔. 아서가 명령했어요."},
+    {en:"Pal stood up on his back legs.",ko:"팔은 뒷다리로 일어섰어요."},
+    {en:"The judges did not look pleased.",ko:"심사위원들은 기뻐 보이지 않았어요."},
+  ]},
+  {scene:"All that work for nothing",lines:[
+    {en:"At the end, Arthur didn't even look at Pal's score.",ko:"마지막에 아서는 팔의 점수조차 보지 않았어요."},
+    {en:"It can't be good, he said. All that work for nothing.",ko:"좋을 리가 없어. 그가 말했어요. 그 모든 노력이 아무 소용이 없잖아."},
+    {en:"Pal came over and sniffed at Arthur.",ko:"팔이 다가와서 아서의 냄새를 맡았어요."},
+    {en:"But Arthur didn't move.",ko:"하지만 아서는 움직이지 않았어요."},
+    {en:"So Pal began licking Arthur's face.",ko:"그래서 팔은 아서의 얼굴을 핥기 시작했어요."},
+    {en:"Stop that, Pal. It tickles.",ko:"그만해, 팔. 간지러워."},
+    {en:"But Pal didn't stop.",ko:"하지만 팔은 멈추지 않았어요."},
+    {en:"He kept licking and licking until Arthur started to smile.",ko:"그는 아서가 웃기 시작할 때까지 계속해서 핥았어요."},
+    {en:"You're right, Arthur said. It's not the end of the world. Come on, let's go home.",ko:"네 말이 맞아. 아서가 말했어요. 세상이 끝난 건 아니야. 자, 집에 가자."},
+  ]},
+  {scene:"Surprise winner",lines:[
+    {en:"Arthur started to leave, but the judges stopped him.",ko:"아서가 떠나려고 했지만, 심사위원들이 그를 멈춰 세웠어요."},
+    {en:"And then they declared Pal a winner.",ko:"그리고 나서 그들은 팔을 우승자로 선언했어요."},
+  ]},
+];
+const questions=[
+  {q:"What did Arthur want to do with Pal on Saturday?",sub:"아서는 토요일에 팔과 무엇을 하고 싶었나요?",opts:["Go to the park for a walk","Enter a dog show and win a prize","Visit Grandma's house","Play in the backyard all day"],ans:1,hint:"Clue: There's going to be a dog show on Saturday. We should enter. Maybe we'll win a prize."},
+  {q:"Where did Arthur take Pal to practice?",sub:"아서는 팔을 어디로 데리고 가서 연습했나요?",opts:["The park","The living room","The backyard","The garage"],ans:2,hint:"Clue: Arthur took Pal out to the backyard."},
+  {q:"When Arthur said 'Roll over,' what did Pal do?",sub:"아서가 '뒤집어'라고 했을 때 팔은 무엇을 했나요?",opts:["Rolled over perfectly","Sat down","Ran away","Wagged his tail"],ans:3,hint:"Clue: Pal wagged his tail — he did not roll over!"},
+  {q:"When Arthur said 'Sit,' what did Pal do?",sub:"아서가 '앉아'라고 했을 때 팔은 무엇을 했나요?",opts:["Sat right away","Began digging a hole","Rolled over","Ran in circles"],ans:1,hint:"Clue: Pal began digging a hole instead of sitting!"},
+  {q:"What did Arthur do to prepare Pal on the morning of the show?",sub:"대회 날 아침 아서는 팔을 어떻게 준비시켰나요?",opts:["Taught him new tricks","Gave him a bath and a good brushing","Put a costume on him","Took him to a dog trainer"],ans:1,hint:"Clue: He gave Pal a bath and a good brushing so Pal would look his best."},
+  {q:"In the ring, when Arthur said 'Sit,' what did Pal actually do?",sub:"링 안에서 아서가 '앉아'라고 했을 때 팔은 어떻게 했나요?",opts:["Sat perfectly","Wagged his tail","Rolled over","Ran in circles"],ans:2,hint:"Clue: Pal rolled over when Arthur said 'Sit' — the opposite of practice!"},
+  {q:"When Arthur said 'Wag your tail,' what did Pal do instead?",sub:"'꼬리를 흔들어'라고 했을 때 팔은 어떻게 했나요?",opts:["Wagged his tail perfectly","Stood up on his back legs","Lay down","Barked loudly"],ans:1,hint:"Clue: Pal stood up on his back legs instead of wagging his tail."},
+  {q:"Why didn't Arthur look at Pal's score after the show?",sub:"쇼가 끝난 후 아서는 왜 점수를 보지 않았나요?",opts:["He forgot","He was too busy eating","He thought it couldn't be good","He wanted it to be a surprise"],ans:2,hint:"Clue: It can't be good, he said. All that work for nothing."},
+  {q:"How did Pal cheer Arthur up after the show?",sub:"쇼가 끝난 후 팔은 어떻게 아서를 기분 좋게 해주었나요?",opts:["He finally rolled over","He brought Arthur a toy","He licked Arthur's face until he smiled","He barked happily"],ans:2,hint:"Clue: Pal began licking Arthur's face — he kept licking until Arthur started to smile."},
+  {q:"What happened just as Arthur was about to leave?",sub:"아서가 떠나려고 할 때 무슨 일이 생겼나요?",opts:["Pal ran away","The judges stopped Arthur and declared Pal a winner","Arthur dropped Pal's leash","It started to rain"],ans:1,hint:"Clue: The judges stopped him and then declared Pal a winner — surprise!"},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/'/g,"&#39;")}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆','Perfect score! You totally mastered Arthur and the Dog Show!']:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>
