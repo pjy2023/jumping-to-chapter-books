@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur's Heart Mix-Up — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#FF8C42;--blue-dark:#c8601a;--blue-light:#fff3eb;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4f8fd;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#dce8f5;
+    --radius:16px;--shadow:0 4px 20px rgba(52,152,219,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.25rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#1a5f8a;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#fbd5b0;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #fbd5b0;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#d6eaf8}
+  .ko-toggle.open{background:#fbd5b0;color:#1a4f72}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#fbd5b0;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#1a5f8a;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#fbd5b0;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Arthur Starter #08</div>
+    <div class="header-title">Arthur's <span>Heart Mix-Up</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Arthur's Heart Mix-Up · Marc Brown · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"science project",ko:"과학 프로젝트 (science: 과학 + project: 과제)"},
+  {en:"human heart",ko:"인간의 심장 (human: 인간의 + heart: 심장; 마음)"},
+  {en:"just in time",ko:"딱 맞게, 제때 (just: 딱 + in time: 제때에)"},
+  {en:"barked",ko:"짖었다 (bark: 짖다 → barked: 과거형)"},
+  {en:"wagged",ko:"흔들었다 (wag: (꼬리를) 흔들다 → wagged: 과거형)"},
+  {en:"knocked",ko:"쳐서 쓰러뜨렸다 (knock: 치다; 두드리다 → knocked: 과거형)"},
+  {en:"crash",ko:"쾅! (충돌하거나 부서질 때 나는 소리)"},
+  {en:"noise",ko:"소음, 소리 (noise: 시끄러운 소리)"},
+  {en:"clearly",ko:"명확하게 (clear: 명확한 + -ly: 부사형)"},
+  {en:"shooting baskets",ko:"농구 슛 연습 (shoot: 쏘다 + basket: 바구니; 골대)"},
+  {en:"one-on-one",ko:"일대일 (1:1 경기)"},
+  {en:"mood",ko:"기분 (in the mood: ~할 기분이다)"},
+  {en:"broken heart",ko:"상한 마음; 깨진 심장 (broken: 부서진 + heart: 심장; 마음)"},
+  {en:"ran into",ko:"우연히 만났다 (run into: 우연히 마주치다 → ran: 과거형)"},
+  {en:"lodge",ko:"오두막집, 로지 (lodge: 숲속 오두막; 숙소)"},
+  {en:"mystery",ko:"수수께끼, 미스터리 (mystery: 불가사의한 일)"},
+  {en:"tripped over",ko:"~에 걸려 넘어질 뻔했다 (trip: 걸려 넘어지다 + over: ~를 넘어)"},
+  {en:"zillion",ko:"셀 수 없이 많은 수 (zillion: 엄청나게 많은, 무수한)"},
+  {en:"pieces",ko:"조각들 (piece: 조각 → pieces: 복수형)"},
+  {en:"doorbell",ko:"초인종 (door: 문 + bell: 벨)"},
+  {en:"feel bad",ko:"마음이 안 좋다; 미안하다 (feel: 느끼다 + bad: 나쁜)"},
+  {en:"admitted",ko:"인정했다 (admit: 인정하다 → admitted: 과거형)"},
+  {en:"due",ko:"제출 기한인; 마감인 (due tomorrow: 내일이 마감)"},
+  {en:"glue",ko:"풀, 접착제"},
+  {en:"pointed out",ko:"지적했다 (point out: 지적하다; 짚어내다 → pointed: 과거형)"},
+  {en:"cross my heart",ko:"맹세해, 진심이야 (cross: 십자를 긋다 + heart: 심장; 진심)"},
+];
+
+const starWords=[
+  {en:"my heart is broken",ko:"내 마음이 상했어 / 심장 모형이 부서졌어",hint:"Double meaning! Arthur means his model, but friends think it means a girl made him sad. 💔"},
+  {en:"just in time",ko:"딱 맞게, 제때에",hint:"just = 딱. Arthur finished his project just in time — right before the deadline!"},
+  {en:"not in the mood",ko:"~할 기분이 아니다",hint:"in the mood = ~할 기분이다. Arthur says 'I'm not in the mood' — he doesn't feel like doing anything."},
+  {en:"in a zillion pieces",ko:"산산조각 난",hint:"a zillion = 셀 수 없이 많은. Pal knocked it into so many pieces Arthur couldn't even count them!"},
+  {en:"if we all work together",ko:"우리 모두 함께 하면",hint:"together = 함께. The Brain says they CAN do it — but only if everyone helps at the same time."},
+  {en:"cross my heart",ko:"맹세해, 진심이야",hint:"Cross = 십자를 긋다. People used to draw an X over their heart to promise they were telling the truth. ✝️"},
+];
+
+const story=[
+  {scene:"Science project done!",lines:[
+    {en:"Done! said Arthur. I finished my science project, he told Pal.",ko:"다 했어! 아서가 말했어요. 과학 프로젝트 끝냈어, 그는 팔에게 말했어요."},
+    {en:"Just in time for tomorrow.",ko:"내일에 딱 맞게."},
+    {en:"Pal barked and wagged his tail.",ko:"팔은 짖으며 꼬리를 흔들었어요."},
+    {en:"It's a human heart, said Arthur. Can't you tell?",ko:"인간의 심장이야, 아서가 말했어요. 못 알아보겠어?"},
+    {en:"Pal jumped up for a closer look.",ko:"팔은 더 가까이 보려고 뛰어올랐어요."},
+    {en:"No! cried Arthur.",ko:"안 돼! 아서가 외쳤어요."},
+    {en:"Before Arthur could stop him, Pal knocked the whole thing onto the floor.",ko:"아서가 막기도 전에, 팔이 그것 전체를 바닥에 떨어뜨렸어요."},
+    {en:"Crash!",ko:"쾅!"},
+  ]},
+  {scene:"D.W. appears",lines:[
+    {en:"What was that noise? said D.W.",ko:"그게 무슨 소리야? D.W.가 말했어요."},
+    {en:"Ooh! If that was your science project, you're in big trouble!",ko:"어머! 그게 네 과학 프로젝트였으면, 너 큰일 났다!"},
+    {en:"Arthur couldn't think clearly. I need some air, he said.",ko:"아서는 명확하게 생각할 수 없었어요. 나 바람 좀 쐐야겠어, 그가 말했어요."},
+  ]},
+  {scene:"Binky at the playground",lines:[
+    {en:"Binky was shooting baskets at the playground.",ko:"빙키는 운동장에서 농구 슛 연습을 하고 있었어요."},
+    {en:"Hey, Arthur, he said. Want to play a little one-on-one?",ko:"이봐, 아서, 그가 말했어요. 일대일 좀 할래?"},
+    {en:"No thanks, said Arthur.",ko:"됐어, 아서가 말했어요."},
+    {en:"Binky laughed. Afraid you'll get beat?",ko:"빙키가 웃었어요. 질까봐 무서워?"},
+    {en:"I can't even think about basketball, said Arthur. My heart is broken and I don't know what to do.",ko:"농구 생각도 할 수 없어, 아서가 말했어요. 내 마음이 상했고 어떻게 해야 할지 모르겠어."},
+    {en:"Oh, said Binky.",ko:"아, 빙키가 말했어요."},
+  ]},
+  {scene:"The Brain at the park",lines:[
+    {en:"At the park, Arthur ran into the Brain.",ko:"공원에서 아서는 브레인을 우연히 만났어요."},
+    {en:"Want to help with a lodge? asked the Brain. I'm making history here.",ko:"오두막집 만드는 것 도와줄래? 브레인이 물었어요. 나 여기서 역사를 만들고 있어."},
+    {en:"Sorry, I'm not in the mood, said Arthur. My heart is broken.",ko:"미안, 기분이 아니야, 아서가 말했어요. 내 마음이 상했어."},
+    {en:"Oh, said the Brain.",ko:"아, 브레인이 말했어요."},
+  ]},
+  {scene:"Muffy and Francine on bikes",lines:[
+    {en:"Beep! said Muffy behind him. Double beep! said Francine.",ko:"빵! 머피가 그 뒤에서 말했어요. 빵빵! 프랜신이 말했어요."},
+    {en:"We're going for a ride. Want to come?",ko:"우리 자전거 타러 가. 같이 갈래?"},
+    {en:"I don't think so, said Arthur.",ko:"그럴 것 같지 않아, 아서가 말했어요."},
+    {en:"What's the matter? asked Muffy.",ko:"무슨 일이야? 머피가 물었어요."},
+    {en:"My heart is broken, Arthur explained.",ko:"내 마음이 상했어, 아서가 설명했어요."},
+    {en:"Oh! Francine and Muffy said together.",ko:"어머! 프랜신과 머피가 함께 말했어요."},
+  ]},
+  {scene:"Buster and the mystery",lines:[
+    {en:"A little later, Arthur almost tripped over Buster.",ko:"조금 후에, 아서는 버스터에 걸려 넘어질 뻔했어요."},
+    {en:"Do you have any mysteries for me to solve? Buster asked.",ko:"내가 풀 수수께끼가 있어? 버스터가 물었어요."},
+    {en:"The only mystery I want to solve, said Arthur, is how to fix a broken heart.",ko:"내가 풀고 싶은 유일한 수수께끼는, 아서가 말했어요, 상한 마음을 어떻게 고치느냐야."},
+    {en:"Oh, said Buster.",ko:"아, 버스터가 말했어요."},
+  ]},
+  {scene:"Back in his room",lines:[
+    {en:"Back in his room, Arthur looked at his project.",ko:"자기 방으로 돌아와서, 아서는 자기 프로젝트를 바라봤어요."},
+    {en:"It was in a zillion pieces.",ko:"그것은 산산조각이 나 있었어요."},
+    {en:"How could he ever put everything together again?",ko:"어떻게 하면 모든 것을 다시 합칠 수 있을까?"},
+    {en:"Downstairs, the doorbell rang.",ko:"아래층에서 초인종이 울렸어요."},
+  ]},
+  {scene:"Friends arrive",lines:[
+    {en:"Binky, the Brain, Muffy, Francine, and Buster were standing outside.",ko:"빙키, 브레인, 머피, 프랜신, 그리고 버스터가 밖에 서 있었어요."},
+    {en:"We all feel bad that your heart is broken, said the Brain.",ko:"우리 모두 네 마음이 상했다니 안됐다, 브레인이 말했어요."},
+    {en:"Yeah, said Binky. Who is this girl anyway?",ko:"맞아, 빙키가 말했어요. 근데 이 여자애가 누구야?"},
+    {en:"Is it someone we know? asked Francine.",ko:"우리가 아는 애야? 프랜신이 물었어요."},
+    {en:"Girl? asked Arthur. What girl?",ko:"여자애? 아서가 물었어요. 무슨 여자애?"},
+    {en:"The one who broke your heart, said Buster.",ko:"네 마음을 상하게 한 여자애, 버스터가 말했어요."},
+    {en:"Oh, said Arthur. Come on in. I'll show you.",ko:"아, 아서가 말했어요. 들어와. 보여줄게."},
+  ]},
+  {scene:"The reveal — and teamwork!",lines:[
+    {en:"That's it? said Muffy. That's your broken heart?",ko:"이게 다야? 머피가 말했어요. 이게 네 상한 마음이라고?"},
+    {en:"Buster took a closer look. It is in pretty bad shape, he admitted. But we can fix it.",ko:"버스터가 더 가까이 들여다봤어요. 꽤 심하긴 하다, 그가 인정했어요. 하지만 우리가 고칠 수 있어."},
+    {en:"I think there's no time, said Arthur. It's due tomorrow.",ko:"시간이 없을 것 같아, 아서가 말했어요. 내일이 마감이거든."},
+    {en:"We can do it, said the Brain. If we all work together.",ko:"우리 할 수 있어, 브레인이 말했어요. 모두 함께 하면."},
+    {en:"Yeah, said Francine. We'll need a bottle of glue.",ko:"맞아, 프랜신이 말했어요. 풀 한 병이 필요할 거야."},
+    {en:"Maybe two bottles, said Binky.",ko:"두 병이 필요할 수도 있어, 빙키가 말했어요."},
+    {en:"I'll help with the snacks, added Buster.",ko:"나는 간식 담당이야, 버스터가 덧붙였어요."},
+  ]},
+  {scene:"Done — cross my heart!",lines:[
+    {en:"It took a while, but finally they were done.",ko:"시간이 좀 걸렸지만, 마침내 다 완성됐어요."},
+    {en:"Finished! said Francine.",ko:"끝났다! 프랜신이 말했어요."},
+    {en:"Good as new, said Buster.",ko:"새것 같다, 버스터가 말했어요."},
+    {en:"Actually, it is new, the Brain pointed out.",ko:"사실, 새것이 맞아, 브레인이 지적했어요."},
+    {en:"Whatever, said Muffy.",ko:"뭐가 됐든, 머피가 말했어요."},
+    {en:"Thanks, said Arthur. I couldn't have done it alone.",ko:"고마워, 아서가 말했어요. 혼자서는 못 했을 거야."},
+    {en:"Really? asked Binky.",ko:"정말? 빙키가 물었어요."},
+    {en:"Arthur smiled. Cross my heart, he said.",ko:"아서가 미소 지었어요. 맹세해, 그가 말했어요."},
+  ]},
+];
+
+const questions=[
+  {q:"What was Arthur's science project about?",sub:"아서의 과학 프로젝트 주제는 무엇이었나요?",opts:["A model of a volcano","A model of a human heart","A model of the solar system","A model of a plant cell"],ans:1,hint:"Clue: It's a human heart, said Arthur. Can't you tell?"},
+  {q:"Who knocked Arthur's science project onto the floor?",sub:"누가 아서의 과학 프로젝트를 바닥에 떨어뜨렸나요?",opts:["D.W.","Arthur himself","Binky","Pal"],ans:3,hint:"Clue: Before Arthur could stop him, Pal knocked the whole thing onto the floor."},
+  {q:"What did D.W. say when she saw what happened?",sub:"D.W.는 무슨 일이 일어났는지 보고 뭐라고 했나요?",opts:["I'll help you fix it!","Oh no, poor Arthur!","If that was your science project, you're in big trouble!","Let's call Mom!"],ans:2,hint:"Clue: Ooh! If that was your science project, you're in big trouble!"},
+  {q:"What was Binky doing at the playground?",sub:"빙키는 운동장에서 무엇을 하고 있었나요?",opts:["Playing tag","Riding a bike","Jumping rope","Shooting baskets"],ans:3,hint:"Clue: Binky was shooting baskets at the playground."},
+  {q:"What did Arthur keep telling his friends when they asked what was wrong?",sub:"아서는 친구들이 무슨 일이냐고 물을 때 뭐라고 했나요?",opts:["I failed my test.","Pal ran away.","My heart is broken.","I lost my homework."],ans:2,hint:"Clue: Arthur told Binky, the Brain, Muffy, and Buster: My heart is broken."},
+  {q:"What did Arthur's friends think 'my heart is broken' meant?",sub:"아서의 친구들은 '내 마음이 상했어'가 무슨 뜻이라고 생각했나요?",opts:["His science project was broken","He was feeling sick","A girl had made him sad","He lost a basketball game"],ans:2,hint:"Clue: Who is this girl anyway? / The one who broke your heart, said Buster."},
+  {q:"What was the Brain working on at the park?",sub:"브레인은 공원에서 무엇을 만들고 있었나요?",opts:["A kite","A science experiment","A painting","A lodge"],ans:3,hint:"Clue: Want to help with a lodge? asked the Brain. I'm making history here."},
+  {q:"What did Buster offer to help with when fixing the heart model?",sub:"버스터는 심장 모형을 고칠 때 무엇을 돕겠다고 했나요?",opts:["Finding the missing pieces","Drawing a new diagram","The snacks","Holding the pieces while they dried"],ans:2,hint:"Clue: I'll help with the snacks, added Buster."},
+  {q:"What did the Brain say about the fixed model?",sub:"브레인은 완성된 모형에 대해 뭐라고 했나요?",opts:["Good as new!","It looks even better now.","Actually, it is new.","We did a great job!"],ans:2,hint:"Clue: Actually, it is new, the Brain pointed out. (They had rebuilt it from pieces, so technically it was a new model!)"},
+  {q:"What did Arthur say at the very end to mean 'I really mean it'?",sub:"아서는 맨 마지막에 '정말이야'를 표현하기 위해 뭐라고 했나요?",opts:["I promise.","Scout's honor.","No kidding.","Cross my heart."],ans:3,hint:"Clue: Arthur smiled. Cross my heart, he said. This expression means you are making a sincere promise!"},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/'/g,"&#39;")}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆',"Perfect score! You totally mastered Arthur's Heart Mix-Up!"]:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>
