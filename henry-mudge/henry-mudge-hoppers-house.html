@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Henry and Mudge and Mrs. Hopper's House — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#2EC4B6;--blue-dark:#1a9d90;--blue-light:#e8faf8;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4fbf9;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#b2dfd7;
+    --radius:16px;--shadow:0 4px 20px rgba(42,157,143,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.2rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#0e5c56;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#a3e4de;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #a3e4de;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#c2f0ec}
+  .ko-toggle.open{background:#a3e4de;color:#0e5c56}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#a3e4de;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#155c50;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#a3e4de;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:768px){.word-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Henry &amp; Mudge #09</div>
+    <div class="header-title">Henry and Mudge and <span>Mrs. Hopper's House</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Henry and Mudge and Mrs. Hopper's House · Cynthia Rylant · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"Valentine's Day",ko:"발렌타인 데이 (Valentine: 연인, 발렌타인 + Day: 날)"},
+  {en:"candy hearts",ko:"하트 사탕 (candy: 사탕 + heart: 심장; 하트 모양)"},
+  {en:"swell",ko:"멋진, 훌륭한 (구어체: You're swell! = 너 정말 멋져!)"},
+  {en:"team",ko:"팀, 한 조 (a good team: 잘 맞는 짝꿍)"},
+  {en:"sweetheart dance",ko:"연인들의 댄스 파티 (sweetheart: 연인 + dance: 댄스 파티)"},
+  {en:"across the street",ko:"길 건너편에 (across: ~을 건너서 + street: 거리)"},
+  {en:"stone house",ko:"돌집 (stone: 돌 + house: 집)"},
+  {en:"droopy",ko:"축 늘어진 (droop: 축 처지다 + -y: 형용사형)"},
+  {en:"gargoyle",ko:"가고일 (건물 지붕이나 벽에 달린 괴물 모양 장식물)"},
+  {en:"tuxedo",ko:"턱시도 (남성 정장 예복)"},
+  {en:"waltz",ko:"왈츠를 추다; 왈츠 (waltz: 3박자 사교춤)"},
+  {en:"tap dance",ko:"탭댄스 (tap: 탁탁 두드리다 + dance: 춤)"},
+  {en:"grin",ko:"씩 웃다; 환하게 웃음 (grin: 이를 드러내며 환하게 웃다)"},
+  {en:"violin",ko:"바이올린"},
+  {en:"served",ko:"내왔다, 대접했다 (serve: 음식을 내오다 → served: 과거형)"},
+  {en:"actor",ko:"배우 (act: 연기하다 + -or: ~하는 사람)"},
+  {en:"oatmeal",ko:"오트밀 (oat: 귀리 + meal: 가루; 식사)"},
+  {en:"French bread",ko:"프랑스 빵, 바게트 (French: 프랑스의 + bread: 빵)"},
+  {en:"upstairs",ko:"위층으로 (up: 위 + stairs: 계단)"},
+  {en:"costumes",ko:"의상들 (costume: 특수한 옷, 의상 → costumes: 복수형)"},
+  {en:"silk capes",ko:"실크 망토 (silk: 실크 + cape: 망토)"},
+  {en:"canes",ko:"지팡이들 (cane: 지팡이 → canes: 복수형)"},
+  {en:"wigs",ko:"가발들 (wig: 가발 → wigs: 복수형)"},
+  {en:"poodle",ko:"푸들 (곱슬털을 가진 개 품종)"},
+  {en:"handsome",ko:"잘생긴, 멋진 (handsome: 외모가 훌륭한)"},
+];
+
+const starWords=[
+  {en:"You're swell",ko:"너 정말 멋져",hint:"swell = 멋진. This is old-fashioned slang from the 1930s-40s. The candy heart says it as a compliment! 💕"},
+  {en:"a good team",ko:"잘 맞는 짝꿍, 좋은 한 팀",hint:"Henry read the words AND Mudge licked them. Together they finished the candy perfectly — a good team! 🐶"},
+  {en:"waltz to the Blue Danube",ko:"블루 다뉴브에 맞춰 왈츠를 추다",hint:"The Blue Danube is a famous waltz song by Johann Strauss II. Henry's dad is being funny — can you imagine Mudge waltzing? 🎵"},
+  {en:"only knows how to tap dance",ko:"탭댄스만 출 줄 알아",hint:"Henry is joking! Mudge can't tap dance either — Henry is being silly to make his dad laugh. 😄"},
+  {en:"were they ever surprised",ko:"그들이 정말 많이 놀랐다",hint:"'Were they ever surprised!' is a strong exclamation. 'ever' here means 'really, really.' Same as 'They were SO surprised!'"},
+  {en:"I bet you didn't know I was this handsome",ko:"내가 이렇게 잘생긴 줄 몰랐지?",hint:"I bet = 분명히 ~일 거야. Henry is wearing a tuxedo and hat — he thinks he looks great! 🎩"},
+];
+
+const story=[
+  {scene:"A sweetheart dance",lines:[
+    {en:"Valentine's Day was coming.",ko:"발렌타인 데이가 다가오고 있었어요."},
+    {en:"Henry and his big dog Mudge loved Valentine's Day because of the candy.",ko:"헨리와 그의 큰 개 머지는 사탕 때문에 발렌타인 데이를 좋아했어요."},
+    {en:"They liked the candy hearts that said \"You're swell\" and \"Oh dear\" and things like that.",ko:"그들은 '너 정말 멋져'나 '어머나' 같은 말이 적힌 하트 사탕을 좋아했어요."},
+    {en:"Henry read the words and Mudge licked them off.",ko:"헨리가 글자를 읽으면 머지가 그것을 핥아먹었어요."},
+    {en:"They were a good team.",ko:"그들은 잘 맞는 짝꿍이었어요."},
+  ]},
+  {scene:"Staying with Mrs. Hopper",lines:[
+    {en:"On this Valentine's Day, Henry's father and Henry's mother were going to a sweetheart dance.",ko:"이번 발렌타인 데이에, 헨리의 아빠와 헨리의 엄마는 연인들의 댄스 파티에 가기로 했어요."},
+    {en:"Henry and Mudge would be staying with Mrs. Hopper.",ko:"헨리와 머지는 호퍼 아주머니 댁에서 지내기로 했어요."},
+    {en:"Mrs. Hopper lived across the street in a big stone house with droopy trees and dark windows and a gargoyle on the door.",ko:"호퍼 아주머니는 길 건너편에, 축 늘어진 나무들과 어두운 창문들과 문에 가고일이 달린 커다란 돌집에 살았어요."},
+    {en:"Henry liked Mrs. Hopper but he did not like her house.",ko:"헨리는 호퍼 아주머니는 좋았지만 그녀의 집은 좋지 않았어요."},
+  ]},
+  {scene:"Can we come too?",lines:[
+    {en:"Are you sure Mudge and I can't come to the sweetheart dance? Henry asked his father.",ko:"아빠, 정말 머지랑 저는 그 댄스 파티에 못 가는 거예요? 헨리가 아빠에게 물었어요."},
+    {en:"Only if you both promised to wear a tuxedo and shiny black shoes and waltz to the Blue Danube, said Henry's father.",ko:"너희 둘 다 턱시도를 입고 반짝이는 검은 구두를 신고 블루 다뉴브에 맞춰 왈츠를 추겠다고 약속한다면, 헨리의 아빠가 말했어요."},
+    {en:"Henry looked at Mudge and tried to imagine him in a tuxedo and shiny black shoes, waltzing to the Blue Danube.",ko:"헨리는 머지를 바라보며 그가 턱시도를 입고 반짝이는 검은 구두를 신은 채 블루 다뉴브에 맞춰 왈츠를 추는 모습을 상상해 보려 했어요."},
+    {en:"I think we better go to Mrs. Hopper's, Henry said.",ko:"저희는 호퍼 아주머니 댁에 가는 게 나을 것 같아요, 헨리가 말했어요."},
+    {en:"Good idea, said Henry's father.",ko:"좋은 생각이야, 헨리의 아빠가 말했어요."},
+    {en:"Because Mudge only knows how to tap dance, Henry said with a grin.",ko:"왜냐하면 머지는 탭댄스만 출 줄 알거든요, 헨리가 씩 웃으며 말했어요."},
+  ]},
+  {scene:"Mrs. Hopper is wonderful",lines:[
+    {en:"Mrs. Hopper wasn't like anyone Henry had ever met.",ko:"호퍼 아주머니는 헨리가 만나본 누구와도 달랐어요."},
+    {en:"She played the violin for him.",ko:"그녀는 그를 위해 바이올린을 연주해 줬어요."},
+    {en:"She served him tea.",ko:"그녀는 그에게 차를 내왔어요."},
+    {en:"She told him about her father who had been a famous actor.",ko:"그녀는 유명한 배우였던 자신의 아버지에 대해 이야기해 줬어요."},
+    {en:"She was very kind to Mudge.",ko:"그녀는 머지에게도 매우 친절했어요."},
+    {en:"She cooked him a bowl of oatmeal and gave him his own loaf of French bread.",ko:"그녀는 그에게 오트밀 한 그릇을 요리해 주고 그만을 위한 프랑스 빵 한 덩어리를 주었어요."},
+  ]},
+  {scene:"The costume room",lines:[
+    {en:"After the tea and music and oatmeal, Mrs. Hopper took them upstairs.",ko:"차와 음악과 오트밀이 끝난 후, 호퍼 아주머니는 그들을 위층으로 데려갔어요."},
+    {en:"She opened a room that had been her father's.",ko:"그녀는 자신의 아버지의 것이었던 방을 열었어요."},
+    {en:"Wow, said Henry.",ko:"와, 헨리가 말했어요."},
+    {en:"The room was full of costumes.",ko:"방은 의상들로 가득 차 있었어요."},
+    {en:"There were silk capes and tall hats and shiny coats.",ko:"실크 망토와 키 큰 모자들과 반짝이는 코트들이 있었어요."},
+    {en:"There were canes and swords and umbrellas.",ko:"지팡이들과 칼들과 우산들이 있었어요."},
+    {en:"There were wigs.",ko:"가발들도 있었어요."},
+    {en:"Mrs. Hopper put a wig on Mudge.",ko:"호퍼 아주머니는 머지에게 가발을 씌워 줬어요."},
+    {en:"You look like a poodle, Mudge, said Henry.",ko:"너 푸들처럼 생겼다, 머지야, 헨리가 말했어요."},
+    {en:"Mudge wagged and wagged.",ko:"머지는 꼬리를 흔들고 또 흔들었어요."},
+  ]},
+  {scene:"Were they ever surprised!",lines:[
+    {en:"Henry and Mudge and Mrs. Hopper spent most of the evening in the costume room.",ko:"헨리와 머지와 호퍼 아주머니는 저녁 대부분을 의상 방에서 보냈어요."},
+    {en:"They had a wonderful time.",ko:"그들은 아주 즐거운 시간을 보냈어요."},
+    {en:"And when Henry's parents came back from the dance, were they ever surprised!",ko:"그리고 헨리의 부모님이 댄스 파티에서 돌아왔을 때, 그들은 정말 많이 놀랐어요!"},
+    {en:"Mudge was a poodle and Henry was a man.",ko:"머지는 푸들이 되어 있었고 헨리는 어른 남자가 되어 있었어요."},
+    {en:"Henry wore a tuxedo and a hat and shiny black shoes.",ko:"헨리는 턱시도와 모자와 반짝이는 검은 구두를 신고 있었어요."},
+    {en:"I bet you didn't know I was this handsome, Henry told his dad.",ko:"제가 이렇게 잘생긴 줄 몰랐죠? 헨리가 아빠에게 말했어요."},
+    {en:"And everyone laughed and laughed.",ko:"그리고 모두가 웃고 또 웃었어요."},
+  ]},
+];
+
+const questions=[
+  {q:"Why did Henry and Mudge love Valentine's Day?",sub:"헨리와 머지는 왜 발렌타인 데이를 좋아했나요?",opts:["Because they got big presents","Because of the candy","Because there was no school","Because they went to a dance"],ans:1,hint:"Clue: Henry and his big dog Mudge loved Valentine's Day because of the candy."},
+  {q:"How did Henry and Mudge eat the candy hearts together?",sub:"헨리와 머지는 하트 사탕을 어떻게 함께 먹었나요?",opts:["Henry ate them all himself","Mudge ate them all himself","Henry read the words and Mudge licked them off","They shared them one by one"],ans:2,hint:"Clue: Henry read the words and Mudge licked them off. They were a good team."},
+  {q:"Where did Mrs. Hopper live?",sub:"호퍼 아주머니는 어디에 살았나요?",opts:["Next door to Henry","Across the street","Down the block","In another town"],ans:1,hint:"Clue: Mrs. Hopper lived across the street in a big stone house."},
+  {q:"What did Henry NOT like about Mrs. Hopper's house?",sub:"헨리가 호퍼 아주머니 집에서 싫어했던 것은?",opts:["Mrs. Hopper herself","The droopy trees, dark windows, and gargoyle","The street it was on","The size of the house"],ans:1,hint:"Clue: Henry liked Mrs. Hopper but he did not like her house. (droopy trees, dark windows, and a gargoyle on the door!)"},
+  {q:"What did Henry's father say they'd need to do to come to the dance?",sub:"아빠는 댄스 파티에 오려면 어떻게 해야 한다고 했나요?",opts:["Just wear nice clothes","Wear tuxedos and waltz to the Blue Danube","Learn to sing a love song","Promise to stay quiet all night"],ans:1,hint:"Clue: Only if you both promised to wear a tuxedo and shiny black shoes and waltz to the Blue Danube."},
+  {q:"What kind of dance did Henry joke that Mudge only knew?",sub:"헨리는 머지가 어떤 춤만 출 줄 안다고 농담했나요?",opts:["Waltz","Ballet","Tap dance","Salsa"],ans:2,hint:"Clue: Because Mudge only knows how to tap dance, Henry said with a grin."},
+  {q:"Which of these did Mrs. Hopper do for Henry?",sub:"호퍼 아주머니가 헨리를 위해 한 것은?",opts:["Played the violin and served tea","Showed him old movies","Took him outside for a walk","Read him a bedtime story"],ans:0,hint:"Clue: She played the violin for him. She served him tea. She told him about her father."},
+  {q:"What special food did Mrs. Hopper give Mudge?",sub:"호퍼 아주머니가 머지에게 준 특별한 음식은?",opts:["Dog food and a bone","A bowl of oatmeal and a loaf of French bread","A steak and cookies","Rice and carrots"],ans:1,hint:"Clue: She cooked him a bowl of oatmeal and gave him his own loaf of French bread."},
+  {q:"What was inside Mrs. Hopper's father's room?",sub:"호퍼 아주머니 아버지의 방 안에 있었던 것은?",opts:["Old books and photographs","Musical instruments and sheet music","Silk capes, hats, canes, swords, and wigs","Sports trophies and equipment"],ans:2,hint:"Clue: There were silk capes and tall hats and shiny coats. There were canes and swords and umbrellas. There were wigs."},
+  {q:"What did Henry say to his dad when his parents came home?",sub:"부모님이 돌아왔을 때 헨리가 아빠에게 한 말은?",opts:["Did you have a good time?","Can we come next time?","I bet you didn't know I was this handsome.","Look at what Mudge is wearing!"],ans:2,hint:"Clue: I bet you didn't know I was this handsome, Henry told his dad. (He was wearing a tuxedo and hat! 🎩)"},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/'/g,"&#39;").replace(/"/g,'&quot;')}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆',"Perfect score! You totally mastered Mrs. Hopper's House!"]:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>
