@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur's Homework — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#FF8C42;--blue-dark:#c8601a;--blue-light:#fff3eb;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4f8fd;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#dce8f5;
+    --radius:16px;--shadow:0 4px 20px rgba(52,152,219,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.25rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#1a5f8a;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#fbd5b0;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #fbd5b0;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#d6eaf8}
+  .ko-toggle.open{background:#fbd5b0;color:#1a4f72}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#fbd5b0;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#1a5f8a;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#fbd5b0;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Arthur Starter #09</div>
+    <div class="header-title">Arthur's <span>Homework</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Arthur's Homework · Marc Brown · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"homework",ko:"숙제 (home: 집 + work: 일)"},
+  {en:"town project",ko:"마을 프로젝트, 동네 과제 (town: 마을 + project: 과제)"},
+  {en:"environment",ko:"환경 (우리를 둘러싼 자연·주변)"},
+  {en:"history",ko:"역사 (history: 지나온 이야기)"},
+  {en:"community",ko:"공동체, 지역사회 (함께 사는 사람들)"},
+  {en:"due",ko:"제출 기한인, 마감인 (due Friday: 금요일이 마감)"},
+  {en:"worried",ko:"걱정하는 (worry: 걱정하다 → worried: 걱정하는)"},
+  {en:"idea",ko:"생각, 아이디어 (떠오르는 생각)"},
+  {en:"make a plan",ko:"계획을 세우다 (make: 만들다 + plan: 계획)"},
+  {en:"decided",ko:"결정했다 (decide: 결정하다 → decided: 과거형)"},
+  {en:"tapped",ko:"가볍게 두드렸다 (tap: 톡톡 두드리다 → tapped: 과거형)"},
+  {en:"shoulder",ko:"어깨 (몸의 어깨 부분)"},
+  {en:"wind patterns",ko:"바람의 패턴 (wind: 바람 + pattern: 일정한 모양)"},
+  {en:"help out",ko:"거들어 주다, 도와주다 (help: 돕다 + out: 강조)"},
+  {en:"rang",ko:"(전화·벨이) 울렸다 (ring: 울리다 → rang: 과거형)"},
+  {en:"video",ko:"영상, 비디오 (움직이는 영상)"},
+  {en:"cameraman",ko:"촬영기사, 카메라맨 (camera: 카메라 + man: 사람)"},
+  {en:"I guess so",ko:"그런 것 같아, 그러지 뭐 (마지못해 승낙할 때)"},
+  {en:"think of",ko:"~을 생각해 내다 (think: 생각하다 + of: ~에 대해)"},
+  {en:"stopped by",ko:"잠깐 들렀다 (stop by: 잠깐 들르다 → stopped: 과거형)"},
+  {en:"need a hand",ko:"도움이 필요하다 (hand: 손 → 도움)"},
+  {en:"lifesaver",ko:"생명의 은인, 큰 도움 (life: 생명 + saver: 구해 주는 사람)"},
+  {en:"make it home",ko:"집에 (제때) 도착하다 (make it: 해내다·도달하다)"},
+  {en:"yelled",ko:"소리쳤다 (yell: 소리치다 → yelled: 과거형)"},
+  {en:"model",ko:"모형 (실제를 작게 만든 것)"},
+  {en:"falling apart",ko:"무너지다, 산산이 부서지다 (fall: 떨어지다 + apart: 따로따로)"},
+  {en:"pail",ko:"양동이, 통 (물·재료를 담는 통)"},
+  {en:"plaster",ko:"석고, 회반죽 (굳어서 단단해지는 흰 반죽)"},
+  {en:"didn't get very far",ko:"별로 진척이 없었다 (get far: 많이 나아가다)"},
+  {en:"brought",ko:"가져왔다 (bring: 가져오다 → brought: 과거형)"},
+  {en:"partner",ko:"파트너, 짝 (함께 일하는 사람)"},
+  {en:"busy",ko:"바쁜 (할 일이 많은)"},
+];
+
+const starWords=[
+  {en:"before Arthur knew it",ko:"아서가 미처 알아채기도 전에",hint:"It means time passed so fast Arthur didn't even notice. Each afternoon was gone before he knew it! ⏰"},
+  {en:"could you help me out?",ko:"나 좀 도와줄래?",hint:"help out = 거들어 주다. Each friend asks Arthur to help out with their project."},
+  {en:"I guess so",ko:"그러지 뭐 / 그런 것 같아",hint:"Arthur isn't sure, but he says yes anyway. A soft, unsure 'okay'. 😅"},
+  {en:"a hand and a body too",ko:"손도 몸도 (다 필요해)",hint:"need a hand = 도움이 필요하다. Binky jokes the poster is so big he needs Arthur's WHOLE body, not just a hand! 💪"},
+  {en:"you're a lifesaver",ko:"너는 생명의 은인이야",hint:"We say this when someone helps us a LOT — as if they saved our life!"},
+  {en:"everyone but Arthur",ko:"아서만 빼고 모두",hint:"but here means 'except'. Everyone brought a project except Arthur. 😟"},
+];
+
+const story=[
+  {scene:"The assignment",lines:[
+    {en:"Where we live. Elwood City. Our environment, our history, our community.",ko:"우리가 사는 곳. 엘우드 시티. 우리의 환경, 우리의 역사, 우리의 공동체."},
+    {en:"Don't forget, called Mr. Ratburn. Your town projects are due Friday.",ko:"잊지 마세요, 라트번 선생님이 외쳤어요. 여러분의 마을 프로젝트는 금요일이 마감이에요."},
+    {en:"Arthur was a little worried. He didn't have an idea for his project yet.",ko:"아서는 조금 걱정됐어요. 그는 아직 프로젝트에 대한 생각이 없었어요."},
+    {en:"I'll go right home and make a plan, he decided.",ko:"나는 곧장 집에 가서 계획을 세울 거야, 그는 결정했어요."},
+  ]},
+  {scene:"Monday — the Brain",lines:[
+    {en:"But the Brain tapped him on the shoulder.",ko:"하지만 브레인이 그의 어깨를 톡톡 두드렸어요."},
+    {en:"My project is studying wind patterns around Elwood City, said the Brain.",ko:"내 프로젝트는 엘우드 시티 주변의 바람 패턴을 연구하는 거야, 브레인이 말했어요."},
+    {en:"Could you help me out?",ko:"나 좀 도와줄래?"},
+    {en:"Um, okay, said Arthur.",ko:"음, 알았어, 아서가 말했어요."},
+    {en:"Before Arthur knew it, Monday afternoon was gone.",ko:"아서가 미처 알아채기도 전에, 월요일 오후가 지나가 버렸어요."},
+  ]},
+  {scene:"Tuesday — Buster",lines:[
+    {en:"The next day, Arthur was just getting home from school when the phone rang.",ko:"다음 날, 아서가 막 학교에서 집에 도착했을 때 전화가 울렸어요."},
+    {en:"It's me, said Buster. I'm making a video about Elwood City.",ko:"나야, 버스터가 말했어요. 나 엘우드 시티에 대한 영상을 만들고 있어."},
+    {en:"Would you be my cameraman?",ko:"내 카메라맨이 되어 줄래?"},
+    {en:"I guess so, said Arthur.",ko:"그러지 뭐, 아서가 말했어요."},
+    {en:"Before Arthur knew it, Tuesday afternoon was gone.",ko:"아서가 미처 알아채기도 전에, 화요일 오후가 지나가 버렸어요."},
+  ]},
+  {scene:"Wednesday — Binky",lines:[
+    {en:"Today is the day, said Arthur on Wednesday. I have to think of an idea for my project.",ko:"오늘이 바로 그날이야, 수요일에 아서가 말했어요. 나는 내 프로젝트에 대한 생각을 떠올려야 해."},
+    {en:"But after school, Binky stopped by and asked Arthur to come to his house.",ko:"하지만 방과 후에, 빙키가 잠깐 들러서 아서에게 자기 집에 와 달라고 했어요."},
+    {en:"He needed a hand with his history of Elwood City poster.",ko:"그는 엘우드 시티의 역사 포스터에 도움이 필요했어요."},
+    {en:"A hand and a body too. You're a lifesaver, Binky told Arthur.",ko:"손도, 몸도 필요해. 너는 생명의 은인이야, 빙키가 아서에게 말했어요."},
+    {en:"Before Arthur knew it, Wednesday afternoon was gone.",ko:"아서가 미처 알아채기도 전에, 수요일 오후가 지나가 버렸어요."},
+  ]},
+  {scene:"Thursday — Francine",lines:[
+    {en:"On Thursday, Arthur didn't even make it home for dinner.",ko:"목요일에, 아서는 저녁 식사 시간에 집에 도착하지도 못했어요."},
+    {en:"Help! yelled Francine out of her window.",ko:"도와줘! 프랜신이 창문 밖으로 소리쳤어요."},
+    {en:"I'm making a model of Elwood City and it keeps falling apart.",ko:"나는 엘우드 시티 모형을 만들고 있는데 자꾸 무너져."},
+    {en:"Arthur mixed up pail after pail of plaster.",ko:"아서는 양동이 가득 석고를 한 통 한 통 섞었어요."},
+    {en:"It's getting late, he said, and our projects are due tomorrow.",ko:"늦어지고 있어, 그가 말했어요, 그리고 우리 프로젝트는 내일이 마감이야."},
+    {en:"Don't worry, said Francine. We'll be done soon.",ko:"걱정 마, 프랜신이 말했어요. 우리 곧 끝날 거야."},
+    {en:"Before Arthur knew it, Thursday afternoon was gone, and most of Thursday evening too.",ko:"아서가 미처 알아채기도 전에, 목요일 오후가 지나가 버렸고, 목요일 저녁 대부분도 마찬가지였어요."},
+  ]},
+  {scene:"Thursday night — no idea",lines:[
+    {en:"Finally, Arthur got home.",ko:"마침내, 아서는 집에 도착했어요."},
+    {en:"He sat down to think of an idea for his own project.",ko:"그는 자기 자신의 프로젝트에 대한 생각을 떠올리려고 앉았어요."},
+    {en:"He didn't get very far.",ko:"그는 별로 진척이 없었어요."},
+  ]},
+  {scene:"Friday — everyone but Arthur",lines:[
+    {en:"The next morning, everyone brought their town projects to class.",ko:"다음 날 아침, 모두가 자기들의 마을 프로젝트를 교실로 가져왔어요."},
+    {en:"Everyone but Arthur.",ko:"아서만 빼고 모두요."},
+    {en:"Where's your project, Arthur? Mr. Ratburn asked.",ko:"네 프로젝트는 어디 있니, 아서? 라트번 선생님이 물었어요."},
+    {en:"Arthur didn't know what to say.",ko:"아서는 무슨 말을 해야 할지 몰랐어요."},
+  ]},
+  {scene:"Four friends speak up",lines:[
+    {en:"Excuse me, Mr. Ratburn, said the Brain. Arthur worked on my project. He was my partner.",ko:"실례합니다, 라트번 선생님, 브레인이 말했어요. 아서가 제 프로젝트를 도왔어요. 그는 제 파트너였어요."},
+    {en:"Mine too, said Buster.",ko:"제 것도요, 버스터가 말했어요."},
+    {en:"And mine, said Binky.",ko:"그리고 제 것도요, 빙키가 말했어요."},
+    {en:"Don't forget me, said Francine.",ko:"저도 잊지 마세요, 프랜신이 말했어요."},
+  ]},
+  {scene:"Four projects, four friends",lines:[
+    {en:"Wow, Arthur, said Mr. Ratburn.",ko:"와, 아서, 라트번 선생님이 말했어요."},
+    {en:"I see you've been very busy with not just one project, but four.",ko:"내가 보니 너는 하나도 아니고 네 개의 프로젝트로 아주 바빴구나."},
+    {en:"And four great friends too, said Arthur.",ko:"그리고 네 명의 멋진 친구들도요, 아서가 말했어요."},
+  ]},
+];
+
+const questions=[
+  {q:"What was the town project supposed to be about?",sub:"마을 프로젝트는 무엇에 관한 것이었나요?",opts:["Famous people in history","Elwood City — its environment, history, and community","Animals of the forest","The planets in space"],ans:1,hint:"Clue: Where we live. Elwood City. Our environment, our history, our community."},
+  {q:"When were the town projects due?",sub:"마을 프로젝트는 언제가 마감이었나요?",opts:["Monday","Wednesday","Friday","Sunday"],ans:2,hint:"Clue: Your town projects are due Friday."},
+  {q:"Why was Arthur worried at the beginning?",sub:"아서는 처음에 왜 걱정했나요?",opts:["He had lost his project","He didn't have an idea for his project yet","He was sick","He forgot his homework at home"],ans:1,hint:"Clue: He didn't have an idea for his project yet."},
+  {q:"What was the Brain's project about?",sub:"브레인의 프로젝트는 무엇에 관한 것이었나요?",opts:["Wind patterns around Elwood City","The history of Elwood City","A model of the city","A video of the city"],ans:0,hint:"Clue: My project is studying wind patterns around Elwood City, said the Brain."},
+  {q:"What did Buster ask Arthur to be for his video?",sub:"버스터는 자기 영상을 위해 아서에게 무엇이 되어 달라고 했나요?",opts:["The director","The cameraman","The narrator","The main actor"],ans:1,hint:"Clue: I'm making a video about Elwood City. Would you be my cameraman?"},
+  {q:"What did Binky need help with?",sub:"빙키는 무엇에 도움이 필요했나요?",opts:["A wind experiment","A video of the city","His history of Elwood City poster","A model of the city"],ans:2,hint:"Clue: He needed a hand with his history of Elwood City poster."},
+  {q:"What was Francine making?",sub:"프랜신은 무엇을 만들고 있었나요?",opts:["A poster","A model of Elwood City","A video","A wind chart"],ans:1,hint:"Clue: I'm making a model of Elwood City and it keeps falling apart."},
+  {q:"What did Arthur mix to help Francine?",sub:"아서는 프랜신을 돕기 위해 무엇을 섞었나요?",opts:["Paint","Glue","Plaster","Clay"],ans:2,hint:"Clue: Arthur mixed up pail after pail of plaster."},
+  {q:"On Friday morning, who did NOT bring a project?",sub:"금요일 아침, 누가 프로젝트를 가져오지 않았나요?",opts:["The Brain","Arthur","Francine","Buster"],ans:1,hint:"Clue: Everyone brought their town projects to class. Everyone but Arthur."},
+  {q:"What did Mr. Ratburn say Arthur had been busy with?",sub:"라트번 선생님은 아서가 무엇으로 바빴다고 말했나요?",opts:["Not one project, but four","His own big project","Helping his family","Playing with friends"],ans:0,hint:"Clue: I see you've been very busy with not just one project, but four. — and four great friends too!"},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/'/g,"&#39;")}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆',"Perfect score! You totally mastered Arthur's Homework!"]:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>
