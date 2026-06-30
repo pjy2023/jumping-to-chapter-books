@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Good Night, D.W. — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#FF8C42;--blue-dark:#c8601a;--blue-light:#fff3eb;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4f8fd;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#dce8f5;
+    --radius:16px;--shadow:0 4px 20px rgba(52,152,219,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.25rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#1a5f8a;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#fbd5b0;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #fbd5b0;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#d6eaf8}
+  .ko-toggle.open{background:#fbd5b0;color:#1a4f72}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#fbd5b0;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#1a5f8a;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#fbd5b0;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Arthur Starter #15</div>
+    <div class="header-title">Good Night, <span>D.W.</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Good Night, D.W. · Marc Brown · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"tuck in",ko:"이불 속에 넣어주다, 재워주다 (tuck: 집어넣다 + in: 안으로)"},
+  {en:"night light",ko:"취침등 (night: 밤 + light: 불빛; 잠잘 때 켜두는 작은 불)"},
+  {en:"wide awake",ko:"완전히 깨어 있는 (wide: 완전히 + awake: 깨어 있는)"},
+  {en:"adventure",ko:"모험 (go on an adventure: 모험을 떠나다)"},
+  {en:"tire out",ko:"피곤하게 만들다, 완전히 지치게 하다 (tire: 피곤하게 하다 + out: 완전히)"},
+  {en:"bionic",ko:"바이오닉의, 생체공학의 (bio: 생명 + -nic: 형용사형)"},
+  {en:"roll his eyes",ko:"눈을 굴리다 (불만이나 답답함을 표현하는 몸짓)"},
+  {en:"count sheep",ko:"양을 세다 (잠이 안 올 때 양이 담장을 뛰어넘는 것을 상상하며 세는 것)"},
+  {en:"fluffy",ko:"보슬보슬한, 폭신폭신한"},
+  {en:"fence",ko:"담장, 울타리"},
+  {en:"sigh",ko:"한숨을 쉬다; 한숨"},
+  {en:"relax",ko:"긴장을 풀다, 쉬다"},
+  {en:"bathing suit",ko:"수영복 (bathe: 목욕하다 + -ing + suit: 옷)"},
+  {en:"itchy",ko:"가려운 (itch: 가렵다 + -y: 형용사형)"},
+  {en:"creak",ko:"삐걱거리다; 삐걱거리는 소리"},
+  {en:"blink",ko:"눈을 깜빡이다"},
+  {en:"monster",ko:"괴물"},
+  {en:"closet",ko:"옷장, 벽장"},
+  {en:"yawn",ko:"하품하다; 하품"},
+  {en:"gazillion",ko:"엄청나게 많은 수 (비공식 과장 표현; a gazillion = 수십억, 셀 수 없이 많은)"},
+];
+
+const starWords=[
+  {en:"Is anybody out there?",ko:"거기 누구 없어요?",hint:"D.W. calls this out every time she can't sleep — it's her way of getting attention! 'out there' means 'out in the hallway.' 🌙"},
+  {en:"tuck in",ko:"이불 속에 넣어주다, 재워주다",hint:"Phrasal verb! 'Dad tucked in D.W.' = 아빠가 D.W.를 이불 속에 넣어 재워줬다. The 'in' shows direction — into the covers."},
+  {en:"roll his eyes",ko:"눈을 굴리다",hint:"An idiom! Rolling your eyes = turning them upward briefly — it shows you think something is silly or annoying. Arthur does this when D.W. says Bionic Bunny must also have trouble sleeping. 🙄"},
+  {en:"a gazillion reasons",ko:"셀 수 없이 많은 이유",hint:"'Gazillion' is not a real number! D.W. uses it to exaggerate — she has SO many reasons she can't sleep. Like 'a million' but even bigger. 😄"},
+  {en:"only in her dreams",ko:"꿈속에서만",hint:"The punch line of the story! D.W. said she could 'go on and on' — but she fell asleep mid-sentence. 'Only in her dreams' = she did keep going... but while dreaming! 💤"},
+];
+
+const story=[
+  {scene:"Bedtime",lines:[
+    {en:"It was time for bed.",ko:"잠잘 시간이었다."},
+    {en:"Dad tucked in D.W. and gave her a kiss.",ko:"아빠가 D.W.를 이불 속에 넣어주고 뽀뽀해주었다."},
+    {en:"Mom turned on the night light.",ko:"엄마가 취침등을 켰다."},
+    {en:"She gave D.W. a kiss too.",ko:"엄마도 D.W.에게 뽀뽀해주었다."},
+    {en:'"Good night, D.W.," they said together.',ko:'"잘 자, D.W.," 두 사람이 함께 말했다.'},
+  ]},
+  {scene:"Can't Sleep — Arthur Visits",lines:[
+    {en:"D.W. tried to fall asleep, but she couldn't.",ko:"D.W.는 잠들려고 했지만, 잠이 오지 않았다."},
+    {en:"She was wide awake.",ko:"그녀는 완전히 말똥말똥했다."},
+    {en:'"Is anybody out there?" she called.',ko:'"거기 누구 없어요?" 그녀가 불렀다.'},
+    {en:"Arthur came in.",ko:"아서가 들어왔다."},
+    {en:'"What\'s the matter?" he asked.',ko:'"무슨 일이야?" 그가 물었다.'},
+    {en:'"I can\'t sleep," said D.W.',ko:'"잠이 안 와," D.W.가 말했다.'},
+    {en:'"When I can\'t sleep, I think about one of the Bionic Bunny\'s adventures," said Arthur.',ko:'"나는 잠이 안 올 때, 바이오닉 버니의 모험 중 하나를 생각해," 아서가 말했다.'},
+    {en:'"That always tires me out."',ko:'"그러면 항상 졸음이 와."'},
+    {en:'"I bet the Bionic Bunny has trouble falling asleep," said D.W.',ko:'"바이오닉 버니도 잠들기 힘들 것 같아," D.W.가 말했다.'},
+    {en:'"He must have a lot on his mind too."',ko:'"그도 생각할 게 많을 테니까."'},
+    {en:"Arthur rolled his eyes.",ko:"아서가 눈을 굴렸다."},
+    {en:'"Good night, D.W.," he said. "I\'ve got homework to do."',ko:'"잘 자, D.W.," 그가 말했다. "나 숙제 해야 해."'},
+  ]},
+  {scene:"Can't Sleep — Dad Visits",lines:[
+    {en:'"Is anybody out there?" D.W. called again.',ko:'"거기 누구 없어요?" D.W.가 또 불렀다.'},
+    {en:"Dad came in.",ko:"아빠가 들어왔다."},
+    {en:'"What\'s the matter?" he asked.',ko:'"무슨 일이야?" 그가 물었다.'},
+    {en:'"I can\'t sleep," said D.W.',ko:'"잠이 안 와," D.W.가 말했다.'},
+    {en:'"Try counting sheep," said Dad.',ko:'"양을 세어봐," 아빠가 말했다.'},
+    {en:'"Nice fluffy sheep jumping over a fence."',ko:'"담장을 뛰어넘는 보슬보슬한 양들을."'},
+    {en:'"Did you ever wonder about sheep?" said D.W.',ko:'"양에 대해 궁금한 적 있어요?" D.W.가 말했다.'},
+    {en:'"When do they sleep?',ko:'"양들은 언제 자요?'},
+    {en:'They must not have time if they\'re so busy jumping over fences."',ko:'담장을 그렇게 열심히 뛰어넘느라 시간이 없을 것 같아요."'},
+    {en:'"Wake up, we\'ve got fences to jump!"',ko:'"일어나, 담장을 뛰어넘어야 해!"'},
+    {en:"Dad sighed.",ko:"아빠가 한숨을 쉬었다."},
+    {en:'"Good night, D.W.," he said. "See you in the morning."',ko:'"잘 자, D.W.," 그가 말했다. "아침에 봐."'},
+  ]},
+  {scene:"Can't Sleep — Mom Visits",lines:[
+    {en:'"Is anybody out there?" D.W. called a third time.',ko:'"거기 누구 없어요?" D.W.가 세 번째로 불렀다.'},
+    {en:"Mom came in.",ko:"엄마가 들어왔다."},
+    {en:'"What\'s the matter?" she asked.',ko:'"무슨 일이야?" 그녀가 물었다.'},
+    {en:'"I can\'t sleep," said D.W.',ko:'"잠이 안 와," D.W.가 말했다.'},
+    {en:'"Just relax," said Mom.',ko:'"그냥 쉬어봐," 엄마가 말했다.'},
+    {en:'"Think about happy things, like going to the beach."',ko:'"해변에 가는 것 같은 행복한 것들을 생각해봐."'},
+    {en:'"But whenever I go to the beach, my bathing suit gets full of sand.',ko:'"하지만 해변에 가면 수영복에 모래가 가득 차잖아요.'},
+    {en:'I can never sleep thinking about all that itchy sand on me."',ko:'온몸에 그 가려운 모래를 생각하면 절대 잠을 잘 수가 없어요."'},
+    {en:"Her mother shook her head.",ko:"엄마가 고개를 저었다."},
+    {en:'"Good night, D.W.," she said. "Close your eyes."',ko:'"잘 자, D.W.," 그녀가 말했다. "눈 감아."'},
+  ]},
+  {scene:"None of It Worked",lines:[
+    {en:"D.W. closed her eyes.",ko:"D.W.는 눈을 감았다."},
+    {en:"She tried thinking about the Bionic Bunny and the beach and fluffy white sheep.",ko:"그녀는 바이오닉 버니와 해변과 보슬보슬한 하얀 양들을 생각하려 했다."},
+    {en:"But of course none of it worked.",ko:"하지만 물론 아무것도 효과가 없었다."},
+  ]},
+  {scene:"Everyone Rushes In",lines:[
+    {en:'"Is anybody out there?"',ko:'"거기 누구 없어요?"'},
+    {en:"This time everyone rushed in together.",ko:"이번에는 모두가 함께 달려왔다."},
+    {en:'"What is it now?" asked Dad.',ko:'"이제 또 뭐야?" 아빠가 물었다.'},
+    {en:'"How do you expect me to sleep?" said D.W.',ko:'"어떻게 자라는 거예요?" D.W.가 말했다.'},
+    {en:'"The wind is blowing and the bed is creaking and Kate is making weird sounds."',ko:'"바람은 불고 침대는 삐걱거리고 케이트는 이상한 소리를 내잖아요."'},
+    {en:"D.W. stopped to blink a few times.",ko:"D.W.는 잠시 눈을 깜빡거렸다."},
+    {en:'"Besides, a tree could fall on the house, and there could be a monster under the bed or the closet or both."',ko:'"게다가 나무가 집에 쓰러질 수도 있고, 침대 아래나 옷장 안에 괴물이 있을 수도 있어요. 아니면 둘 다."'},
+    {en:"D.W. yawned a giant yawn.",ko:"D.W.는 크게 하품했다."},
+    {en:'"There are a gazillion reasons why I can\'t fall asleep," said D.W., closing her eyes.',ko:'"잠이 안 오는 이유가 수도 없이 많아요," D.W.가 눈을 감으며 말했다.'},
+    {en:'"I could go on and on and on..."',ko:'"계속 말할 수 있어요..."'},
+    {en:"And she did.",ko:"그리고 그녀는 정말 계속했다."},
+    {en:"But only in her dreams.",ko:"꿈속에서만."},
+    {en:"Good night, D.W.",ko:"잘 자, D.W."},
+  ]},
+];
+
+const questions=[
+  {q:"What did Dad do when he put D.W. to bed?",sub:"아빠는 D.W.를 재울 때 무엇을 했나요?",opts:["Read her a bedtime story","Tucked her in and gave her a kiss","Turned on the night light","Sang her a lullaby"],ans:1,hint:"Clue: Dad tucked in D.W. and gave her a kiss."},
+  {q:"What did Arthur suggest D.W. think about to fall asleep?",sub:"아서는 D.W.에게 잠들기 위해 무엇을 생각하라고 했나요?",opts:["Counting sheep","Going to the beach","One of the Bionic Bunny's adventures","Fluffy white clouds"],ans:2,hint:"Clue: 'When I can't sleep, I think about one of the Bionic Bunny's adventures,' said Arthur."},
+  {q:"Why didn't Arthur's suggestion help D.W.?",sub:"아서의 제안이 D.W.에게 효과가 없었던 이유는 무엇인가요?",opts:["She doesn't like the Bionic Bunny","She thought the Bionic Bunny must also have trouble sleeping","She said it was too exciting","She said it gave her bad dreams"],ans:1,hint:"Clue: 'I bet the Bionic Bunny has trouble falling asleep,' said D.W. 'He must have a lot on his mind too.'"},
+  {q:"What did Dad suggest to help D.W. fall asleep?",sub:"아빠는 D.W.가 잠들도록 무엇을 제안했나요?",opts:["Drinking warm milk","Counting fluffy sheep jumping over a fence","Listening to music","Reading a book"],ans:1,hint:"Clue: 'Try counting sheep,' said Dad. 'Nice fluffy sheep jumping over a fence.'"},
+  {q:"What was D.W.'s problem with counting sheep?",sub:"D.W.는 양을 세는 것에서 어떤 문제를 찾았나요?",opts:["There were too many to count","Sheep are too noisy","Sheep must have no time to sleep because they're so busy jumping fences","She couldn't picture fluffy sheep"],ans:2,hint:"Clue: 'When do they sleep? They must not have time if they're so busy jumping over fences.'"},
+  {q:"What did Mom suggest D.W. think about?",sub:"엄마는 D.W.에게 무엇을 생각하라고 했나요?",opts:["Fluffy white clouds","The Bionic Bunny","Happy things like going to the beach","Counting stars"],ans:2,hint:"Clue: 'Think about happy things, like going to the beach.'"},
+  {q:"Why didn't Mom's suggestion work?",sub:"엄마의 제안이 효과가 없었던 이유는 무엇인가요?",opts:["D.W. is afraid of the ocean","Thinking about itchy sand in her bathing suit would keep her awake","The beach is too far away","She went to the beach too recently"],ans:1,hint:"Clue: 'I can never sleep thinking about all that itchy sand on me.'"},
+  {q:"What three things did D.W. complain about when everyone rushed in?",sub:"모두가 달려왔을 때 D.W.는 무엇 세 가지를 불평했나요?",opts:["The heat, the light, and the pillow","The wind, the creaking bed, and Kate's weird sounds","The monsters, the darkness, and the noise","The door, the window, and the rain"],ans:1,hint:"Clue: 'The wind is blowing and the bed is creaking and Kate is making weird sounds.'"},
+  {q:"What did D.W. do just before she finally fell asleep?",sub:"D.W.는 마침내 잠들기 바로 직전에 무엇을 했나요?",opts:["She counted sheep","She thought about the beach","She yawned a giant yawn","She called out one more time"],ans:2,hint:"Clue: D.W. yawned a giant yawn."},
+  {q:"How did D.W. finally fall asleep?",sub:"D.W.는 어떻게 마침내 잠들었나요?",opts:["She thought about the Bionic Bunny","She counted a gazillion sheep","She fell asleep while listing reasons she couldn't sleep","She drank warm milk"],ans:2,hint:"Clue: 'I could go on and on and on...' And she did. But only in her dreams."},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+
+function filterWords(q){
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=c.dataset.en.includes(q.toLowerCase())?'':'none';
+  });
+}
+
+let koAllVisible=false;
+function toggleAllKo(){
+  koAllVisible=!koAllVisible;
+  document.querySelectorAll('.story-ko').forEach(el=>{
+    el.classList.toggle('visible',koAllVisible);
+  });
+  document.querySelectorAll('.ko-toggle').forEach(btn=>{
+    btn.textContent=koAllVisible?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',koAllVisible);
+  });
+  document.getElementById('toggle-all-btn').textContent=koAllVisible?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(s=>`
+    <div class="story-block">
+      <div class="story-scene">${s.scene}</div>
+      ${s.lines.map(l=>`
+        <div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/['"]/g,' ')}',this)">
+            <span class="speak-dot">▶</span>${l.en}
+          </div>
+          <div class="story-ko">${l.ko}</div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function toggleKo(btn){
+  const ko=btn.previousElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+
+let cur=0,score=0,answered=false;
+function renderQuiz(){
+  if(cur>=questions.length){showResult();return;}
+  const q=questions[cur];
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${cur+1} / ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${(cur/questions.length)*100}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${cur+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+      <div id="feedback"></div>
+    </div>`;
+  answered=false;
+}
+
+function answer(i){
+  if(answered)return;
+  answered=true;
+  const q=questions[cur];
+  const btns=document.querySelectorAll('.opt');
+  btns.forEach(b=>b.disabled=true);
+  const correct=i===q.ans;
+  if(correct)score++;
+  btns[i].classList.add(correct?'correct':'wrong');
+  if(!correct)btns[q.ans].classList.add('correct');
+  document.getElementById('feedback').innerHTML=`
+    <div class="feedback-box ${correct?'correct':'wrong'}">
+      ${correct?'✅ Correct!':'❌ Not quite.'}
+      <div class="feedback-hint">💡 ${q.hint}</div>
+    </div>
+    <button class="btn-next" onclick="next()">${cur+1<questions.length?'Next Question →':'See Results'}</button>`;
+}
+
+function next(){cur++;renderQuiz();}
+
+function showResult(){
+  const pct=Math.round(score/questions.length*100);
+  const emoji=pct>=90?'🌟':pct>=70?'😊':pct>=50?'💪':'📚';
+  const msg=pct>=90?'Amazing! D.W. would be impressed — you might even out-talk her!':
+            pct>=70?'Great job! You know this story well.':
+            pct>=50?'Good effort! Try re-reading the story and quiz again.':
+            'Keep practicing! Go back to the Story tab and try again.';
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="result-box">
+      <div class="result-emoji">${emoji}</div>
+      <div class="result-score">${score} / ${questions.length}</div>
+      <div class="result-label">${pct}% correct</div>
+      <div class="result-msg">${msg}</div>
+      <button class="btn-retry" onclick="cur=0;score=0;renderQuiz()">🔄 Try Again</button>
+    </div>`;
+}
+
+function showTab(t){
+  ['words','story','quiz'].forEach(x=>{
+    document.getElementById('sec-'+x).classList.toggle('active',x===t);
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='quiz'&&cur===0&&score===0)renderQuiz();
+}
+
+renderWords();
+renderStory();
+</script>
+</body>
+</html>
