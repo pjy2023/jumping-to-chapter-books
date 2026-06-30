@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur's Tree House — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#FF8C42;--blue-dark:#c8601a;--blue-light:#fff3eb;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4f8fd;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#dce8f5;
+    --radius:16px;--shadow:0 4px 20px rgba(52,152,219,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.25rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#1a5f8a;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#fbd5b0;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #fbd5b0;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#d6eaf8}
+  .ko-toggle.open{background:#fbd5b0;color:#1a4f72}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#fbd5b0;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#1a5f8a;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#fbd5b0;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Arthur Starter #13</div>
+    <div class="header-title">Arthur's <span>Tree House</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Arthur's Tree House · Marc Brown · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"comic book",ko:"만화책 (comic: 만화 + book: 책)"},
+  {en:"vacuum",ko:"진공청소기로 청소하다; 진공청소기 (vacuum cleaner의 줄임말)"},
+  {en:"I'm afraid so",ko:"유감스럽지만 그래요, 아쉽게도 맞아요 (정중하게 '네'를 표현)"},
+  {en:"in a little while",ko:"잠시 후에, 곧 (a little while: 짧은 시간)"},
+  {en:"twirl",ko:"빙글빙글 돌기; 빙글 돌다"},
+  {en:"right in the middle of",ko:"한창 ~하는 중에 (right: 바로 + in the middle of: ~의 한가운데)"},
+  {en:"backyard",ko:"뒷마당 (back: 뒤 + yard: 마당)"},
+  {en:"to himself",ko:"혼잣말로, 속으로 (다른 사람이 아닌 자기 자신에게 말하는 것)"},
+  {en:"jump on",ko:"~에게 뛰어오르다, 달려들다"},
+  {en:"understand",ko:"이해하다"},
+  {en:"look up",ko:"위를 올려다보다 (look: 보다 + up: 위로)"},
+  {en:"comfortable",ko:"편안한 (comfort: 편안함 + -able: 형용사형)"},
+  {en:"branch",ko:"나뭇가지"},
+  {en:"improvement",ko:"개선, 발전 (improve: 개선하다 + -ment: 명사형)"},
+  {en:"take a while",ko:"시간이 걸리다 (take: 걸리다 + while: 시간)"},
+  {en:"get everything just right",ko:"모든 것을 완벽하게 만들다 (just right: 딱 맞게, 완벽하게)"},
+  {en:"treehouse",ko:"나무 위의 집"},
+  {en:"company",ko:"함께하는 사람들, 동반 (여기서는 '회사'가 아님; company = 함께 있는 사람들)"},
+  {en:"glad",ko:"기쁜, 반가운"},
+  {en:"place to himself",ko:"혼자만의 공간 (to himself: 자기 혼자만의)"},
+];
+
+const starWords=[
+  {en:"I'm afraid so",ko:"유감스럽지만 그래요",hint:"'I'm afraid so' doesn't mean Dad is scared! It means 'Unfortunately, yes' — a polite way to agree when the other person won't like the answer. Dad wishes he didn't have to vacuum now, but he does. 😅"},
+  {en:"right in the middle of this",ko:"한창 이것을 하는 중에",hint:"'right' here means 'exactly' — not a direction! Mom is exactly in the middle of something important and can't stop. 'Right' adds emphasis: exactly at this moment."},
+  {en:"said to himself",ko:"혼잣말로 말했다, 속으로 말했다",hint:"When someone says something 'to himself,' they're thinking out loud — talking quietly, not to anyone else. Arthur says 'Maybe I'll just sit out here' to himself — nobody else hears it. 💭"},
+  {en:"make some improvements",ko:"몇 가지 개선을 하다",hint:"improvement = making something better. improve (동사) → improvement (명사). Dad thought the tree spot was great but said they could make it even better — so they built a real treehouse! 🏠"},
+  {en:"glad for all the company",ko:"모든 함께함이 기뻐서",hint:"'company' here doesn't mean a business! It means the people who are with you. 'Glad for the company' = 함께해줘서 기쁜. Arthur liked having friends and family visit the treehouse. 😄"},
+];
+
+const story=[
+  {scene:"No place to read",lines:[
+    {en:"Arthur came home with his new Bionic Bunny comic book.",ko:"아서는 새 바이오닉 버니 만화책을 가지고 집에 왔다."},
+    {en:"He couldn't wait to read it.",ko:"그는 빨리 읽고 싶어 못 기다릴 지경이었다."},
+    {en:"Dad was vacuuming in Arthur's bedroom.",ko:"아빠가 아서의 방에서 청소기를 돌리고 있었다."},
+    {en:'"Do you have to do that now?" asked Arthur.',ko:'"지금 꼭 해야 해요?" 아서가 물었다.'},
+    {en:'"I\'m afraid so," said Dad. "I\'ll be done in a little while."',ko:'"유감스럽지만 그래야 할 것 같구나," 아빠가 말했다. "잠시 후면 끝날 거야."'},
+  ]},
+  {scene:"Living room — D.W. and Mom",lines:[
+    {en:"Arthur went to the living room.",ko:"아서는 거실로 갔다."},
+    {en:'"Watch me!" said D.W. "I\'m practicing my new twirl."',ko:'"나 봐봐!" D.W.가 말했다. "새 빙글 돌기를 연습하고 있어."'},
+    {en:'"I can\'t," said Arthur. "I\'m busy."',ko:'"안 돼," 아서가 말했다. "나 바빠."'},
+    {en:'"Mom, can I sit—"',ko:'"엄마, 내가 앉아도—"'},
+    {en:'"Not now, Arthur," said Mom. "I\'m right in the middle of this."',ko:'"지금은 안 돼, 아서," 엄마가 말했다. "나 한창 이거 하는 중이야."'},
+  ]},
+  {scene:"Backyard — Pal",lines:[
+    {en:"Arthur went out to the backyard.",ko:"아서는 뒷마당으로 나갔다."},
+    {en:'"Maybe I\'ll just sit out here," he said to himself.',ko:'"그냥 여기 앉아 있을까," 그가 혼잣말로 말했다.'},
+    {en:"Pal started jumping on him.",ko:"팔이 아서에게 뛰어오르기 시작했다."},
+    {en:'"Woof! Woof!"',ko:'"멍! 멍!"'},
+    {en:'"Not now, Pal," said Arthur.',ko:'"지금은 안 돼, 팔," 아서가 말했다.'},
+    {en:'"Woof! Woof!"',ko:'"멍! 멍!"'},
+    {en:"But Pal didn't understand.",ko:"하지만 팔은 이해하지 못했다."},
+  ]},
+  {scene:"Arthur looks up",lines:[
+    {en:"Where could Arthur go?",ko:"아서는 어디로 갈 수 있을까?"},
+    {en:"He looked to the right and he looked to the left.",ko:"그는 오른쪽을 보았다가 왼쪽을 보았다."},
+    {en:"And then he looked up.",ko:"그리고 나서 그는 위를 올려다보았다."},
+  ]},
+  {scene:"Family joins — building the treehouse",lines:[
+    {en:'"I see you found a place for yourself," said Dad, who had finished his cleaning.',ko:'"네 자리를 찾았구나," 청소를 마친 아빠가 말했다.'},
+    {en:'"You look pretty comfortable up there."',ko:'"저 위에서 꽤 편안해 보이는데."'},
+    {en:'"Hey! What about me?" said D.W.',ko:'"야! 나는요?" D.W.가 말했다.'},
+    {en:'"Any branches left?" said Mom.',ko:'"자리 남은 가지 있어요?" 엄마가 말했다.'},
+    {en:'"This was a great idea," said Dad. "But I think we should make some improvements."',ko:'"이건 정말 좋은 생각이야," 아빠가 말했다. "근데 몇 가지 개선을 해야 할 것 같아."'},
+    {en:"It took a while to get everything just right.",ko:"모든 것을 완벽하게 만드는 데 시간이 걸렸다."},
+  ]},
+  {scene:"The treehouse is done",lines:[
+    {en:"Once the treehouse was done, Arthur had a new place to go.",ko:"나무집이 완성되자, 아서는 새로운 갈 곳이 생겼다."},
+    {en:"And so did his friends.",ko:"친구들도 마찬가지였다."},
+    {en:"Sometimes his family came to visit too.",ko:"때로는 가족도 놀러 왔다."},
+    {en:"Arthur was glad for all the company.",ko:"아서는 모두가 함께해줘서 기뻤다."},
+    {en:"But there were times when he still liked having the place to himself.",ko:"하지만 여전히 그 자리를 혼자 차지하고 싶을 때도 있었다."},
+  ]},
+];
+
+const questions=[
+  {q:"What did Arthur bring home that he was eager to read?",sub:"아서가 빨리 읽고 싶어 가져온 것은 무엇이었나요?",opts:["A new library book","His Bionic Bunny comic book","His homework","A magazine from school"],ans:1,hint:"Clue: Arthur came home with his new Bionic Bunny comic book. He couldn't wait to read it."},
+  {q:"Why couldn't Arthur read in his bedroom?",sub:"아서가 방에서 책을 읽을 수 없었던 이유는 무엇인가요?",opts:["D.W. was playing there","The light was broken","Dad was vacuuming","Pal was sleeping on his bed"],ans:2,hint:"Clue: Dad was vacuuming in Arthur's bedroom."},
+  {q:"What did Dad mean when he said 'I'm afraid so'?",sub:"아빠가 'I'm afraid so'라고 했을 때 무슨 뜻인가요?",opts:["He was scared of Arthur","He wasn't sure about the answer","Unfortunately, yes — he had to keep vacuuming","He was sorry and would stop"],ans:2,hint:"Clue: 'I'm afraid so' = unfortunately yes. Dad wished he could stop, but he had to finish cleaning."},
+  {q:"What was D.W. doing in the living room?",sub:"D.W.는 거실에서 무엇을 하고 있었나요?",opts:["Watching TV","Playing with her toys","Practicing her new twirl","Reading a book"],ans:2,hint:"Clue: 'Watch me!' said D.W. 'I'm practicing my new twirl.'"},
+  {q:"Why did Arthur have to leave the living room?",sub:"아서가 거실을 떠나야 했던 이유는 무엇인가요?",opts:["D.W. was too loud","Mom said she was right in the middle of something","The TV was too bright","Dad called him"],ans:1,hint:"Clue: 'Not now, Arthur,' said Mom. 'I'm right in the middle of this.'"},
+  {q:"What did Pal do when Arthur went to the backyard?",sub:"아서가 뒷마당에 나가자 팔은 어떻게 했나요?",opts:["He ran away","He sat quietly next to Arthur","He started jumping on Arthur","He barked and went inside"],ans:2,hint:"Clue: Pal started jumping on him."},
+  {q:"How did Arthur finally find a quiet spot?",sub:"아서는 어떻게 조용한 자리를 찾았나요?",opts:["He went to a neighbor's house","He looked up and climbed a tree","He hid under the porch","He went to his room and closed the door"],ans:1,hint:"Clue: He looked to the right and he looked to the left. And then he looked up."},
+  {q:"What did Dad say when he saw Arthur up in the tree?",sub:"아빠는 나무 위에 있는 아서를 보고 뭐라고 했나요?",opts:["Come down right now!","That is not safe!","You look pretty comfortable up there.","Dinner is almost ready!"],ans:2,hint:"Clue: 'You look pretty comfortable up there,' said Dad, who had finished his cleaning."},
+  {q:"What did Dad suggest after seeing Arthur's spot in the tree?",sub:"나무 위 아서의 자리를 본 후 아빠는 무엇을 제안했나요?",opts:["That Arthur should come inside","That they should make some improvements","That D.W. should have her own tree","That Pal needed a walk"],ans:1,hint:"Clue: 'This was a great idea,' said Dad. 'But I think we should make some improvements.'"},
+  {q:"How did Arthur feel about visitors at the treehouse?",sub:"나무집을 찾아오는 방문객에 대해 아서는 어떻게 느꼈나요?",opts:["He was always happy to have company","He never wanted any visitors","He was glad for company but sometimes liked having it to himself","He only wanted his family to visit"],ans:2,hint:"Clue: Arthur was glad for all the company. But there were times when he still liked having the place to himself."},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+
+function filterWords(q){
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=c.dataset.en.includes(q.toLowerCase())?'':'none';
+  });
+}
+
+let koAllVisible=false;
+function toggleAllKo(){
+  koAllVisible=!koAllVisible;
+  document.querySelectorAll('.story-ko').forEach(el=>{
+    el.classList.toggle('visible',koAllVisible);
+  });
+  document.querySelectorAll('.ko-toggle').forEach(btn=>{
+    btn.textContent=koAllVisible?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',koAllVisible);
+  });
+  document.getElementById('toggle-all-btn').textContent=koAllVisible?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(s=>`
+    <div class="story-block">
+      <div class="story-scene">${s.scene}</div>
+      ${s.lines.map(l=>`
+        <div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/['"]/g,' ')}',this)">
+            <span class="speak-dot">▶</span>${l.en}
+          </div>
+          <div class="story-ko">${l.ko}</div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function toggleKo(btn){
+  const ko=btn.previousElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+
+let cur=0,score=0,answered=false;
+function renderQuiz(){
+  if(cur>=questions.length){showResult();return;}
+  const q=questions[cur];
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${cur+1} / ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${(cur/questions.length)*100}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${cur+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+      <div id="feedback"></div>
+    </div>`;
+  answered=false;
+}
+
+function answer(i){
+  if(answered)return;
+  answered=true;
+  const q=questions[cur];
+  const btns=document.querySelectorAll('.opt');
+  btns.forEach(b=>b.disabled=true);
+  const correct=i===q.ans;
+  if(correct)score++;
+  btns[i].classList.add(correct?'correct':'wrong');
+  if(!correct)btns[q.ans].classList.add('correct');
+  document.getElementById('feedback').innerHTML=`
+    <div class="feedback-box ${correct?'correct':'wrong'}">
+      ${correct?'✅ Correct!':'❌ Not quite.'}
+      <div class="feedback-hint">💡 ${q.hint}</div>
+    </div>
+    <button class="btn-next" onclick="next()">${cur+1<questions.length?'Next Question →':'See Results'}</button>`;
+}
+
+function next(){cur++;renderQuiz();}
+
+function showResult(){
+  const pct=Math.round(score/questions.length*100);
+  const emoji=pct>=90?'🌟':pct>=70?'😊':pct>=50?'💪':'📚';
+  const msg=pct>=90?'Amazing! You know this story as well as Arthur knows his treehouse!':
+            pct>=70?'Great job! You understood the story well.':
+            pct>=50?'Good effort! Try re-reading the story and quiz again.':
+            'Keep practicing! Go back to the Story tab and try again.';
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="result-box">
+      <div class="result-emoji">${emoji}</div>
+      <div class="result-score">${score} / ${questions.length}</div>
+      <div class="result-label">${pct}% correct</div>
+      <div class="result-msg">${msg}</div>
+      <button class="btn-retry" onclick="cur=0;score=0;renderQuiz()">🔄 Try Again</button>
+    </div>`;
+}
+
+function showTab(t){
+  ['words','story','quiz'].forEach(x=>{
+    document.getElementById('sec-'+x).classList.toggle('active',x===t);
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='quiz'&&cur===0&&score===0)renderQuiz();
+}
+
+renderWords();
+renderStory();
+</script>
+</body>
+</html>
