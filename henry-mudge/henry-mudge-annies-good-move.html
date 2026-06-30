@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Henry and Mudge and Annie's Good Move — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#2EC4B6;--blue-dark:#1a9d90;--blue-light:#e8faf8;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4fbf9;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#b2dfd7;
+    --radius:16px;--shadow:0 4px 20px rgba(42,157,143,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.2rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#0e5c56;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#a3e4de;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #a3e4de;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#c8f3ef}
+  .ko-toggle.open{background:#a3e4de;color:#0a4a45}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#a3e4de;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#0e6b63;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#a3e4de;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Henry &amp; Mudge #10</div>
+    <div class="header-title">Henry and Mudge and <span>Annie's Good Move</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Henry and Mudge and Annie's Good Move · Cynthia Rylant · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"cousin",ko:"사촌"},
+  {en:"frilly",ko:"주름 장식이 많은, 프릴이 달린 (frill: 주름 장식 + -y: 형용사형)"},
+  {en:"shiny",ko:"반짝이는, 윤이 나는 (shine: 빛나다 + -y: 형용사형)"},
+  {en:"Frisbee",ko:"프리즈비 (원반 모양의 플라스틱 장난감; 던지고 받으며 노는 것)"},
+  {en:"thrilled",ko:"매우 신난, 흥분된 (thrill: 전율·흥분 + -ed: 형용사형)"},
+  {en:"nervous",ko:"긴장된, 초조한"},
+  {en:"imagine",ko:"상상하다"},
+  {en:"wrap",ko:"싸다, 포장하다"},
+  {en:"drool",ko:"침을 흘리다"},
+  {en:"blotchy",ko:"얼룩덜룩한; 여기서는 긴장하면 피부에 붉은 반점이 생기는 것"},
+  {en:"break out",ko:"(피부에 뾰루지·반점이) 생기다 (break: 터지다 + out: 밖으로)"},
+  {en:"hanky",ko:"손수건 (handkerchief의 줄임말; lace hanky: 레이스 손수건)"},
+  {en:"crawl",ko:"기어가다, 기어들어가다"},
+  {en:"covers",ko:"이불, 침대 덮개 (cover: 덮는 것 + -s: 복수)"},
+  {en:"disappeared",ko:"사라졌다 (disappear: 사라지다 + -ed: 과거형)"},
+  {en:"peek",ko:"살짝 들여다보다, 몰래 보다"},
+  {en:"unload",ko:"짐을 내리다, 짐을 부리다 (un-: 반대 + load: 짐을 싣다)"},
+  {en:"unpack",ko:"짐을 풀다, 짐을 꺼내다 (un-: 반대 + pack: 짐을 싸다)"},
+  {en:"blotch",ko:"얼룩, 붉은 반점 (break out in blotches: 반점이 생기다)"},
+  {en:"wish",ko:"소원을 빌다; 소원 (make a wish: 소원을 빌다)"},
+];
+
+const starWords=[
+  {en:"throw a mean Frisbee",ko:"프리즈비를 잘 던지다",hint:"Surprise! 'mean' here doesn't mean unkind — it means 'really good, impressive.' She throws a mean Frisbee = 그녀는 프리즈비를 아주 잘 던진다! A 'mean' skill = 강력한, 대단한 실력. 💪"},
+  {en:"break out",ko:"(긴장하면 피부에 반점이) 생기다",hint:"Phrasal verb with many meanings! Here: 긴장하면 피부에 붉은 반점이 생기다. Annie 'breaks out' whenever she's nervous — red blotchy spots appear on her skin. 😰"},
+  {en:"a zillion times",ko:"수도 없이 많은 번",hint:"Like 'gazillion,' 'zillion' is not a real number! Henry uses it to exaggerate how carefully Annie will wrap her things. A zillion = so many times you can't even count!"},
+  {en:"crawl under the covers",ko:"이불 속으로 기어들어가다",hint:"'covers' here = 이불 (not book covers or phone covers!). Henry's way of calming down when he's nervous is crawling under the blankets with Mudge. Cozy! 🐾"},
+  {en:"make a new house wish",ko:"새 집 소원 빌기",hint:"A beautiful tradition! When moving to a new home, everyone makes a secret wish for good things to come. Annie blows out the candle — like a birthday wish! The wishes drive away the blotches. 🕯️"},
+];
+
+const story=[
+  {scene:"Next door — Annie is moving!",lines:[
+    {en:"Henry and Henry's big dog, Mudge, always liked visits from Henry's cousin, Annie.",ko:"헨리와 헨리의 큰 개 머지는 항상 헨리의 사촌 애니의 방문을 좋아했다."},
+    {en:"She was very careful about things like her frilly dresses and her shiny shoes.",ko:"그녀는 프릴이 달린 드레스와 반짝이는 구두 같은 것들에 매우 조심스러웠다."},
+    {en:"But she was fun.",ko:"하지만 그녀는 재미있었다."},
+    {en:"She liked Henry. She liked Mudge.",ko:"그녀는 헨리를 좋아했다. 그녀는 머지를 좋아했다."},
+    {en:"And she could throw a mean Frisbee.",ko:"그리고 그녀는 프리즈비를 정말 잘 던질 수 있었다."},
+    {en:"So when Henry's mother said one day that Annie was moving next door to Henry, Henry was thrilled.",ko:"그래서 어느 날 헨리의 엄마가 애니가 헨리의 바로 옆집으로 이사 온다고 했을 때, 헨리는 정말 신이 났다."},
+  ]},
+  {scene:"Henry worries about Annie",lines:[
+    {en:'"We have to help Annie move," Henry told Mudge.',ko:'"우리가 애니의 이사를 도와야 해," 헨리가 머지에게 말했다.'},
+    {en:'"You know how careful she is."',ko:'"그녀가 얼마나 조심스러운지 알잖아."'},
+    {en:'"I bet she\'ll be nervous," Henry said.',ko:'"애니가 틀림없이 긴장할 거야," 헨리가 말했다.'},
+    {en:"Henry imagined Annie packing up her things.",ko:"헨리는 애니가 짐을 싸는 것을 상상했다."},
+    {en:'"I bet she wraps those shiny shoes a million times," Henry told Mudge.',ko:'"그 반짝이는 구두를 백만 번은 싸겠지," 헨리가 머지에게 말했다.'},
+    {en:"Mudge wagged.",ko:"머지가 꼬리를 흔들었다."},
+    {en:'"And those frilly dresses a zillion times," said Henry.',ko:'"그리고 그 프릴 달린 드레스는 수도 없이 싸겠지," 헨리가 말했다.'},
+    {en:'"Her house is probably a mess right now," said Henry.',ko:'"지금쯤 그녀의 집은 엉망진창일 거야," 헨리가 말했다.'},
+    {en:'Mudge wagged and drooled all over Henry\'s shoes.',ko:'머지가 꼬리를 흔들며 헨리의 신발에 침을 질질 흘렸다.'},
+    {en:'"But not as much of a mess as I am," said Henry, looking down.',ko:'"근데 나만큼 엉망은 아니겠지," 헨리가 아래를 내려다보며 말했다.'},
+  ]},
+  {scene:"Moving day — Annie is all blotchy",lines:[
+    {en:"When Henry and Mudge and Henry's parents got to Annie's house on moving day, Uncle Ed was carrying boxes.",ko:"이사 당일 헨리와 머지와 헨리의 부모님이 애니의 집에 도착했을 때, 에드 삼촌이 박스를 나르고 있었다."},
+    {en:"And Annie was breaking out.",ko:"그리고 애니의 피부에는 반점이 생기고 있었다."},
+    {en:'"Hi, Annie," said Henry. "You\'re all blotchy."',ko:'"안녕, 애니," 헨리가 말했다. "온몸이 얼룩덜룩하네."'},
+    {en:'"I know," said Annie. "I break out when I\'m nervous."',ko:'"알아," 애니가 말했다. "긴장하면 반점이 생기거든."'},
+    {en:'"Are you nervous about leaving friends?" asked Henry.',ko:'"친구들을 떠나는 게 긴장돼?" 헨리가 물었다.'},
+    {en:"Uh-huh. Annie nodded.",ko:"응. 애니가 고개를 끄덕였다."},
+    {en:'"Are you nervous about changing schools?" asked Henry.',ko:'"학교가 바뀌는 게 긴장돼?" 헨리가 물었다.'},
+    {en:"Uh-huh. Annie nodded again.",ko:"응. 애니가 또 고개를 끄덕였다."},
+    {en:'"Are you nervous about all your frilly dresses and shiny shoes and lace hankies being on that truck?" asked Henry.',ko:'"그 트럭에 프릴 드레스랑 반짝이는 구두랑 레이스 손수건이 실려 있는 게 긴장돼?" 헨리가 물었다.'},
+    {en:"Uh-huh. Annie nodded really hard. Three new blotches came out on her nose.",ko:"응. 애니가 정말 세게 고개를 끄덕였다. 코에 새로운 반점 세 개가 생겼다."},
+  ]},
+  {scene:"Under the covers",lines:[
+    {en:'"Do you know what I do when I get nervous?" said Henry.',ko:'"내가 긴장할 때 어떻게 하는지 알아?" 헨리가 말했다.'},
+    {en:'"What?" asked Annie.',ko:'"뭐?" 애니가 물었다.'},
+    {en:'"I crawl under the covers with Mudge," said Henry.',ko:'"머지랑 같이 이불 속으로 기어들어가," 헨리가 말했다.'},
+    {en:'"Do you have any covers left?"',ko:'"이불이 남아 있어?"'},
+    {en:'"No," Annie shook her head. "They\'re all on the truck."',ko:'"아니," 애니가 고개를 저었다. "다 트럭에 실려 있어."'},
+    {en:'"There are some blankets on the back seat of our car. Do you want to use them?"',ko:'"우리 차 뒷좌석에 담요가 몇 개 있어. 그거 쓸래?"'},
+    {en:"Annie nodded and smiled.",ko:"애니가 고개를 끄덕이며 미소 지었다."},
+    {en:"Henry opened the car door and Annie got under the covers.",ko:"헨리가 차 문을 열었고 애니는 담요 속으로 들어갔다."},
+    {en:"Mudge wagged and disappeared under the covers, too.",ko:"머지도 꼬리를 흔들며 담요 속으로 사라졌다."},
+    {en:"Henry rolled down the windows and closed the door.",ko:"헨리는 창문을 내리고 문을 닫았다."},
+    {en:'"Goodbye, blotchies!" he called, and he went to help Uncle Ed.',ko:'"잘 있어, 반점들아!" 그가 소리쳤고, 에드 삼촌을 도우러 갔다.'},
+  ]},
+  {scene:"The new house",lines:[
+    {en:"Annie and Mudge stayed under the covers all morning long.",ko:"애니와 머지는 오전 내내 담요 속에 있었다."},
+    {en:"Henry brought them food. He brought them drinks.",ko:"헨리는 그들에게 음식을 가져다주었다. 음료도 가져다주었다."},
+    {en:"He even brought them a moving man.",ko:"심지어 이삿짐 아저씨도 데려왔다."},
+    {en:"The moving man told Annie he would be very careful with her shoes and dresses and lace hankies.",ko:"이삿짐 아저씨는 애니에게 구두와 드레스와 레이스 손수건을 아주 조심해서 다루겠다고 말했다."},
+    {en:"A few of her blotches went away.",ko:"반점 몇 개가 사라졌다."},
+    {en:"When the truck was loaded, everyone drove to Annie's new house, next door to Henry's house.",ko:"트럭에 짐이 다 실리자, 모두 헨리의 집 옆에 있는 애니의 새 집으로 출발했다."},
+    {en:"Annie was still under the covers in the car.",ko:"애니는 여전히 차 안의 담요 속에 있었다."},
+    {en:"Henry peeked inside.",ko:"헨리가 살짝 들여다보았다."},
+    {en:"She was sleeping on a lace hanky on Mudge's head.",ko:"그녀는 머지의 머리 위 레이스 손수건을 베고 자고 있었다."},
+  ]},
+  {scene:"A new house wish",lines:[
+    {en:"When all of the boxes were unloaded, the movers went away.",ko:"짐이 모두 내려지자, 이삿짐 아저씨들이 떠났다."},
+    {en:"Then Henry woke up Annie and everyone went into the new house.",ko:"그런 다음 헨리가 애니를 깨웠고 모두 새 집으로 들어갔다."},
+    {en:"Annie held on to Mudge and tried not to break out.",ko:"애니는 머지를 꼭 붙잡고 반점이 생기지 않으려고 애썼다."},
+    {en:'"Before we unpack, we have to make a new house wish," said Henry\'s mother.',ko:'"짐을 풀기 전에 새 집 소원을 빌어야 해," 헨리의 엄마가 말했다.'},
+    {en:'"We\'ll wish for something good for Annie and Uncle Ed in their new house."',ko:'"애니와 에드 삼촌의 새 집에 좋은 일이 생기길 빌어요."'},
+    {en:"Henry's father lit a candle.",ko:"헨리의 아빠가 초에 불을 켰다."},
+    {en:'"Everyone make a secret wish," he said. "Then Annie will blow out the candle."',ko:'"모두 마음속으로 소원을 빌어요," 그가 말했다. "그런 다음 애니가 초를 끌 거예요."'},
+    {en:"One by one they wished. Some wishes were big, some were small, some looked like T-bone steak.",ko:"하나씩 소원을 빌었다. 큰 소원도 있고 작은 소원도 있었고, T본 스테이크처럼 보이는 소원도 있었다."},
+    {en:"Annie blew out the candle.",ko:"애니가 초를 껐다."},
+    {en:'"Welcome home, cousin," said Henry. "Welcome home."',ko:'"잘 왔어, 사촌," 헨리가 말했다. "잘 왔어."'},
+    {en:"Mudge gave Annie a great big kiss, and all of Annie's blotches went away.",ko:"머지가 애니에게 커다란 뽀뽀를 해주었고, 애니의 반점이 모두 사라졌다."},
+    {en:"Then the next morning, Henry had breakfast at her house.",ko:"그리고 다음 날 아침, 헨리는 애니의 집에서 아침을 먹었다."},
+  ]},
+];
+
+const questions=[
+  {q:"Who is Annie to Henry?",sub:"애니는 헨리와 어떤 사이인가요?",opts:["His neighbor","His cousin","His classmate","His best friend from school"],ans:1,hint:"Clue: Henry and Henry's big dog, Mudge, always liked visits from Henry's cousin, Annie."},
+  {q:"What was Annie known for being very careful about?",sub:"애니는 무엇에 매우 조심스럽기로 알려져 있었나요?",opts:["Her comic books and backpack","Her frilly dresses and shiny shoes","Her food and drinks","Her homework and pencils"],ans:1,hint:"Clue: She was very careful about things like her frilly dresses and her shiny shoes."},
+  {q:"Why was Henry thrilled when he heard Annie's news?",sub:"헨리는 애니의 소식을 듣고 왜 신이 났나요?",opts:["Annie was getting a dog","Annie was moving next door to Henry","Annie was coming to Henry's school","Annie was visiting for a week"],ans:1,hint:"Clue: Annie was moving next door to Henry, so Henry was thrilled."},
+  {q:"How does Annie's body react when she is nervous?",sub:"애니는 긴장하면 몸이 어떻게 되나요?",opts:["She sneezes a lot","She gets blotchy — red spots appear on her skin","She gets a stomachache","She yawns and feels sleepy"],ans:1,hint:"Clue: 'I know,' said Annie. 'I break out when I'm nervous.'"},
+  {q:"What three things was Annie nervous about on moving day?",sub:"이사 당일 애니가 긴장했던 세 가지는 무엇인가요?",opts:["Friends, school, and new neighbors","Leaving friends, changing schools, and her things on the truck","The weather, the boxes, and her room","Uncle Ed, the movers, and the truck"],ans:1,hint:"Clue: Henry asked one by one — leaving friends (uh-huh), changing schools (uh-huh), frilly dresses and shiny shoes and lace hankies on the truck (uh-huh, really hard!)."},
+  {q:"What does Henry do when he gets nervous?",sub:"헨리는 긴장할 때 어떻게 하나요?",opts:["He reads his favorite book","He calls a friend on the phone","He eats something sweet","He crawls under the covers with Mudge"],ans:3,hint:"Clue: 'I crawl under the covers with Mudge,' said Henry."},
+  {q:"Where did Henry find blankets for Annie?",sub:"헨리는 애니를 위한 담요를 어디서 찾았나요?",opts:["In his bedroom closet","In the moving truck","On the back seat of the car","In Annie's new house"],ans:2,hint:"Clue: 'There are some blankets on the back seat of our car. Do you want to use them?'"},
+  {q:"What did Henry bring Annie and Mudge while they hid under the covers?",sub:"헨리는 담요 속에 숨은 애니와 머지에게 무엇을 가져다주었나요?",opts:["Games and books","Food and drinks","Pillows and stuffed animals","Comics and stickers"],ans:1,hint:"Clue: Henry brought them food. He brought them drinks. He even brought them a moving man."},
+  {q:"What did Henry see when he peeked into the car?",sub:"헨리가 차 안을 살짝 들여다봤을 때 무엇을 보았나요?",opts:["Annie reading a comic book","Annie and Mudge playing","Annie sleeping on a lace hanky on Mudge's head","Mudge eating Annie's snack"],ans:2,hint:"Clue: She was sleeping on a lace hanky on Mudge's head."},
+  {q:"What happened when Mudge gave Annie a great big kiss?",sub:"머지가 애니에게 커다란 뽀뽀를 해주자 무슨 일이 일어났나요?",opts:["Annie laughed and fell over","All of Annie's blotches went away","Mudge knocked Annie onto the floor","Annie gave Mudge a hug"],ans:1,hint:"Clue: Mudge gave Annie a great big kiss, and all of Annie's blotches went away."},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+
+function filterWords(q){
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=c.dataset.en.includes(q.toLowerCase())?'':'none';
+  });
+}
+
+let koAllVisible=false;
+function toggleAllKo(){
+  koAllVisible=!koAllVisible;
+  document.querySelectorAll('.story-ko').forEach(el=>{
+    el.classList.toggle('visible',koAllVisible);
+  });
+  document.querySelectorAll('.ko-toggle').forEach(btn=>{
+    btn.textContent=koAllVisible?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',koAllVisible);
+  });
+  document.getElementById('toggle-all-btn').textContent=koAllVisible?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(s=>`
+    <div class="story-block">
+      <div class="story-scene">${s.scene}</div>
+      ${s.lines.map(l=>`
+        <div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/['"]/g,' ')}',this)">
+            <span class="speak-dot">▶</span>${l.en}
+          </div>
+          <div class="story-ko">${l.ko}</div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function toggleKo(btn){
+  const ko=btn.previousElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+
+let cur=0,score=0,answered=false;
+function renderQuiz(){
+  if(cur>=questions.length){showResult();return;}
+  const q=questions[cur];
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${cur+1} / ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${(cur/questions.length)*100}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${cur+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+      <div id="feedback"></div>
+    </div>`;
+  answered=false;
+}
+
+function answer(i){
+  if(answered)return;
+  answered=true;
+  const q=questions[cur];
+  const btns=document.querySelectorAll('.opt');
+  btns.forEach(b=>b.disabled=true);
+  const correct=i===q.ans;
+  if(correct)score++;
+  btns[i].classList.add(correct?'correct':'wrong');
+  if(!correct)btns[q.ans].classList.add('correct');
+  document.getElementById('feedback').innerHTML=`
+    <div class="feedback-box ${correct?'correct':'wrong'}">
+      ${correct?'✅ Correct!':'❌ Not quite.'}
+      <div class="feedback-hint">💡 ${q.hint}</div>
+    </div>
+    <button class="btn-next" onclick="next()">${cur+1<questions.length?'Next Question →':'See Results'}</button>`;
+}
+
+function next(){cur++;renderQuiz();}
+
+function showResult(){
+  const pct=Math.round(score/questions.length*100);
+  const emoji=pct>=90?'🌟':pct>=70?'😊':pct>=50?'💪':'📚';
+  const msg=pct>=90?'Amazing! No blotches for you — you know this story perfectly!':
+            pct>=70?'Great job! You understood the story really well.':
+            pct>=50?'Good effort! Try re-reading the story and quiz again.':
+            'Keep practicing! Go back to the Story tab and try again.';
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="result-box">
+      <div class="result-emoji">${emoji}</div>
+      <div class="result-score">${score} / ${questions.length}</div>
+      <div class="result-label">${pct}% correct</div>
+      <div class="result-msg">${msg}</div>
+      <button class="btn-retry" onclick="cur=0;score=0;renderQuiz()">🔄 Try Again</button>
+    </div>`;
+}
+
+function showTab(t){
+  ['words','story','quiz'].forEach(x=>{
+    document.getElementById('sec-'+x).classList.toggle('active',x===t);
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='quiz'&&cur===0&&score===0)renderQuiz();
+}
+
+renderWords();
+renderStory();
+</script>
+</body>
+</html>
