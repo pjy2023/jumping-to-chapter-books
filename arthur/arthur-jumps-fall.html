@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur Jumps into Fall — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#FF8C42;--blue-dark:#c8601a;--blue-light:#fff3eb;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4f8fd;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#dce8f5;
+    --radius:16px;--shadow:0 4px 20px rgba(52,152,219,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.25rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#1a5f8a;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#fbd5b0;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #fbd5b0;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #fbd5b0;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#d6eaf8}
+  .ko-toggle.open{background:#fbd5b0;color:#1a4f72}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#fbd5b0;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#1a5f8a;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#fbd5b0;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Arthur Starter #04</div>
+    <div class="header-title">Arthur <span>Jumps into Fall</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #fbd5b0;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Arthur Jumps into Fall · Marc Brown · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"rake",ko:"갈퀴질하다; 갈퀴 (갈퀴로 낙엽을 긁어모으다)"},
+  {en:"backyard",ko:"뒷마당 (back: 뒤 + yard: 마당)"},
+  {en:"breakfast",ko:"아침 식사 (break: 깨다 + fast: 금식 → 금식을 깨는 식사)"},
+  {en:"job",ko:"일, 할 일 (I have a job for you: 네게 할 일이 있어)"},
+  {en:"fault",ko:"잘못, 탓 (it's your fault: 네 탓이야)"},
+  {en:"shook his head",ko:"고개를 저었다 (shake: 흔들다 → shook: 과거형)"},
+  {en:"empty",ko:"텅 빈 (empty tree: 잎이 다 떨어진 나무)"},
+  {en:"sticking to",ko:"~에 달라붙는 (stick: 달라붙다 → sticking: 현재분사)"},
+  {en:"raked harder",ko:"더 세게 갈퀴질했다 (rake: 갈퀴질하다 + hard: 세게)"},
+  {en:"pretty soon",ko:"곧, 얼마 지나지 않아 (pretty: 꽤 + soon: 곧)"},
+  {en:"pile",ko:"더미, 무더기 (a pile of leaves: 낙엽 더미)"},
+  {en:"sniff",ko:"코를 킁킁거리다 (냄새를 맡다)"},
+  {en:"picked up",ko:"집어 들었다 (pick up: 집어 들다 → picked: 과거형)"},
+  {en:"added",ko:"추가했다 (add: 더하다 → added: 과거형)"},
+  {en:"take a break",ko:"잠깐 쉬다 (break: 휴식)"},
+  {en:"scattered",ko:"흩어진, 사방에 뿌려진 (scatter: 흩뿌리다 → scattered: 과거형)"},
+  {en:"all over",ko:"온통, 사방에 (all over the yard: 마당 온통)"},
+  {en:"applying force",ko:"힘을 가하는 것 (apply: 적용하다 + force: 힘)"},
+  {en:"properly",ko:"제대로, 올바르게 (proper: 올바른 + -ly: 부사형)"},
+  {en:"bend",ko:"구부리다 (bend: 구부리다)"},
+  {en:"elbows",ko:"팔꿈치 (elbow: 팔꿈치 → elbows: 복수형)"},
+  {en:"organization",ko:"체계적으로 함, 조직화 (organize: 정리하다 + -tion: 명사형)"},
+  {en:"muscle power",ko:"근력, 팔 힘 (muscle: 근육 + power: 힘)"},
+  {en:"collected",ko:"모았다 (collect: 모으다 → collected: 과거형)"},
+  {en:"nodded",ko:"고개를 끄덕였다 (nod: 끄덕이다 → nodded: 과거형)"},
+];
+
+const starWords=[
+  {en:"This is all your fault",ko:"이건 다 네 탓이야",hint:"fault = 잘못, 탓. Arthur blames the tree for making him rake! 🍂"},
+  {en:"pretty soon",ko:"곧, 얼마 지나지 않아",hint:"pretty here doesn't mean beautiful — it means 'quite' or 'fairly'. pretty soon = 꽤 빨리, 곧!"},
+  {en:"take a break",ko:"잠깐 쉬다",hint:"break = 휴식. Arthur decides the raking is too hard and wants to stop for a bit. 😅"},
+  {en:"It's a question of applying force properly",ko:"힘을 제대로 가하는 것이 중요해",hint:"The Brain uses big words! applying force = 힘을 가하는 것. He means: you have to push the rake the right way. 💪"},
+  {en:"All it takes is organization and muscle power",ko:"체계와 근력만 있으면 돼",hint:"all it takes = ~만 있으면 돼. Francine says raking is easy — you just need a plan and strong arms!"},
+];
+
+const story=[
+  {scene:"Dad gives Arthur a job",lines:[
+    {en:"Arthur and D.W. were finishing their breakfast.",ko:"아서와 D.W.는 아침 식사를 마무리하고 있었어요."},
+    {en:"I have a job for you today, Arthur, said Dad.",ko:"오늘 너한테 할 일이 있어, 아서, 아빠가 말했어요."},
+    {en:"I want you to rake leaves in the backyard.",ko:"뒷마당의 낙엽을 갈퀴로 긁어모아 줬으면 해."},
+    {en:"Wouldn't today be a good time for D.W. to learn to rake? Arthur asked.",ko:"오늘이 D.W.가 갈퀴질을 배우기에 좋은 때 아닐까요? 아서가 물었어요."},
+    {en:"Dad shook his head. D.W. will be helping me with other things.",ko:"아빠가 고개를 저었어요. D.W.는 다른 일로 나를 도울 거야."},
+  ]},
+  {scene:"Arthur starts raking",lines:[
+    {en:"Arthur looked up at the empty tree.",ko:"아서는 텅 빈 나무를 올려다봤어요."},
+    {en:"This is all your fault, he said.",ko:"이건 다 네 탓이야, 그가 말했어요."},
+    {en:"Then he started to rake.",ko:"그러고 나서 그는 갈퀴질을 시작했어요."},
+    {en:"The leaves seemed to be sticking to the ground.",ko:"낙엽들이 땅에 달라붙어 있는 것 같았어요."},
+    {en:"Arthur raked harder.",ko:"아서는 더 세게 갈퀴질했어요."},
+    {en:"Pretty soon he had made a little pile of leaves.",ko:"곧 그는 낙엽을 작은 더미로 만들었어요."},
+  ]},
+  {scene:"Pal helps",lines:[
+    {en:"What do you think, Pal? he asked.",ko:"어떻게 생각해, 팔? 그가 물었어요."},
+    {en:"Pal took a sniff.",ko:"팔은 코를 킁킁거렸어요."},
+    {en:"Then he picked up a leaf in his mouth and added it to the pile.",ko:"그러고 나서 그는 입으로 나뭇잎 하나를 집어 들어 더미에 추가했어요."},
+  ]},
+  {scene:"The break — pile scattered!",lines:[
+    {en:"Arthur kept raking. The pile got a little bigger.",ko:"아서는 계속 갈퀴질했어요. 더미가 조금 더 커졌어요."},
+    {en:"This is a lot of work, he said to Pal. Maybe we should take a break.",ko:"이건 일이 너무 많아, 그가 팔에게 말했어요. 우리 잠깐 쉬어야 할 것 같아."},
+    {en:"Wow! Arthur and Pal jumped in the pile of leaves.",ko:"와! 아서와 팔은 낙엽 더미 속으로 뛰어들었어요."},
+    {en:"Then they jumped again and again.",ko:"그러고 나서 그들은 또 뛰고 또 뛰었어요."},
+    {en:"Pretty soon the leaves were scattered all over the yard again.",ko:"곧 낙엽들이 다시 마당 온통 사방에 흩어졌어요."},
+  ]},
+  {scene:"Friends arrive",lines:[
+    {en:"Arthur, what are you doing? asked Francine.",ko:"아서, 뭐 하는 거야? 프랜신이 물었어요."},
+    {en:"She walked up with Buster and the Brain.",ko:"그녀는 버스터와 브레인을 데리고 걸어왔어요."},
+    {en:"I'm raking, said Arthur.",ko:"갈퀴질하고 있어, 아서가 말했어요."},
+    {en:"You're not doing a very good job, said the Brain.",ko:"그다지 잘 하고 있지 않은데, 브레인이 말했어요."},
+    {en:"It's a question of applying force properly. Here, let me show you.",ko:"힘을 제대로 가하는 것이 중요해. 여기, 내가 보여줄게."},
+  ]},
+  {scene:"The Brain and Francine help",lines:[
+    {en:"The Brain started raking. See how I bend my elbows? he said.",ko:"브레인이 갈퀴질을 시작했어요. 내가 팔꿈치를 어떻게 구부리는지 보여? 그가 말했어요."},
+    {en:"I do, said Arthur. Show me more.",ko:"그래, 아서가 말했어요. 더 보여줘."},
+    {en:"Now Francine took a turn.",ko:"이번엔 프랜신이 차례를 받았어요."},
+    {en:"This isn't so hard, she said. All it takes is organization and muscle power.",ko:"이거 그다지 어렵지 않네, 그녀가 말했어요. 체계와 근력만 있으면 돼."},
+    {en:"Wow, said Buster. This could be the biggest pile of leaves in the country — or maybe the whole world!",ko:"와, 버스터가 말했어요. 이건 이 나라에서 — 아니 어쩌면 전 세계에서 가장 큰 낙엽 더미가 될 수도 있어!"},
+  ]},
+  {scene:"Done — perfect!",lines:[
+    {en:"Finally, all the leaves were collected.",ko:"마침내, 낙엽이 모두 모였어요."},
+    {en:"You see, said the Brain. That's how it's done.",ko:"봤지, 브레인이 말했어요. 이렇게 하는 거야."},
+    {en:"Arthur nodded. Thanks, everyone.",ko:"아서가 고개를 끄덕였어요. 고마워, 모두들."},
+    {en:"Perfect! Just perfect!",ko:"완벽해! 정말 완벽해!"},
+  ]},
+];
+
+const questions=[
+  {q:"What job did Dad give Arthur?",sub:"아빠는 아서에게 어떤 일을 시켰나요?",opts:["Clean his room","Wash the dishes","Rake leaves in the backyard","Take out the trash"],ans:2,hint:"Clue: I want you to rake leaves in the backyard."},
+  {q:"What did Arthur suggest to avoid doing the raking?",sub:"아서는 갈퀴질을 피하려고 무엇을 제안했나요?",opts:["He said it was too windy","He asked if D.W. could learn to rake instead","He said the leaves were too wet","He asked Buster to help"],ans:1,hint:"Clue: Wouldn't today be a good time for D.W. to learn to rake?"},
+  {q:"Who did Arthur blame for the raking job?",sub:"아서는 갈퀴질해야 하는 것을 누구 탓이라고 했나요?",opts:["Dad","D.W.","Pal","The tree"],ans:3,hint:"Clue: Arthur looked up at the empty tree. This is all your fault, he said."},
+  {q:"Why were the leaves hard to rake at first?",sub:"처음에 낙엽을 갈퀴질하기 어려웠던 이유는 무엇이었나요?",opts:["It was raining","The rake was too small","The leaves seemed to be sticking to the ground","There were too many leaves"],ans:2,hint:"Clue: The leaves seemed to be sticking to the ground."},
+  {q:"How did Pal help Arthur?",sub:"팔은 아서를 어떻게 도왔나요?",opts:["He barked to cheer Arthur on","He chased the leaves away","He picked up a leaf and added it to the pile","He sat on the pile to keep it from blowing away"],ans:2,hint:"Clue: He picked up a leaf in his mouth and added it to the pile."},
+  {q:"Why did the leaves end up scattered all over the yard again?",sub:"낙엽이 다시 마당 사방에 흩어진 이유는 무엇이었나요?",opts:["The wind blew them","Pal ran through the pile","D.W. knocked them over","Arthur and Pal jumped in the pile again and again"],ans:3,hint:"Clue: Arthur and Pal jumped in the pile of leaves. Then they jumped again and again."},
+  {q:"What did the Brain say was wrong with Arthur's raking?",sub:"브레인은 아서의 갈퀴질에서 무엇이 잘못됐다고 했나요?",opts:["He was going too slowly","He wasn't bending his knees","He wasn't applying force properly","He was using the wrong rake"],ans:2,hint:"Clue: It's a question of applying force properly."},
+  {q:"What did the Brain show Arthur while raking?",sub:"브레인은 갈퀴질하면서 아서에게 무엇을 보여줬나요?",opts:["How to hold the handle","How to bend his elbows","How to make the pile round","How to use his legs"],ans:1,hint:"Clue: See how I bend my elbows? he said."},
+  {q:"What did Francine say raking takes?",sub:"프랜신은 갈퀴질에는 무엇이 필요하다고 했나요?",opts:["Patience and practice","A good rake and strong boots","Organization and muscle power","Team work and good planning"],ans:2,hint:"Clue: All it takes is organization and muscle power."},
+  {q:"What did Arthur say when all the leaves were finally collected?",sub:"낙엽이 모두 모였을 때 아서는 뭐라고 했나요?",opts:["Thanks, everyone!","Finally!","Let's jump in!","Perfect! Just perfect!"],ans:3,hint:"Clue: Perfect! Just perfect! — Arthur was happy that the work was done at last."},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+function filterWords(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=(c.dataset.en.includes(v)||c.querySelector('.word-ko').textContent.includes(val))?'':'none';
+  });
+}
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(block=>
+    `<div class="story-block">
+      <div class="story-scene">${block.scene}</div>
+      ${block.lines.map(l=>
+        `<div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/'/g,"&#39;")}',this)">
+            <span class="speak-dot">▶</span><span>${l.en}</span>
+          </div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+          <div class="story-ko">${l.ko}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+let qIndex=0,score=0,answered=false;
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(qIndex>=questions.length){renderResult(c);return;}
+  const q=questions[qIndex];
+  const pct=Math.round(qIndex/questions.length*100);
+  c.innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${qIndex+1} of ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${qIndex+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div><div id="nw"></div>
+    </div>`;
+  answered=false;
+}
+function pick(idx){
+  if(answered)return;answered=true;
+  const q=questions[qIndex];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('feedback'),nw=document.getElementById('nw');
+  if(idx===q.ans){score++;fb.innerHTML=`<div class="feedback-box correct">✅ Correct! Great job!<div class="feedback-hint">${q.hint}</div></div>`;}
+  else{document.querySelectorAll('.opt')[idx].classList.add('wrong');fb.innerHTML=`<div class="feedback-box wrong">❌ Not quite! Answer: <strong>${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}</strong><div class="feedback-hint">${q.hint}</div></div>`;}
+  nw.innerHTML=`<button class="btn-next" onclick="nextQ()">${qIndex+1<questions.length?'Next Question →':'See My Score →'}</button>`;
+}
+function nextQ(){qIndex++;renderQuiz();}
+function renderResult(c){
+  const pct=Math.round(score/questions.length*100);
+  const[emoji,msg]=pct===100?['🏆',"Perfect score! You totally mastered Arthur Jumps into Fall!"]:pct>=80?['🌟',"Great job! Just a little more review and you'll get 100%!"]:pct>=60?['👍','Good effort! Try reading the story again and retake the quiz.']:['💪','Keep going! Review the words and story, then try again. You can do it!'];
+  c.innerHTML=`<div class="result-box"><div class="result-emoji">${emoji}</div><div class="result-score">${score} / ${questions.length}</div><div class="result-label">correct answers</div><div class="result-msg">${msg}</div><button class="btn-retry" onclick="restartQuiz()">Try Again</button></div>`;
+}
+function restartQuiz(){qIndex=0;score=0;answered=false;renderQuiz();}
+function showTab(name){
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');activeEl=null;}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleKo(btn){
+  const ko=btn.nextElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+function toggleAllKo(){
+  const all=document.querySelectorAll('#story-container .story-ko');
+  const anyHidden=[...all].some(el=>!el.classList.contains('visible'));
+  all.forEach(ko=>{
+    ko.classList.toggle('visible',anyHidden);
+    const btn=ko.previousElementSibling;
+    btn.textContent=anyHidden?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',anyHidden);
+  });
+  document.getElementById('toggle-all-btn').textContent=anyHidden?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+renderWords();renderStory();renderQuiz();
+</script>
+</body>
+</html>
