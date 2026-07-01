@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Henry and Mudge in the Green Time — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#2EC4B6;--blue-dark:#1a9d90;--blue-light:#e8faf8;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4fbf9;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#b2dfd7;
+    --radius:16px;--shadow:0 4px 20px rgba(42,157,143,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.2rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#0e5c56;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#a3e4de;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #a3e4de;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#c8f3ef}
+  .ko-toggle.open{background:#a3e4de;color:#0a4a45}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#a3e4de;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#0e6b63;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#a3e4de;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Henry &amp; Mudge #05</div>
+    <div class="header-title">Henry and Mudge in the <span>Green Time</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Henry and Mudge in the Green Time · Cynthia Rylant · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"picnic",ko:"소풍, 피크닉 (야외에서 즐기는 식사)"},
+  {en:"jelly",ko:"젤리, 잼 (부드럽고 달콤한 것; jelly sandwich: 잼 샌드위치)"},
+  {en:"ginger snap",ko:"진저스냅 쿠키 (생강 향이 나는 바삭한 쿠키; snap: 딱 부러지다)"},
+  {en:"pear",ko:"배 (과일; 발음이 pair와 같다)"},
+  {en:"bee",ko:"벌, 꿀벌 (bee sting: 벌에 쏘임)"},
+  {en:"sting",ko:"쏘다; (벌침으로) 찌르다; 따끔한 통증"},
+  {en:"puffy",ko:"부어오른, 부풀어 오른 (puff: 부풀다 + -y: 형용사형)"},
+  {en:"salty",ko:"짠, 짭짤한 (salt: 소금 + -y: 형용사형; 눈물은 짜다)"},
+  {en:"shampoo",ko:"샴푸 (머리나 몸을 씻는 세정제; dog shampoo: 개용 샴푸)"},
+  {en:"hose",ko:"호스; 물 호스로 씻기다 (water hose: 물 호스)"},
+  {en:"droop",ko:"처지다, 축 늘어지다 (귀나 꼬리가 힘없이 아래로)"},
+  {en:"walrus",ko:"바다코끼리 (크고 덩치 있는 해양 동물; 흠뻑 젖은 머지를 비유)"},
+  {en:"scrub",ko:"박박 문지르다, 닦다 (scrubbed: 문질러 닦았다)"},
+  {en:"shake",ko:"흔들다; 털어내다 (개가 몸의 물기를 털 때)"},
+  {en:"wag",ko:"(꼬리를) 흔들다 (wag his tail: 꼬리를 흔들다)"},
+  {en:"march",ko:"행진하다, 힘차게 걷다 (군인처럼 당당히 걷다)"},
+  {en:"dragon",ko:"용 (상상 속의 불 뿜는 동물; fantasy creature)"},
+  {en:"swing",ko:"그네; 흔들리다 (wooden swing: 나무 그네)"},
+  {en:"retire",ko:"은퇴하다; 쉬러 가다 (retired: 쉬러 온; here: tired and resting)"},
+  {en:"magic",ko:"마법의, 신기한 (magic tree: 마법의 나무)"},
+];
+
+const starWords=[
+  {en:"Mudge always liked dessert first on picnics",ko:"머지는 소풍에서 항상 디저트를 먼저 먹었다",hint:"Henry was eating his jelly sandwich, but he threw POPCORN into Mudge's mouth first — the snack, not the main food. So Mudge was having 'dessert first'! Some dogs (and people!) always go for the treat before the real meal. 🍪"},
+  {en:"He looked like a big walrus",ko:"그는 마치 커다란 바다코끼리처럼 보였다",hint:"A walrus (바다코끼리) is a huge, droopy-looking sea animal. When Mudge was soaking wet — eyes drooped, ears drooped, tail drooped — he looked exactly like one! This is a simile (비유): using 'like' to compare two unlike things to paint a funny picture. 🦭"},
+  {en:"Mudge got Henry back",ko:"머지가 헨리에게 복수했다",hint:"'Get someone back' = 당한 것을 되갚아주다. Mudge's bath-time revenge: he shook ALL the water off his body and soaked Henry completely. When done — Mudge was mostly dry, Henry was mostly wet. Payback! 😂"},
+  {en:"I am king of the green hill!",ko:"나는 초록 언덕의 왕이야!",hint:"Henry felt so powerful at the top of the hill that he invented a whole kingdom! He's the king, Mudge is the dragon 'Fireball.' This shows how a simple hill can become a magical kingdom through imagination. Any ordinary place can be special if you play with it. 👑"},
+  {en:"A tree for kings and dragons who retired",ko:"은퇴한 왕과 용들을 위한 나무",hint:"'Retire' usually means 은퇴하다 — when grown-ups stop working. But here it's playful: Henry and Mudge were so TIRED from all their marching and monster-fighting that they 'retired' (= stopped to rest). The author uses a grown-up word in a children's game — that's what makes it funny! 🌳"},
+];
+
+const story=[
+  {scene:"Chapter 1 · The Picnic — packing food",lines:[
+    {en:"In the summer, Henry and his big dog Mudge liked to go on picnics.",ko:"여름에, 헨리와 그의 큰 개 머지는 소풍을 즐겨 갔다."},
+    {en:"Henry packed the food.",ko:"헨리가 음식을 챙겼다."},
+    {en:"He packed jelly sandwiches, pears, and ginger snaps for himself.",ko:"그는 자신을 위해 잼 샌드위치, 배, 그리고 진저스냅 쿠키를 챙겼다."},
+    {en:"He packed dried dog food and popcorn for Mudge.",ko:"머지를 위해서는 건사료와 팝콘을 챙겼다."},
+    {en:"They both drank water.",ko:"둘 다 물을 마셨다."},
+  ]},
+  {scene:"At the park",lines:[
+    {en:"One Sunday they went to the park for a picnic.",ko:"어느 일요일, 그들은 소풍을 가러 공원으로 갔다."},
+    {en:"Henry put all the food on a picnic table while Mudge chased some ants under a tree.",ko:"헨리가 피크닉 테이블에 음식을 모두 꺼내는 동안 머지는 나무 아래 개미들을 쫓아다녔다."},
+    {en:"Mudge was so big that his tail knocked things over every time he ran around the tree.",ko:"머지가 너무 커서 나무 주위를 돌 때마다 꼬리로 뭔가를 쳐서 쓰러뜨렸다."},
+    {en:"Henry laughed at him.",ko:"헨리가 그를 보며 웃었다."},
+  ]},
+  {scene:"Eating — and the bee",lines:[
+    {en:"Soon they began eating.",ko:"곧 그들은 먹기 시작했다."},
+    {en:"Henry chewed his jelly sandwich while he threw pieces of popcorn into Mudge's mouth.",ko:"헨리는 잼 샌드위치를 씹으면서 팝콘 조각을 머지의 입에 던져주었다."},
+    {en:"Mudge always liked dessert first on picnics.",ko:"머지는 소풍에서 항상 디저트를 먼저 먹었다."},
+    {en:"While they were eating, a yellow bee landed on Henry's pear.",ko:"그들이 먹는 동안, 노란 벌 한 마리가 헨리의 배 위에 앉았다."},
+    {en:"Henry didn't see the bee.",ko:"헨리는 벌을 보지 못했다."},
+    {en:"Henry picked up his pear.",ko:"헨리가 자신의 배를 집어 들었다."},
+    {en:'"Oh!" Henry cried.',ko:'"아!" 헨리가 소리쳤다.'},
+    {en:"Mudge jumped. The bee flew away.",ko:"머지가 펄쩍 뛰었다. 벌이 날아가 버렸다."},
+  ]},
+  {scene:"The sting hurts — Mudge helps",lines:[
+    {en:'"Oh, pal," Henry cried. He shook his hand again and again and again.',ko:'"아, 이럴," 헨리가 울었다. 그는 손을 계속 흔들었다.'},
+    {en:"The bee sting hurt more and more. It hurt a lot.",ko:"벌침이 점점 더 아팠다. 정말 많이 아팠다."},
+    {en:"There was a puffy white circle on his hand.",ko:"손에 부어오른 흰 동그라미가 생겼다."},
+    {en:"Henry just had to cry.",ko:"헨리는 그냥 울 수밖에 없었다."},
+    {en:"He sat down beside Mudge and held onto his hurting hand and cried.",ko:"그는 머지 옆에 앉아 아픈 손을 꼭 붙잡고 울었다."},
+    {en:"Mudge sniffed Henry's hair. Mudge sniffed Henry's hand.",ko:"머지가 헨리의 머리카락 냄새를 맡았다. 머지가 헨리의 손 냄새를 맡았다."},
+    {en:"Mudge put his big nose in Henry's ear.",ko:"머지가 큰 코를 헨리의 귀에 들이밀었다."},
+    {en:"But Henry kept crying.",ko:"하지만 헨리는 계속 울었다."},
+    {en:"Then Mudge licked Henry's face.",ko:"그때 머지가 헨리의 얼굴을 핥았다."},
+    {en:"Mudge liked the taste — it was salty.",ko:"머지는 그 맛이 좋았다 — 짰다."},
+    {en:"So Mudge licked Henry's face again and again and again.",ko:"그래서 머지는 헨리의 얼굴을 계속 핥았다."},
+    {en:"Every tear that Henry cried, Mudge licked away.",ko:"헨리가 흘리는 눈물마다, 머지가 다 핥아주었다."},
+  ]},
+  {scene:"Better now",lines:[
+    {en:"Henry cried. Mudge licked. The hand hurt.",ko:"헨리가 울었다. 머지가 핥았다. 손이 아팠다."},
+    {en:"But in a while — the hand stopped hurting, Henry stopped crying, and Mudge stopped licking.",ko:"하지만 잠시 후 — 손이 아프지 않게 되었고, 헨리도 울음을 그쳤고, 머지도 핥기를 멈추었다."},
+    {en:"Henry looked at Mudge and smiled.",ko:"헨리가 머지를 바라보며 미소 지었다."},
+    {en:"Henry picked up a ginger snap. He took one bite and gave Mudge the rest.",ko:"헨리가 진저스냅 쿠키를 집어 들었다. 한 입 베어 먹고 나머지는 머지에게 주었다."},
+    {en:'"Thanks," said Henry.',ko:'"고마워," 헨리가 말했다.'},
+    {en:"Mudge wagged his tail and waited for another cookie.",ko:"머지가 꼬리를 흔들며 또 다른 쿠키를 기다렸다."},
+  ]},
+  {scene:"Chapter 2 · The Bath — Mudge hates it",lines:[
+    {en:"On hot days, Henry liked to give Mudge a bath.",ko:"더운 날이면, 헨리는 머지를 목욕시키는 것을 좋아했다."},
+    {en:"Henry liked it because he could play with the water hose and because he could cool off.",ko:"헨리가 좋아한 이유는 물 호스로 놀 수 있고, 시원해질 수 있었기 때문이다."},
+    {en:"Mudge hated it.",ko:"머지는 그것을 싫어했다."},
+    {en:"Mudge knew when he was going to get a bath.",ko:"머지는 목욕을 당하게 될 때를 알았다."},
+    {en:"He saw Henry looking for the dog shampoo.",ko:"헨리가 개 샴푸를 찾는 것을 보았다."},
+    {en:"And when he saw Henry hooking up the water hose, he tried to hide under the steps.",ko:"그리고 헨리가 물 호스를 연결하는 것을 보면, 계단 아래에 숨으려 했다."},
+    {en:"But it never worked.",ko:"하지만 한 번도 통한 적이 없었다."},
+  ]},
+  {scene:"The bath — drooping like a walrus",lines:[
+    {en:"Henry would take Mudge into the front yard in the sun and hose him down.",ko:"헨리는 머지를 햇빛이 드는 앞마당으로 데려가 물 호스로 씻겼다."},
+    {en:"Mudge hated it.",ko:"머지는 그것을 싫어했다."},
+    {en:"His eyes drooped. His ears drooped. And his tail drooped.",ko:"눈이 처졌다. 귀가 처졌다. 꼬리도 처졌다."},
+    {en:"When he was all wet, he looked like a big walrus.",ko:"완전히 젖으면, 그는 마치 커다란 바다코끼리처럼 보였다."},
+    {en:"Henry laughed at him.",ko:"헨리가 그를 보며 웃었다."},
+    {en:"Then Henry would soap him up.",ko:"그런 다음 헨리는 비누칠을 했다."},
+    {en:"Henry scrubbed his head and his neck and his back and his chest and his stomach and his legs and his tail.",ko:"헨리는 머리, 목, 등, 가슴, 배, 다리, 꼬리를 박박 문질렀다."},
+    {en:"Mudge really hated this part. He drooped even more.",ko:"머지는 이 부분을 정말 싫어했다. 더욱더 처졌다."},
+    {en:"Then Henry hosed Mudge down again.",ko:"그런 다음 헨리가 다시 물 호스로 씻겼다."},
+  ]},
+  {scene:"Mudge gets Henry back",lines:[
+    {en:"But before Henry could grab a towel — before Henry could get Mudge dry — Mudge got Henry back.",ko:"하지만 헨리가 수건을 잡기도 전에 — 머지를 말리기도 전에 — 머지가 헨리에게 복수했다."},
+    {en:"Because when Henry let go, Mudge started shaking.",ko:"왜냐하면 헨리가 손을 놓자마자, 머지가 몸을 흔들기 시작했기 때문이다."},
+    {en:"He started with his head. Then he shook his neck and his back and his chest and his stomach and his legs and his tail.",ko:"머리부터 시작했다. 그런 다음 목, 등, 가슴, 배, 다리, 꼬리를 차례로 흔들었다."},
+    {en:"Mudge shook so hard that when he was done, he was mostly dry — and Henry was mostly wet.",ko:"머지가 얼마나 세게 흔들었는지, 다 흔들고 나자 머지는 거의 말랐고 — 헨리는 거의 흠뻑 젖었다."},
+    {en:"Then Mudge looked at Henry and wagged his tail — while Henry dried Henry with the towel.",ko:"그런 다음 머지는 헨리를 바라보며 꼬리를 흔들었다 — 헨리가 수건으로 자신을 닦는 동안."},
+  ]},
+  {scene:"Chapter 3 · The Green Time — on top of the hill",lines:[
+    {en:"Beside Henry's house was a big green hill.",ko:"헨리의 집 옆에는 커다란 초록 언덕이 있었다."},
+    {en:"Late on summer days, Henry and Mudge went to the top of the green hill.",ko:"여름 날 늦은 오후에, 헨리와 머지는 초록 언덕 꼭대기로 올라갔다."},
+    {en:"They looked down.",ko:"그들은 아래를 내려다보았다."},
+    {en:"They saw Henry's white house. They saw Henry's blue bike. They saw Henry's wooden swing.",ko:"헨리의 하얀 집이 보였다. 헨리의 파란 자전거가 보였다. 헨리의 나무 그네가 보였다."},
+    {en:"On top of the green hill, Henry felt big.",ko:"초록 언덕 꼭대기에서, 헨리는 자신이 커다랗게 느껴졌다."},
+    {en:"He felt like a king.",ko:"왕이 된 것 같았다."},
+    {en:'"I am king of the green hill!" Henry said.',ko:'"나는 초록 언덕의 왕이야!" 헨리가 말했다.'},
+    {en:"He looked at Mudge. \"You are my dragon.\"",ko:"그는 머지를 바라보았다. \"너는 나의 용이야.\""},
+    {en:'"Your name," Henry said, "is Fireball."',ko:'"네 이름은," 헨리가 말했다. "파이어볼이야."'},
+    {en:'"And you are very scary," Henry said.',ko:'"그리고 너는 정말 무서워," 헨리가 말했다.'},
+    {en:"Mudge wagged his tail.",ko:"머지가 꼬리를 흔들었다."},
+  ]},
+  {scene:"Adventures on the hill",lines:[
+    {en:"Henry and Mudge marched all over the top of the green hill.",ko:"헨리와 머지는 초록 언덕 꼭대기를 온통 행진했다."},
+    {en:"They met other kings who had dragons — and chased them away.",ko:"그들은 용을 가진 다른 왕들을 만났다 — 그리고 쫓아버렸다."},
+    {en:"They met monsters. Mudge ate them.",ko:"그들은 괴물들을 만났다. 머지가 그것들을 먹어버렸다."},
+    {en:"They marched and marched — until they could march no more.",ko:"그들은 행진하고 또 행진했다 — 더 이상 걸을 수 없을 때까지."},
+    {en:"Then they found a magic tree on the green hill.",ko:"그때 그들은 초록 언덕에서 마법의 나무를 발견했다."},
+    {en:"It was a tree for kings and dragons who retired.",ko:"그것은 은퇴한 왕들과 용들을 위한 나무였다."},
+  ]},
+  {scene:"Sleeping under the magic tree",lines:[
+    {en:"Henry and Mudge sat down under the tree.",ko:"헨리와 머지는 나무 아래에 앉았다."},
+    {en:"Henry put his arms around Mudge.",ko:"헨리가 머지를 두 팔로 감쌌다."},
+    {en:"They were glad for a magic tree.",ko:"그들은 마법의 나무가 있어서 기뻤다."},
+    {en:"They closed their eyes.",ko:"그들은 눈을 감았다."},
+    {en:"And a boy and a dog slept together on the green hill — in their green time.",ko:"그리고 한 소년과 한 개가 초록 언덕 위에서 함께 잠들었다 — 그들의 초록 시간 속에서."},
+  ]},
+];
+
+const questions=[
+  {q:"What did Henry pack for himself on the picnic?",sub:"헨리는 자신을 위해 소풍 음식으로 무엇을 챙겼나요?",opts:["Peanut butter sandwiches, apples, and chocolate chips","Jelly sandwiches, pears, and ginger snaps","Cheese sandwiches, bananas, and pretzels","Ham sandwiches, oranges, and popcorn"],ans:1,hint:"Clue: He packed jelly sandwiches, pears, and ginger snaps for himself — and dried dog food and popcorn for Mudge."},
+  {q:"What was Mudge doing while Henry set out the food at the picnic table?",sub:"헨리가 피크닉 테이블에 음식을 꺼내는 동안 머지는 무엇을 하고 있었나요?",opts:["Mudge was sniffing other picnic tables","Mudge was swimming in a pond","Mudge was chasing ants under a tree","Mudge was playing with other dogs"],ans:2,hint:"Clue: Henry put all the food on a picnic table while Mudge chased some ants under a tree."},
+  {q:"How did Henry get stung by the bee?",sub:"헨리는 어떻게 벌에 쏘이게 되었나요?",opts:["He stepped on the bee with bare feet","He picked up his pear without seeing the bee on it","He touched a beehive near the tree","He tried to catch the bee with his hand"],ans:1,hint:"Clue: A yellow bee landed on Henry's pear. Henry didn't see the bee — and picked up his pear. Ouch!"},
+  {q:"What did Mudge do that finally helped Henry stop crying?",sub:"머지가 어떻게 해서 헨리가 울음을 그치도록 도와주었나요?",opts:["Mudge barked loudly to distract Henry","Mudge ran to fetch Henry's father","Mudge licked away every tear from Henry's face","Mudge brought Henry a ginger snap cookie"],ans:2,hint:"Clue: Every tear that Henry cried, Mudge licked away. The taste was salty — so Mudge just kept going!"},
+  {q:"What did Henry do with the last ginger snap after he felt better?",sub:"기분이 나아진 후 헨리는 마지막 진저스냅으로 무엇을 했나요?",opts:["He threw it to Mudge as a reward","He took one bite and gave Mudge the rest","He ate all of it himself","He saved it in his pocket for later"],ans:1,hint:"Clue: Henry picked up a ginger snap, took one bite, and gave Mudge the rest. 'Thanks,' said Henry."},
+  {q:"How did Mudge know he was about to get a bath?",sub:"머지는 어떻게 목욕을 할 것임을 알았나요?",opts:["He smelled the shampoo in the air","He saw Henry get the dog shampoo and hook up the water hose","He heard Henry call his name in a certain way","He noticed Henry's father coming outside"],ans:1,hint:"Clue: He saw Henry looking for the dog shampoo — and when he saw Henry hooking up the water hose, he tried to hide under the steps."},
+  {q:"What animal did Mudge look like when he was completely wet?",sub:"흠뻑 젖었을 때 머지는 어떤 동물처럼 보였나요?",opts:["A seal","A wet bear","A big walrus","A giant otter"],ans:2,hint:"Clue: His eyes drooped, his ears drooped, his tail drooped — when all wet, he looked like a big walrus. Henry laughed at him!"},
+  {q:"After Mudge shook off all the water, what happened?",sub:"머지가 물기를 다 털어냈을 때 어떻게 되었나요?",opts:["Henry grabbed the towel quickly and stayed dry","They were both equally wet","Mudge ended up mostly dry and Henry ended up mostly wet","Mudge stayed wet; Henry dried off with the towel quickly"],ans:2,hint:"Clue: Mudge shook so hard that when done, he was mostly dry — and Henry was mostly wet. Then Mudge wagged his tail!"},
+  {q:"On top of the green hill, what role did Henry give Mudge in their game?",sub:"초록 언덕 꼭대기에서 헨리는 머지에게 어떤 역할을 주었나요?",opts:["A knight with a sword named Ironpaw","A royal horse named Thunder","A dragon named Fireball","A monster named Shadow"],ans:2,hint:"Clue: 'You are my dragon. Your name is Fireball. And you are very scary,' Henry said. Mudge wagged his tail."},
+  {q:"What was 'the magic tree' used for, and what did Henry and Mudge do there?",sub:"'마법의 나무'는 무엇을 위한 것이었고, 헨리와 머지는 그곳에서 무엇을 했나요?",opts:["It was a wishing tree — they made three wishes and went home","It was for kings and dragons who retired — they sat under it and fell asleep","It was a hiding place from monsters — they waited until dark","It was Henry's favorite climbing tree — they climbed to the top"],ans:1,hint:"Clue: It was a tree for kings and dragons who retired. Henry put his arms around Mudge, they closed their eyes, and slept together on the green hill — in their green time."},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+
+function filterWords(q){
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=c.dataset.en.includes(q.toLowerCase())?'':'none';
+  });
+}
+
+let koAllVisible=false;
+function toggleAllKo(){
+  koAllVisible=!koAllVisible;
+  document.querySelectorAll('.story-ko').forEach(el=>{
+    el.classList.toggle('visible',koAllVisible);
+  });
+  document.querySelectorAll('.ko-toggle').forEach(btn=>{
+    btn.textContent=koAllVisible?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',koAllVisible);
+  });
+  document.getElementById('toggle-all-btn').textContent=koAllVisible?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(s=>`
+    <div class="story-block">
+      <div class="story-scene">${s.scene}</div>
+      ${s.lines.map(l=>`
+        <div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/['"]/g,' ')}',this)">
+            <span class="speak-dot">▶</span>${l.en}
+          </div>
+          <div class="story-ko">${l.ko}</div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function toggleKo(btn){
+  const ko=btn.previousElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+
+let cur=0,score=0,answered=false;
+function renderQuiz(){
+  if(cur>=questions.length){showResult();return;}
+  const q=questions[cur];
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${cur+1} / ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${(cur/questions.length)*100}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${cur+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+      <div id="feedback"></div>
+    </div>`;
+  answered=false;
+}
+
+function answer(i){
+  if(answered)return;
+  answered=true;
+  const q=questions[cur];
+  const btns=document.querySelectorAll('.opt');
+  btns.forEach(b=>b.disabled=true);
+  const correct=i===q.ans;
+  if(correct)score++;
+  btns[i].classList.add(correct?'correct':'wrong');
+  if(!correct)btns[q.ans].classList.add('correct');
+  document.getElementById('feedback').innerHTML=`
+    <div class="feedback-box ${correct?'correct':'wrong'}">
+      ${correct?'✅ Correct!':'❌ Not quite.'}
+      <div class="feedback-hint">💡 ${q.hint}</div>
+    </div>
+    <button class="btn-next" onclick="next()">${cur+1<questions.length?'Next Question →':'See Results'}</button>`;
+}
+
+function next(){cur++;renderQuiz();}
+
+function showResult(){
+  const pct=Math.round(score/questions.length*100);
+  const emoji=pct>=90?'🌟':pct>=70?'😊':pct>=50?'💪':'📚';
+  const msg=pct>=90?'Wonderful! You enjoyed every moment of Henry and Mudge\'s green time!':
+            pct>=70?'Great job! You paid close attention to all three chapters.':
+            pct>=50?'Good effort! Try re-reading the story and quiz again.':
+            'Keep going! Go back to the Story tab and read it one more time.';
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="result-box">
+      <div class="result-emoji">${emoji}</div>
+      <div class="result-score">${score} / ${questions.length}</div>
+      <div class="result-label">${pct}% correct</div>
+      <div class="result-msg">${msg}</div>
+      <button class="btn-retry" onclick="cur=0;score=0;renderQuiz()">🔄 Try Again</button>
+    </div>`;
+}
+
+function showTab(t){
+  ['words','story','quiz'].forEach(x=>{
+    document.getElementById('sec-'+x).classList.toggle('active',x===t);
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='quiz'&&cur===0&&score===0)renderQuiz();
+}
+
+renderWords();
+renderStory();
+</script>
+</body>
+</html>
