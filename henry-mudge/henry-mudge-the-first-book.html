@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Henry and Mudge: The First Book — Study Site</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#2EC4B6;--blue-dark:#1a9d90;--blue-light:#e8faf8;
+    --orange:#f39c12;--orange-light:#fef9ec;
+    --red:#e74c3c;--red-light:#fdedec;
+    --green:#2ecc71;--green-light:#eafaf1;
+    --bg:#f4fbf9;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#b2dfd7;
+    --radius:16px;--shadow:0 4px 20px rgba(42,157,143,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:#fff;border-bottom:2px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:100}
+  .header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.9rem 0;flex-wrap:wrap}
+  .book-badge{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.1rem;color:var(--blue-dark);background:var(--blue-light);padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;flex-shrink:0}
+  .header-title{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.2rem;color:var(--text);flex:1}
+  .header-title span{color:var(--orange)}
+  .tab-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:61px;z-index:99}
+  .tab-inner{max-width:780px;margin:0 auto;display:flex}
+  .tab-btn{flex:1;padding:.75rem .5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--blue-dark)}
+  .tab-btn:hover:not(.active){color:var(--text);background:var(--bg)}
+  main{max-width:780px;margin:0 auto;padding:2rem 1.25rem 4rem}
+  .section{display:none}.section.active{display:block}
+  .section-heading{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:.35rem}
+  .section-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
+  .tts-hint{display:flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:12px;padding:10px 14px;margin-bottom:1.25rem;font-size:.85rem;color:#0e5c56;font-weight:600}
+  .search-box{width:100%;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.95rem;border:1.5px solid var(--border);border-radius:99px;outline:none;margin-bottom:1.25rem;transition:border-color .2s;background:#fff}
+  .search-box:focus{border-color:var(--blue-dark)}
+  .word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .word-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;transition:border-color .2s,transform .15s,background .15s;cursor:pointer;position:relative}
+  .word-card:hover{border-color:#a3e4de;transform:translateY(-2px);box-shadow:var(--shadow)}
+  .word-card.speaking{border-color:var(--blue-dark);background:var(--blue-light)}
+  .word-num{font-size:10px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .word-en{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px}
+  .word-ko{font-size:.88rem;color:var(--muted)}
+  .speak-icon{position:absolute;top:10px;right:12px;font-size:.9rem;opacity:.25;transition:opacity .2s}
+  .word-card:hover .speak-icon,.word-card.speaking .speak-icon{opacity:1}
+  .star-words{margin-top:2rem}
+  .star-label{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:1rem;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .star-card{background:var(--orange-light);border:1.5px solid #f9ca8b;border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,transform .15s}
+  .star-card:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .star-card.speaking{border-color:var(--orange);background:#fef3dc}
+  .star-card .word-en{color:#7d4e02}
+  .star-card .word-ko{color:#a0672c}
+  .hint-tag{display:inline-block;margin-top:5px;font-size:.78rem;background:#fdebd0;color:#935116;border-radius:99px;padding:2px 10px;font-weight:600}
+  .story-block{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+  .story-scene{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.85rem;color:var(--blue-dark);background:var(--blue-light);display:inline-block;padding:3px 10px;border-radius:99px;margin-bottom:.75rem}
+  .story-line{margin-bottom:.85rem}
+  .story-en{font-size:.98rem;font-weight:700;color:var(--text);padding:7px 10px;cursor:pointer;border-radius:8px;transition:background .15s;display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+  .story-en:hover{background:var(--blue-light)}
+  .story-en.speaking{background:var(--blue-light);color:var(--blue-dark)}
+  .speak-dot{flex-shrink:0;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid #a3e4de;display:flex;align-items:center;justify-content:center;font-size:8px;opacity:.4;transition:opacity .2s,background .2s,color .2s}
+  .story-en:hover .speak-dot{opacity:1}
+  .story-en.speaking .speak-dot{background:var(--blue-dark);border-color:var(--blue-dark);opacity:1;color:#fff}
+  .story-ko{font-size:.9rem;color:#555;border-left:3px solid var(--blue);padding:3px 0 3px 12px;margin-left:10px;line-height:1.6;display:none}
+  .story-ko.visible{display:block}
+  .ko-toggle{display:inline-flex;align-items:center;gap:5px;margin-left:10px;margin-top:3px;font-size:.78rem;font-weight:700;color:var(--blue-dark);background:var(--blue-light);border:1.5px solid #a3e4de;border-radius:99px;padding:3px 10px;cursor:pointer;transition:background .15s;user-select:none}
+  .ko-toggle:hover{background:#c8f3ef}
+  .ko-toggle.open{background:#a3e4de;color:#0a4a45}
+  .progress-wrap{margin-bottom:1.5rem}
+  .progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .progress-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+  .progress-fill{height:8px;background:linear-gradient(90deg,var(--blue),var(--blue-dark));border-radius:99px;transition:width .4s ease}
+  .q-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .q-num{font-size:.78rem;font-weight:700;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .q-text{font-size:1.05rem;font-weight:800;line-height:1.55;color:var(--text);margin-bottom:6px}
+  .q-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.25rem;font-style:italic}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s,transform .1s}
+  .opt:hover:not(:disabled){border-color:#a3e4de;background:var(--blue-light);transform:translateX(3px)}
+  .opt.correct{background:var(--green-light);border-color:#27ae60;color:#1a6b40}
+  .opt.wrong{background:var(--red-light);border-color:var(--red);color:#7b241c}
+  .feedback-box{border-radius:12px;padding:12px 16px;font-size:.88rem;line-height:1.6;margin-top:.75rem}
+  .feedback-box.correct{background:var(--green-light);color:#1a6b40;border:1.5px solid #a9dfbf}
+  .feedback-box.wrong{background:var(--red-light);color:#7b241c;border:1.5px solid #f5b7b1}
+  .feedback-hint{font-size:.82rem;opacity:.85;margin-top:4px;font-style:italic}
+  .btn-next{margin-top:1rem;padding:11px 24px;background:var(--blue-dark);color:#fff;border:none;border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,transform .1s}
+  .btn-next:hover{background:#0e6b63;transform:scale(1.02)}
+  .result-box{text-align:center;padding:2.5rem 1rem;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+  .result-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .result-score{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:3rem;color:var(--blue-dark)}
+  .result-label{font-size:1rem;color:var(--muted);margin-top:4px}
+  .result-msg{font-size:1rem;color:var(--text);margin-top:1.25rem;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+  .btn-retry{margin-top:1.5rem;padding:11px 28px;background:transparent;color:var(--blue-dark);border:2px solid var(--blue-dark);border-radius:99px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .15s,color .15s}
+  .btn-retry:hover{background:var(--blue-dark);color:#fff}
+  .site-home{font-family:'Fredoka One','Noto Sans KR',sans-serif;font-size:.72rem;color:var(--muted);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:color .15s}
+  .site-home:hover{color:var(--blue-dark)}
+  .back-link{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:none;border:1.5px solid var(--border);border-radius:99px;padding:4px 11px;min-height:44px;transition:all .15s;flex-shrink:0}
+  .back-link:hover{color:var(--blue-dark);border-color:#a3e4de;background:var(--blue-light)}
+  footer{text-align:center;padding:2rem;font-size:.78rem;color:#bdc3c7}
+  @media(max-width:480px){.word-grid{grid-template-columns:1fr 1fr}.tab-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="site-home" href="../index.html">📚 Jumping to Chapter Books</a>
+    <a class="back-link" href="index.html">← 시리즈 목록으로</a>
+    <div class="book-badge">Henry &amp; Mudge #03</div>
+    <div class="header-title">Henry and Mudge: <span>The First Book</span></div>
+  </div>
+</header>
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="showTab('words')" id="tab-words">📖 Words</button>
+    <button class="tab-btn" onclick="showTab('story')" id="tab-story">📝 Story</button>
+    <button class="tab-btn" onclick="showTab('quiz')" id="tab-quiz">✏️ Quiz</button>
+  </div>
+</div>
+<main>
+  <section class="section active" id="sec-words">
+    <div class="section-heading">📖 Word List</div>
+    <div class="section-sub">Click any word card to hear its pronunciation in English!</div>
+    <div class="tts-hint">🔊 Tap a card → hear it spoken &nbsp;|&nbsp; Tap again → stop</div>
+    <input class="search-box" type="text" placeholder="🔍 Search a word..." oninput="filterWords(this.value)">
+    <div class="word-grid" id="word-grid"></div>
+    <div class="star-words">
+      <div class="star-label">⭐ Tricky Expressions</div>
+      <div id="star-list"></div>
+    </div>
+  </section>
+  <section class="section" id="sec-story">
+    <div class="section-heading">📝 Story</div>
+    <div class="section-sub">Click ▶ to hear the English. Click <b>뜻 보기</b> to reveal the Korean!</div>
+    <div class="tts-hint" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>🔊 Tap English → hear it &nbsp;|&nbsp; 🇰🇷 Tap 뜻 보기 → see Korean</span>
+      <button id="toggle-all-btn" onclick="toggleAllKo()" style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #a3e4de;background:#fff;color:var(--blue-dark);cursor:pointer">🇰🇷 전체 보기</button>
+    </div>
+    <div id="story-container"></div>
+  </section>
+  <section class="section" id="sec-quiz">
+    <div class="section-heading">✏️ Quiz</div>
+    <div class="section-sub">10 questions in English. Read carefully and choose the best answer!</div>
+    <div id="quiz-container"></div>
+  </section>
+</main>
+<footer>Henry and Mudge: The First Book · Cynthia Rylant · Study Site for Learners</footer>
+
+<script>
+let activeEl=null;
+function speak(text,el){
+  if(!window.speechSynthesis){alert('Sorry, your browser does not support text-to-speech.');return;}
+  window.speechSynthesis.cancel();
+  if(activeEl){activeEl.classList.remove('speaking');}
+  if(activeEl===el){activeEl=null;return;}
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.88;u.pitch=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.lang.startsWith('en')&&x.localService)||voices.find(x=>x.lang.startsWith('en'));
+  if(v)u.voice=v;
+  activeEl=el;el.classList.add('speaking');
+  u.onend=u.onerror=()=>{el.classList.remove('speaking');if(activeEl===el)activeEl=null;};
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged=()=>{};
+
+const words=[
+  {en:"brother",ko:"형제, 남자 형제 (남자 동기; sister: 여자 형제)"},
+  {en:"puppy",ko:"강아지 (어린 개; 다 큰 개: dog)"},
+  {en:"floppy",ko:"축 늘어진, 쫑긋하지 않은 (flop: 축 늘어지다 + -py: 형용사형)"},
+  {en:"straight",ko:"곧은, 직선의; 굽지 않은 (straight fur: 곱슬거리지 않는 털)"},
+  {en:"collar",ko:"목줄, 목걸이 (개의 목에 채우는 것)"},
+  {en:"drool",ko:"침을 흘리다; 군침 (침을 질질 흘리다)"},
+  {en:"tornado",ko:"토네이도, 회오리바람 (tornadoes: 복수형)"},
+  {en:"bully",ko:"괴롭히는 아이, 불량배 (bullies: 복수형)"},
+  {en:"vanilla",ko:"바닐라 (바닐라 아이스크림의 향; tropical plant)"},
+  {en:"sniff",ko:"냄새를 맡다, 킁킁거리다 (코로 냄새를 들이마시다)"},
+  {en:"soapy",ko:"비누 냄새 나는, 비누거품이 있는 (soap: 비누 + -y: 형용사형)"},
+  {en:"stream",ko:"개울, 냇물 (작은 강; river보다 작다)"},
+  {en:"pine",ko:"소나무 (pine tree: 소나무; pine needle: 솔잎)"},
+  {en:"whine",ko:"낑낑거리다, 칭얼거리다 (개가 슬프거나 외로울 때 내는 소리)"},
+  {en:"porch",ko:"현관, 베란다 (집 앞에 붙어 있는 덮인 공간)"},
+  {en:"dust",ko:"먼지 (kicking up dust: 먼지를 일으키며 걷다)"},
+  {en:"backward",ko:"뒤로, 거꾸로 (back: 뒤 + -ward: ~쪽으로)"},
+  {en:"supper",ko:"저녁 식사 (dinner보다 더 가정적이고 소박한 표현)"},
+  {en:"silent",ko:"조용한, 고요한 (silence: 침묵 + -t: 형용사형)"},
+  {en:"search",ko:"찾다, 탐색하다 (search for: ~을 찾아다니다)"},
+];
+
+const starWords=[
+  {en:"Sorry they almost said",ko:"그들은 거의 '미안해'라고 말할 뻔했다",hint:"'Almost said' = 거의 말할 뻔했다. Henry's parents were about to say 'sorry' for the THIRD time — but they stopped. They looked at Henry's face and changed their minds. 'Almost' = something nearly happened but didn't. A very small word with a very big meaning! 🐾"},
+  {en:"Not a short one / not a curly one / no pointed ears",ko:"짧은 것은 안 돼 / 곱슬한 것도 안 돼 / 뾰족한 귀도 안 돼",hint:"Henry uses three 'not' sentences in a row to describe what he does NOT want. This is called negative parallel structure (부정 병렬). But then he finds Mudge — who ticks all his boxes... except one. He's short! 'But he'll grow!' 😄"},
+  {en:"He grew out of seven collars in a row",ko:"그는 연달아 일곱 개의 목줄을 자라서 맞지 않게 되었다",hint:"'Grow out of' = 자라서 맞지 않게 되다 (like growing out of old shoes). 'In a row' = 연달아, 연속으로. So Mudge outgrew seven collars one after another as he kept getting BIGGER! 🐕"},
+  {en:"Mudge loves me. He wouldn't leave. He must be lost.",ko:"머지는 나를 사랑해. 떠나지 않았을 거야. 틀림없이 길을 잃은 거야.",hint:"Three very short sentences. When Henry stops crying, he thinks clearly — not with panic but with logic. 'Must be' = 틀림없이 ~이다 (strong certainty). This shows Henry knows Mudge's heart. And that knowledge gives him the courage to go search. 💙"},
+  {en:"He remembered the dream and stayed closer",ko:"그는 꿈을 떠올리고 더 가까이 머물렀다",hint:"At the end of the book, both Henry AND Mudge have the same dream — of being alone on long, silent roads. When they wake up and find each other safe, they remember that dream and hold on tighter. It's a quiet, beautiful ending. 🌙"},
+];
+
+const story=[
+  {scene:"Chapter 1 · Henry — no brothers, no sisters",lines:[
+    {en:"Henry had no brothers and no sisters.",ko:"헨리에게는 형제도 없었고 자매도 없었다."},
+    {en:'"I want a brother," he told his parents.',ko:'"형제가 갖고 싶어요," 그가 부모님에게 말했다.'},
+    {en:'"Sorry," they said.',ko:'"미안해," 그들이 말했다.'},
+    {en:"Henry had no friends on his street.",ko:"헨리의 거리에는 친구가 없었다."},
+    {en:'"I want to live on a different street," he told his parents.',ko:'"다른 거리에서 살고 싶어요," 그가 부모님에게 말했다.'},
+    {en:'"Sorry," they said.',ko:'"미안해," 그들이 말했다.'},
+    {en:"Henry had no pets at home.",ko:"헨리의 집에는 반려동물이 없었다."},
+    {en:'"I want to have a dog," he told his parents.',ko:'"개를 키우고 싶어요," 그가 부모님에게 말했다.'},
+    {en:'"Sorry," they almost said.',ko:'"미안해," 그들이 거의 말할 뻔했다.'},
+  ]},
+  {scene:"The family says okay!",lines:[
+    {en:"But first they looked at their house — with no brothers and sisters.",ko:"하지만 먼저 그들은 자신들의 집을 바라보았다 — 형제자매가 없는 집을."},
+    {en:"Then they looked at their street — with no children.",ko:"그런 다음 거리를 바라보았다 — 아이가 없는 거리를."},
+    {en:"Then they looked at Henry's face.",ko:"그런 다음 헨리의 얼굴을 바라보았다."},
+    {en:"Then they looked at each other.",ko:"그런 다음 서로를 바라보았다."},
+    {en:'"Okay!" they said.',ko:'"좋아!" 그들이 말했다.'},
+    {en:'"I want to hug you," Henry told his parents. And he did.',ko:'"안아드리고 싶어요," 헨리가 부모님에게 말했다. 그리고 그렇게 했다.'},
+  ]},
+  {scene:"Chapter 2 · Mudge — searching for the right dog",lines:[
+    {en:"Henry searched for a dog.",ko:"헨리는 개를 찾아 나섰다."},
+    {en:'"Not just any dog," said Henry.',ko:'"아무 개나는 안 돼," 헨리가 말했다.'},
+    {en:'"Not a short one," he said.',ko:'"짧은 것도 안 돼," 그가 말했다.'},
+    {en:'"Not a curly one," he said.',ko:'"곱슬한 것도 안 돼," 그가 말했다.'},
+    {en:'"And no pointed ears."',ko:'"그리고 뾰족한 귀도 안 돼."'},
+    {en:"Then he found Mudge.",ko:"그런 다음 그는 머지를 발견했다."},
+    {en:"Mudge had floppy ears — not pointed.",ko:"머지의 귀는 축 늘어져 있었다 — 뾰족하지 않은."},
+    {en:"And Mudge had straight fur — not curly.",ko:"그리고 머지의 털은 곧았다 — 곱슬하지 않은."},
+    {en:"But Mudge was short.",ko:"하지만 머지는 작았다."},
+    {en:'"Because he\'s a puppy," Henry said. "He\'ll grow!"',ko:'"강아지니까," 헨리가 말했다. "클 거야!"'},
+  ]},
+  {scene:"And did he ever grow!",lines:[
+    {en:"He grew out of his puppy cage.",ko:"그는 자라서 강아지 케이지에 맞지 않게 되었다."},
+    {en:"He grew out of his dog cage.",ko:"그는 자라서 개 케이지에도 맞지 않게 되었다."},
+    {en:"He grew out of seven collars in a row.",ko:"그는 연달아 일곱 개의 목줄을 자라서 맞지 않게 되었다."},
+    {en:"And when he finally stopped growing, he weighed 180 pounds.",ko:"그리고 드디어 다 자랐을 때, 그는 무게가 180파운드였다."},
+    {en:"He stood three feet tall. And he drooled.",ko:"키는 3피트였다. 그리고 침을 흘렸다."},
+    {en:'"I\'m glad you\'re not short," Henry said.',ko:'"네가 짧지 않아서 다행이야," 헨리가 말했다.'},
+    {en:"And Mudge licked him. Then sat on him.",ko:"그리고 머지가 그를 핥았다. 그런 다음 그 위에 앉아버렸다."},
+  ]},
+  {scene:"Chapter 3 · Henry — walking to school with Mudge",lines:[
+    {en:"Henry used to walk to school alone.",ko:"헨리는 예전에 혼자 학교에 걸어가곤 했다."},
+    {en:"When he walked, he used to worry about tornadoes, ghosts, biting dogs, and bullies.",ko:"걸어갈 때, 그는 토네이도, 귀신, 무는 개, 그리고 불량배에 대해 걱정하곤 했다."},
+    {en:"He walked as fast as he could.",ko:"그는 최대한 빠르게 걸었다."},
+    {en:"He looked straight ahead. He never looked back.",ko:"그는 정면을 응시했다. 절대 뒤를 돌아보지 않았다."},
+    {en:"But now he walked to school with Mudge.",ko:"하지만 이제 그는 머지와 함께 학교에 걸어갔다."},
+    {en:"And now when he walked, he thought about vanilla ice cream, rain, rocks, and good dreams.",ko:"그리고 이제 걸어갈 때, 그는 바닐라 아이스크림, 비, 돌멩이, 그리고 좋은 꿈에 대해 생각했다."},
+    {en:"He walked to school, but not too fast.",ko:"그는 학교에 걸어갔다, 하지만 너무 빠르지 않게."},
+    {en:"He walked to school and sometimes backward.",ko:"그는 학교에 걸어갔다, 그리고 때로는 뒤로."},
+    {en:"He walked to school and patted Mudge's big head. Happy.",ko:"그는 학교에 걸어갔다, 그리고 머지의 큰 머리를 쓰다듬었다. 행복하게."},
+  ]},
+  {scene:"Chapter 4 · Mudge — Henry's bed",lines:[
+    {en:"Mudge loved Henry's room.",ko:"머지는 헨리의 방을 좋아했다."},
+    {en:"He loved the dirty socks. He loved the stuffed bear. He loved the fish tank.",ko:"그는 더러운 양말을 좋아했다. 봉제 곰을 좋아했다. 어항을 좋아했다."},
+    {en:"But mostly he loved Henry's bed — because in Henry's bed was Henry.",ko:"하지만 무엇보다 그는 헨리의 침대를 좋아했다 — 헨리의 침대에는 헨리가 있었기 때문에."},
+    {en:"Mudge loved to climb in with Henry.",ko:"머지는 헨리와 함께 침대에 기어오르는 것을 좋아했다."},
+  ]},
+  {scene:"Smelling Henry",lines:[
+    {en:"Then he loved to smell him.",ko:"그런 다음 그는 그의 냄새를 맡는 것을 좋아했다."},
+    {en:"He smelled his lemon hair.",ko:"그는 레몬 향 나는 머리카락 냄새를 맡았다."},
+    {en:"He smelled his milky mouth.",ko:"그는 우유 냄새 나는 입 냄새를 맡았다."},
+    {en:"He smelled his soapy ears.",ko:"그는 비누 냄새 나는 귀 냄새를 맡았다."},
+    {en:"He smelled his chocolate fingers.",ko:"그는 초콜릿 냄새 나는 손가락 냄새를 맡았다."},
+    {en:"Then he put his head by Henry's head.",ko:"그런 다음 헨리의 머리 옆에 자신의 머리를 두었다."},
+    {en:"He looked at the fish tank. He looked at the bear. He looked at Henry.",ko:"그는 어항을 바라보았다. 곰을 바라보았다. 헨리를 바라보았다."},
+    {en:"He licked him. And he fell asleep.",ko:"그를 핥았다. 그리고 잠들었다."},
+  ]},
+  {scene:"Chapter 5 · Mudge — lost",lines:[
+    {en:"One day Mudge took a walk without Henry.",ko:"어느 날 머지는 헨리 없이 산책을 나갔다."},
+    {en:"The sun was shining. The birds were flying. The grass smelled sweet.",ko:"해가 빛나고 있었다. 새들이 날고 있었다. 풀밭은 달콤한 냄새가 났다."},
+    {en:"Mudge couldn't wait for Henry — so he left.",ko:"머지는 헨리를 기다릴 수 없었다 — 그래서 그냥 나갔다."},
+    {en:"He went down one road, sniffing the bushes.",ko:"그는 한 길을 걸어갔다, 덤불의 냄새를 맡으며."},
+    {en:"Then down another road, kicking up dust.",ko:"그런 다음 또 다른 길을, 먼지를 일으키며."},
+    {en:"He went through a field, across a stream, into some pine trees.",ko:"그는 들판을 가로질러, 개울을 건너, 소나무 숲으로 들어갔다."},
+    {en:"And when he came out on the other side — he was lost.",ko:"그리고 반대편으로 나왔을 때 — 그는 길을 잃었다."},
+    {en:"He couldn't smell Henry. He couldn't smell his front porch. He couldn't smell the street he lived on.",ko:"헨리의 냄새를 맡을 수 없었다. 현관 냄새도 맡을 수 없었다. 자신이 사는 거리 냄새도 맡을 수 없었다."},
+    {en:"Mudge looked all around and didn't see anything or anyone he knew.",ko:"머지는 사방을 둘러보았지만 아는 것이나 아는 누구도 보이지 않았다."},
+    {en:"He whined a little — alone without Henry.",ko:"그는 약간 낑낑거렸다 — 헨리 없이 혼자서."},
+    {en:"Then he lay down — alone without Henry. He missed Henry's bed.",ko:"그런 다음 드러누웠다 — 헨리 없이 혼자서. 헨리의 침대가 그리웠다."},
+  ]},
+  {scene:"Chapter 6 · Henry — searching",lines:[
+    {en:"Henry had thought Mudge would be with him always.",ko:"헨리는 머지가 항상 함께 있을 거라고 생각했다."},
+    {en:"He thought Mudge made everything safe.",ko:"그는 머지가 모든 것을 안전하게 해준다고 생각했다."},
+    {en:"He thought Mudge would never go away.",ko:"그는 머지가 절대 가버리지 않을 거라고 생각했다."},
+    {en:"And when Mudge did go away — when Henry called and called but Mudge didn't come — Henry's heart hurt.",ko:"그리고 머지가 정말 가버렸을 때 — 헨리가 계속 불렀지만 머지가 오지 않았을 때 — 헨리의 가슴이 아팠다."},
+    {en:"And he cried for an hour.",ko:"그리고 한 시간 동안 울었다."},
+    {en:"But when he finished crying, Henry said: \"Mudge loves me. He wouldn't leave. He must be lost.\"",ko:"하지만 울음을 그쳤을 때, 헨리가 말했다. \"머지는 나를 사랑해. 떠나지 않았을 거야. 틀림없이 길을 잃은 거야.\""},
+    {en:"So Henry walked and walked, calling: \"Mudge! Mudge! Come here!\"",ko:"그래서 헨리는 계속 걸으며 불렀다. \"머지! 머지! 이리 와!\""},
+    {en:"He walked down one road, then down another road.",ko:"그는 한 길을 걸었고, 그런 다음 또 다른 길을 걸었다."},
+    {en:"The sun shone as he ran through a field, calling and calling.",ko:"해가 비추는 가운데 그는 계속 부르며 들판을 가로질러 달렸다."},
+    {en:"The birds flew past as he stood beside a stream, calling and calling.",ko:"새들이 날아가는 가운데 그는 개울가에 서서, 계속 불렀다."},
+    {en:"And the tears fell as he looked at the empty pine trees for his lost dog.",ko:"그리고 눈물이 흘러내렸다, 길 잃은 자신의 개를 찾아 빈 소나무 숲을 바라보며."},
+    {en:'"Mudge!" he called one last time.',ko:'"머지!" 그가 마지막으로 한 번 더 불렀다.'},
+    {en:"And Mudge woke up from his lonely sleep — then came running.",ko:"그리고 머지가 외로운 잠에서 깨어났다 — 그런 다음 달려왔다."},
+  ]},
+  {scene:"Chapter 7 · Henry and Mudge — always together",lines:[
+    {en:"Every day when Henry woke up, he saw Mudge's big head.",ko:"매일 헨리가 잠에서 깨면, 머지의 큰 머리가 보였다."},
+    {en:"Every day when Mudge woke up, he saw Henry's small face.",ko:"매일 머지가 잠에서 깨면, 헨리의 작은 얼굴이 보였다."},
+    {en:"They ate breakfast at the same time. They ate supper at the same time.",ko:"그들은 같은 시간에 아침을 먹었다. 같은 시간에 저녁도 먹었다."},
+    {en:"When Henry was at school, Mudge just lay around and waited.",ko:"헨리가 학교에 있을 때, 머지는 그냥 뒹굴며 기다렸다."},
+    {en:"Mudge never went for a walk without Henry again.",ko:"머지는 다시는 헨리 없이 산책을 나가지 않았다."},
+    {en:"And Henry never worried that Mudge would leave.",ko:"그리고 헨리는 머지가 떠날까봐 다시는 걱정하지 않았다."},
+  ]},
+  {scene:"The dream",lines:[
+    {en:"Because sometimes in their dreams they saw long silent roads, big wide fields, deep streams, and pine trees.",ko:"왜냐하면 때때로 꿈속에서 그들은 길고 고요한 도로, 넓고 드넓은 들판, 깊은 개울, 그리고 소나무를 보았기 때문이다."},
+    {en:"In those dreams Mudge was alone. And Henry was alone.",ko:"그 꿈속에서 머지는 혼자였다. 그리고 헨리도 혼자였다."},
+    {en:"So when Mudge woke up and knew Henry was with him, he remembered the dream and stayed closer.",ko:"그래서 머지가 깨어나 헨리가 함께 있다는 것을 알면, 꿈을 떠올리고 더 가까이 머물렀다."},
+    {en:"And when Henry woke up and knew Mudge was with him, he remembered the dream and the looking and the calling and the fear.",ko:"그리고 헨리가 깨어나 머지가 함께 있다는 것을 알면, 꿈과 찾아다니던 것과 불렀던 것과 두려움을 떠올렸다."},
+    {en:"And he knew he would never lose Mudge again.",ko:"그리고 그는 다시는 머지를 잃지 않을 것이라는 것을 알았다."},
+  ]},
+];
+
+const questions=[
+  {q:"Why did Henry's parents change their minds and agree to get a dog?",sub:"헨리의 부모님은 왜 마음을 바꿔서 개를 키우기로 했나요?",opts:["They saw an advertisement for puppies in the newspaper","They looked at their house, street, and Henry's face — and felt sorry for him","Henry's teacher suggested getting a pet","Henry's grandparents gave them money for a dog"],ans:1,hint:"Clue: They looked at their house with no brothers and sisters, their street with no children, and Henry's face — then at each other. Then they said 'Okay!'"},
+  {q:"What were Henry's THREE requirements when searching for a dog?",sub:"헨리가 개를 고를 때 내세운 세 가지 조건은 무엇이었나요?",opts:["A big dog with long hair and a loud bark","Not a short one, not a curly one, and no pointed ears","A small dog with brown eyes and a curly tail","A fast dog with short hair and big paws"],ans:1,hint:"Clue: 'Not a short one. Not a curly one. And no pointed ears.' — Henry was very specific!"},
+  {q:"Mudge had floppy ears and straight fur. Why was he short when Henry first found him?",sub:"머지의 귀는 축 처지고 털은 곧았어요. 처음 만났을 때 왜 작았나요?",opts:["He was the smallest of his siblings","He hadn't been eating enough food","He was still a puppy","He was a special breed that stays small"],ans:2,hint:"Clue: 'Because he's a puppy,' Henry said. 'He'll grow!' — And did he ever!"},
+  {q:"How big did Mudge get when he finally stopped growing?",sub:"머지는 다 자랐을 때 얼마나 커졌나요?",opts:["80 pounds, 2 feet tall","180 pounds, 3 feet tall","120 pounds, 2.5 feet tall","200 pounds, 4 feet tall"],ans:1,hint:"Clue: When he finally stopped growing, he weighed 180 pounds, stood 3 feet tall — and he drooled."},
+  {q:"Before he had Mudge, what did Henry worry about on his way to school?",sub:"머지가 생기기 전, 헨리는 학교 가는 길에 무엇을 걱정했나요?",opts:["Rain, wind, cold weather, and bullies","Tornadoes, ghosts, biting dogs, and bullies","Being late, forgetting homework, and getting lost","Traffic, strangers, loud noises, and bullies"],ans:1,hint:"Clue: He used to worry about tornadoes, ghosts, biting dogs, and bullies."},
+  {q:"What four things did Mudge smell on Henry when they were in bed together?",sub:"머지가 침대에서 헨리에게서 맡은 네 가지 냄새는 무엇인가요?",opts:["Salty hair, sweet mouth, clean hands, and fresh ears","Lemon hair, milky mouth, soapy ears, and chocolate fingers","Flowery hair, sugary mouth, clean ears, and sandy feet","Shampoo hair, orange mouth, dusty ears, and muddy fingers"],ans:1,hint:"Clue: He smelled Henry's lemon hair, milky mouth, soapy ears, and chocolate fingers."},
+  {q:"Why did Mudge go for a walk without Henry?",sub:"머지는 왜 헨리 없이 혼자 산책을 나갔나요?",opts:["He saw a cat he wanted to chase","The front door was left open by accident","He smelled something interesting in a field","The sun was shining and he couldn't wait for Henry"],ans:3,hint:"Clue: The sun was shining, the birds were flying, the grass smelled sweet. Mudge couldn't wait for Henry — so he left."},
+  {q:"What places did Mudge travel through before he got lost?",sub:"머지가 길을 잃기 전에 어디를 통과했나요?",opts:["A park, a pond, and some oak trees","One road, another road, a field, a stream, and pine trees","A yard, a garden, a market, and a schoolyard","A parking lot, a hill, a river, and a forest"],ans:1,hint:"Clue: Down one road → down another road → through a field → across a stream → into some pine trees — and then he was lost."},
+  {q:"What did Henry say to himself after he stopped crying?",sub:"헨리는 울음을 그친 후 혼잣말로 무엇이라고 했나요?",opts:["He thought Mudge had run away on purpose","He thought someone must have taken Mudge","'Mudge loves me. He wouldn't leave. He must be lost.'","'I will never get a dog again.'"],ans:2,hint:"Clue: 'Mudge loves me. He wouldn't leave. He must be lost.' Three short, logical sentences. Then Henry went to search."},
+  {q:"Why did Mudge stay closer to Henry after the incident?",sub:"사건 이후 머지가 헨리 곁에 더 가까이 있으려 한 이유는 무엇인가요?",opts:["Because Henry scolded him for leaving without permission","Because he had a dream about being alone and remembered the fear","Because Henry bought him a new and better bed","Because he was getting older and slower"],ans:1,hint:"Clue: In their dreams they saw long silent roads and were alone. When Mudge woke up and knew Henry was with him, he remembered the dream — and stayed closer."},
+];
+
+function renderWords(){
+  document.getElementById('word-grid').innerHTML=words.map((w,i)=>
+    `<div class="word-card" data-en="${w.en.toLowerCase()}" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-num">#${String(i+1).padStart(2,'0')}</div>
+      <div class="word-en">${w.en}</div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="speak-icon">🔊</span>
+    </div>`
+  ).join('');
+  document.getElementById('star-list').innerHTML=starWords.map(w=>
+    `<div class="star-card" onclick="speak('${w.en.replace(/'/g,"&#39;")}',this)">
+      <div class="word-en">${w.en} <span style="font-size:.8rem;opacity:.45">🔊</span></div>
+      <div class="word-ko">${w.ko}</div>
+      <span class="hint-tag">${w.hint}</span>
+    </div>`
+  ).join('');
+}
+
+function filterWords(q){
+  document.querySelectorAll('.word-card').forEach(c=>{
+    c.style.display=c.dataset.en.includes(q.toLowerCase())?'':'none';
+  });
+}
+
+let koAllVisible=false;
+function toggleAllKo(){
+  koAllVisible=!koAllVisible;
+  document.querySelectorAll('.story-ko').forEach(el=>{
+    el.classList.toggle('visible',koAllVisible);
+  });
+  document.querySelectorAll('.ko-toggle').forEach(btn=>{
+    btn.textContent=koAllVisible?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+    btn.classList.toggle('open',koAllVisible);
+  });
+  document.getElementById('toggle-all-btn').textContent=koAllVisible?'🙈 전체 숨기기':'🇰🇷 전체 보기';
+}
+
+function renderStory(){
+  document.getElementById('story-container').innerHTML=story.map(s=>`
+    <div class="story-block">
+      <div class="story-scene">${s.scene}</div>
+      ${s.lines.map(l=>`
+        <div class="story-line">
+          <div class="story-en" onclick="speak('${l.en.replace(/['"]/g,' ')}',this)">
+            <span class="speak-dot">▶</span>${l.en}
+          </div>
+          <div class="story-ko">${l.ko}</div>
+          <span class="ko-toggle" onclick="toggleKo(this)">🇰🇷 뜻 보기</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function toggleKo(btn){
+  const ko=btn.previousElementSibling;
+  const open=ko.classList.toggle('visible');
+  btn.textContent=open?'🙈 뜻 숨기기':'🇰🇷 뜻 보기';
+  btn.classList.toggle('open',open);
+}
+
+let cur=0,score=0,answered=false;
+function renderQuiz(){
+  if(cur>=questions.length){showResult();return;}
+  const q=questions[cur];
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="progress-wrap">
+      <div class="progress-info"><span>Question ${cur+1} / ${questions.length}</span><span>${score} correct</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${(cur/questions.length)*100}%"></div></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Question ${cur+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sub">${q.sub}</div>
+      <div class="opts">${q.opts.map((o,i)=>`<button class="opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+      <div id="feedback"></div>
+    </div>`;
+  answered=false;
+}
+
+function answer(i){
+  if(answered)return;
+  answered=true;
+  const q=questions[cur];
+  const btns=document.querySelectorAll('.opt');
+  btns.forEach(b=>b.disabled=true);
+  const correct=i===q.ans;
+  if(correct)score++;
+  btns[i].classList.add(correct?'correct':'wrong');
+  if(!correct)btns[q.ans].classList.add('correct');
+  document.getElementById('feedback').innerHTML=`
+    <div class="feedback-box ${correct?'correct':'wrong'}">
+      ${correct?'✅ Correct!':'❌ Not quite.'}
+      <div class="feedback-hint">💡 ${q.hint}</div>
+    </div>
+    <button class="btn-next" onclick="next()">${cur+1<questions.length?'Next Question →':'See Results'}</button>`;
+}
+
+function next(){cur++;renderQuiz();}
+
+function showResult(){
+  const pct=Math.round(score/questions.length*100);
+  const emoji=pct>=90?'🌟':pct>=70?'😊':pct>=50?'💪':'📚';
+  const msg=pct>=90?'Wonderful! You know Henry and Mudge\'s very first story inside out!':
+            pct>=70?'Great job! You followed the story closely from start to finish.':
+            pct>=50?'Good effort! Try re-reading the story and quiz again.':
+            'Keep going! Go back to the Story tab and read it one more time.';
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="result-box">
+      <div class="result-emoji">${emoji}</div>
+      <div class="result-score">${score} / ${questions.length}</div>
+      <div class="result-label">${pct}% correct</div>
+      <div class="result-msg">${msg}</div>
+      <button class="btn-retry" onclick="cur=0;score=0;renderQuiz()">🔄 Try Again</button>
+    </div>`;
+}
+
+function showTab(t){
+  ['words','story','quiz'].forEach(x=>{
+    document.getElementById('sec-'+x).classList.toggle('active',x===t);
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='quiz'&&cur===0&&score===0)renderQuiz();
+}
+
+renderWords();
+renderStory();
+</script>
+</body>
+</html>
